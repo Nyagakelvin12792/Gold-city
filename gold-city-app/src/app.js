@@ -43,6 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Header Button: Lock Macro State
+  const lockMacroBtn = document.getElementById('lock-macro-btn');
+  if (lockMacroBtn) {
+    lockMacroBtn.addEventListener('click', () => {
+      stateManager.toggleMacroLock();
+      const isLocked = stateManager.getState().isMacroLocked;
+      lockMacroBtn.textContent = isLocked ? '🔒 Macro State Locked' : '🔓 Lock Macro State';
+      lockMacroBtn.className = isLocked ? 'btn btn-gold' : 'btn btn-secondary';
+    });
+  }
+
   // Header Button: Auto-Fetch Macro Data via AI
   const autoFetchBtn = document.getElementById('auto-fetch-btn');
   if (autoFetchBtn) {

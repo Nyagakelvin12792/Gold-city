@@ -8,7 +8,7 @@ export const METRICS_SPEC = {
     title: 'STEP 1A: CAMERA 6A — GRACE (MONETARY POLICY & M2)',
     camera: 'Camera 6 (Weather)',
     character: 'Grace (Monetary Authority)',
-    tooltip: 'Grace controls the monetary water valves. Search FRED:M2SL (Broad Money Supply) and FRED:WALCL (Fed Assets) on TradingView. Look at the 30d and YoY slope: Upward sloping line = Liquidity Expansion (+GEX Tailwind).',
+    tooltip: 'Grace controls monetary water valves. Click the blue link buttons above each metric to open TradingView charts. Sloping UPWARD = Expanding Liquidity (+GEX Tailwind). Sloping DOWNWARD = Contracting Liquidity.',
     metrics: [
       {
         id: 'm2Trend',
@@ -41,7 +41,7 @@ export const METRICS_SPEC = {
     title: 'STEP 1B: CAMERA 6B — IVY (FISCAL POLICY & NET LIQUIDITY)',
     camera: 'Camera 6 (Weather)',
     character: 'Ivy (Exchequer & Fiscal Treasury)',
-    tooltip: 'Ivy manages city bonds and treasury cash. Use TradingView Net Liquidity formula: FRED:WALCL - FRED:WTREGEN - FRED:RRPONTSYD. QRA is released quarterly (Feb, May, Aug, Nov) detailing T-Bill vs Coupon debt issuance.',
+    tooltip: 'Ivy manages city bonds & treasury reserves. HOW TO INTERPRET STEP 1B: 1) Click Net Liquidity link: line sloping UP = Bullish. 2) Click TGA link: line sloping DOWN = Government spending cash into reserves (Bullish). 3) Click RRP link: line sloping DOWN = Money moving into T-Bills (Bullish).',
     metrics: [
       {
         id: 'netLiquidityValue',
@@ -49,7 +49,7 @@ export const METRICS_SPEC = {
         type: 'text',
         placeholder: 'e.g. $6.12 Trillion',
         tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=FRED%3AWALCL-FRED%3AWTREGEN-FRED%3ARRPONTSYD',
-        sourceLabel: 'TradingView Net Liquidity Formula ↗'
+        sourceLabel: 'TradingView: FRED:WALCL-WTREGEN-RRPONTSYD ↗'
       },
       {
         id: 'tgaState',

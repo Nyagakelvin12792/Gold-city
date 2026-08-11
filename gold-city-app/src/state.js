@@ -7,14 +7,15 @@ const STORAGE_KEY = 'gold_city_layer1_state_v1';
 const initialState = {
   currentStepId: '1a', // 1a, 1b, 1c, 1d, 1e, 1f
   completedSteps: [],  // ['1a', '1b', ...]
+  isMacroLocked: false, // True if user locked Camera 6 macro climate for multi-day use
   theme: 'dark',
   subStepsData: {
-    '1a': { image: null, m2Trend: '', walclState: '', fedRate: '' },
-    '1b': { image: null, netLiquidityValue: '', tgaState: '', rrpState: '', qraFocus: '' },
-    '1c': { image: null, yield10Y: '', dxyLevel: '', dxyTrend: '', catalysts: [] },
-    '1d': { image: null, minerReserveState: '', minerInflowVolume: '' },
-    '1e': { image: null, lthRatio: '', cddActivity: '', hodlWaveTrend: '' },
-    '1f': { image: null, netflow7d: '', exchangeReserveLevel: '', sthSoprValue: '' }
+    '1a': { m2Trend: '', walclState: '', fedRate: '' },
+    '1b': { netLiquidityValue: '', tgaState: '', rrpState: '', qraFocus: '' },
+    '1c': { yield10Y: '', dxyLevel: '', dxyTrend: '', catalysts: [] },
+    '1d': { minerReserveState: '', minerInflowVolume: '' },
+    '1e': { lthRatio: '', cddActivity: '', hodlWaveTrend: '' },
+    '1f': { netflow7d: '', exchangeReserveLevel: '', sthSoprValue: '' }
   },
   narrativeOutputs: {
     story: {},
@@ -79,18 +80,10 @@ class StateManager {
     this.notify();
   }
 
-  updateMacroClimateStatus() {
-    const data1a = this.state.subStepsData['1a'];
-    const data1b = this.state.subStepsData['1b'];
-    const data1c = this.state.subStepsData['1c'];
-
-    if (data1a.m2Trend === 'Expanding (+GEX Tailwind)' && data1b.tgaState.includes('Draining TGA')) {
-      this.state.macroClimateStatus = 'EXPANSION TAILWIND (HIGH WEIGHT)';
-    } else if (data1a.m2Trend === 'Contracting (-GEX Headwind)' || data1c.dxyTrend === 'Uptrend (Dollar Shortage)') {
-      this.state.macroClimateStatus = 'CONTRACTING HEADWIND';
-    } else if (this.state.completedSteps.length >= 3) {
-      this.state.macroClimateStatus = 'NEUTRAL / QUIET MACRO (LOW WEIGHT)';
-    }
+  toggleMacroLock() {
+    this.state.isMacroLocked = !this.state.isMacroLocked;
+    this.saveState();
+    this.notify();
   }
 
   editStep(stepId) {
@@ -109,6 +102,20 @@ class StateManager {
     this.updateMacroClimateStatus();
     this.saveState();
     this.notify();
+  }
+
+  updateMacroClimateStatus() {
+    const data1a = this.state.subStepsData['1a'];
+    const data1b = this.state.subStepsData['1b'];
+    const data1c = this.state.subStepsData['1c'];
+
+    if (data1a.m2Trend === 'Expanding (+GEX Tailwind)' && data1b.tgaState.includes('Draining TGA')) {
+      this.state.macroClimateStatus = 'EXPANSION TAILWIND (HIGH WEIGHT)';
+    } else if (data1a.m2Trend === 'Contracting (-GEX Headwind)' || data1c.dxyTrend === 'Uptrend (Dollar Shortage)') {
+      this.state.macroClimateStatus = 'CONTRACTING HEADWIND';
+    } else if (this.state.completedSteps.length >= 3) {
+      this.state.macroClimateStatus = 'NEUTRAL / QUIET MACRO (LOW WEIGHT)';
+    }
   }
 
   resetSession() {

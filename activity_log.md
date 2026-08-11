@@ -79,3 +79,9 @@ This document serves as the authoritative chronological log tracking all progres
 ### [2026-08-11 21:20 UTC] — Activity Log Creation
 - **Target File:** `activity_log.md`
 - **Actions Taken:** Initialized master `activity_log.md` to trace all past, current, and future progress, additions, deductions, and system reasoning.
+
+---
+
+### [2026-08-11 21:24 UTC] — Layer 1 Embedded Sourcing Guidance & Net Liquidity Formula Integration
+- **Target Artifact:** `layer_1_step_by_step_specification.md`
+- **Actions Taken:** Added embedded platform sourcing guides and tooltips for every sub-step (FRED, TradingView, Glassnode, CryptoQuant, ForexFactory, Coinglass). Added support for direct TradingView custom Net Fed Liquidity formula (`FRED:WALCL - FRED:WTREGEN - FRED:RRPONTSYD`). Specified exact 'Where to Find & What to Look For' instructions for all 6 sub-steps.

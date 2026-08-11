@@ -14,6 +14,8 @@ Beyond order book quotes, Henry tracks Frank's mandatory hedging obligations fro
 
 ## 2. Theory
 
+![Technical Graphic: Options Net Gamma (GEX) Exposure & Flip Level](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/technical/fig_gamma_flip_profile.png)
+
 Camera 5 studies the historical evolution of resting liquidity alongside market maker inventory and options risk management. While Camera 4 provides an instantaneous snapshot of the Limit Order Book, Camera 5 analyzes liquidity behavior over time through historical order book heatmaps and derivatives positioning analytics.
 
 ### DOM Snapshot versus Heat Map History

@@ -14,6 +14,8 @@ Henry's job on this camera is to watch these rushes and ask one question, over a
 
 ## 2. Theory
 
+![Technical Graphic: Passive Absorption Divergence (Price vs CVD)](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/technical/fig_absorption_divergence.png)
+
 Camera 2 measures order flow aggression and market order delta across active trading venues. In a central limit order book, trades occur when aggressive market orders cross the bid-ask spread to execute immediately against passive limit orders. Aggressive market buyers hit the ask quote, while aggressive market sellers hit the bid quote. Camera 2 isolates this aggressive order flow to evaluate whether buyers or sellers are driving the auction momentum.
 
 ### Cumulative Volume Delta (CVD) Dynamics

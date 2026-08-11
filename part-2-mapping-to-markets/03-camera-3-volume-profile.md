@@ -12,7 +12,11 @@ When trade consolidates on a single floor for a long time, that floor becomes th
 
 ## 2. Theory
 
+![Technical Graphic: Volume Profile & Value Area Anatomy](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/technical/fig_volume_profile_anatomy.png)
+
 Camera 3 measures where physical market business has occurred across space (price levels) rather than time (timeframes). Traditional candlestick charts plot price movement over fixed intervals of time (15 minutes, 4 hours, 1 day), obscuring where actual volume was executed. Volume Profile transforms market data by organizing total executed contracts vertically by price level, creating a structural map of fair value consensus, balance, and imbalance.
+
+![Technical Graphic: Value Area Migration Across LVNs](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/technical/fig_value_migration.png)
 
 ### High Volume Nodes (HVNs) and Fair Value Consensus
 When price enters a zone where both buyers and sellers consider the exchange rate fair, trade occurs repeatedly in volume. This two-way auction consolidation builds a High Volume Node (HVN). In Gold City terms, an HVN represents a bustling District. High Volume Nodes act as structural market anchors. Because significant commercial and speculative business took place at these levels, price exhibits heavy friction when re-entering an HVN, causing directional momentum to slow down and transition into multi-sided rotation.

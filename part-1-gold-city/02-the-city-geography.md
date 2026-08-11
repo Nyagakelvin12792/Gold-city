@@ -1,7 +1,5 @@
 # Phase 2: The City (Geography)
 
-![Gold City Isometric Map](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/atlas/gold_city_map.png)
-
 ## The Hierarchy
 
 City → District → Highway → Building → Floor
@@ -34,6 +32,6 @@ This keeps venue+price geography and timeframe as two separate, non-competing ax
 
 When migration happens (see Phase 4, The Living Auction), it's the city's center of commercial gravity physically relocating from one district to another.
 
-When you check thin vs. thick book (Camera 4), you're asking about a specific building, not the whole city - different exchanges genuinely have different depth.
+When you check thin vs. thick book (Camera 4), you're asking about a specific building, not the whole city — different exchanges genuinely have different depth.
 
 Quick lookup version of this page: see `/atlas/geography-quick-reference.md`.

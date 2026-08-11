@@ -44,10 +44,11 @@ Henry requires at least one of three micro-confirmation triggers on lower-timefr
 ### Metric Category 3: Position Sizing & Perpetual Futures Math
 Position size is calculated using the universal risk equation:
 
-$$\text{Position Size (BTC)} = \frac{\text{Account Capital (\$)} \times \text{Risk \%}}{\text{Entry Price (\$)} - \text{Invalidation Price (\$)}}$$
+$$\text{Position Size (in BTC)} = \frac{\text{Account Capital in USD} \times \text{Risk Percentage}}{\text{Entry Price} - \text{Invalidation Price}}$$
 
 For USD-margined Perpetual Futures contracts:
-$$\text{Contract Size (USD)} = \text{Position Size (BTC)} \times \text{Entry Price (\$)}$$
+
+$$\text{Contract Size (in USD)} = \text{Position Size (in BTC)} \times \text{Entry Price}$$
 
 ### Metric Category 4: Trade Management & Scale-Out Rules
 1. **Target 1 (Partial Take Profit - 50% Position):** Executed when price reaches the Session Volume Point of Control (VPOC - Town Center). Immediately move stop loss to entry price (breakeven), eliminating all dollar risk.

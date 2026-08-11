@@ -62,24 +62,72 @@ Displayed liquidity can act as friction (slowing price progression as aggressive
 
 ## 3. Real Market Translation
 
-Camera 4 translates directly into live Depth of Market (DOM) ladders and order book depth analytics:
+Camera 4 translates Frank's waiting gold offers and cash bids into real-time Depth of Market (DOM) ladders, aggregated order book depth arrays, and liquidation heatmap overlays.
 
-- **Order Book Depth (±1% & ±2% Depth)**: Aggregated USD and BTC resting limit order volume across major spot and perpetual futures exchanges.
-- **Depth of Market (DOM) Ladders**: Real-time order book displays showing bids, asks, and order queue sizes per price tick.
-- **Liquidation Heatmap Clusters**: Estimated resting stop-loss and forced liquidation price levels on perpetual futures venues.
-- **Spot vs. Perp Order Book Split**: Separating spot order book depth (Binance, Coinbase) from perpetual futures depth (Binance, Bybit, OKX).
+### Metric Category 1: Order Book Depth (±1% & ±2% Depth)
+Order book depth quantifies the total capital waiting on the limit order book close to current market price:
+- **±1% & ±2% Bid Depth (USD & BTC)**: Aggregated dollar and Bitcoin volume of limit buy orders queued within 1% and 2% below market price. High bid depth provides immediate market cushion.
+- **±1% & ±2% Ask Depth (USD & BTC)**: Aggregated dollar and Bitcoin volume of limit sell orders queued within 1% and 2% above market price. High ask depth provides immediate market friction.
 
-Data sources and software: Coinglass (Orderbook Depth, Liquidation Heatmaps), Bookmap / MobChart (Real-time DOM ladders), TRDR (Aggregated Order Book Depth).
+### Metric Category 2: Depth of Market (DOM) Ladders
+DOM ladders display tick-level order queues surrounding active price across spot and perp venues:
+- **Level 2 Bid/Ask Ladders**: Real-time visualization of limit order volumes queued at every single price tick. Henry uses DOM ladders to identify immediate negotiation levels and evaluate proximity.
+
+### Metric Category 3: Liquidation Heatmap Clusters
+Liquidation maps display estimated forced liquidation prices derived from open interest and leverage distributions:
+- **High-Density Liquidation Bands**: Price levels where dense clusters of leveraged long or short liquidations reside. Liquidation bands differ from ordinary limit orders because liquidations execute non-discretionally upon price touch, acting as market magnets or acceleration triggers.
+
+### Metric Category 4: Spot versus Perpetual Futures LOB Split
+Separating spot order book depth from perpetual futures depth isolates real asset backing:
+- **Spot Order Book Depth (Coinbase, Binance Spot)**: Limit orders backed by physical BTC capital. High spot bid depth confirms institutional willingness (Clara) to absorb supply.
+- **Perpetual Order Book Depth (Binance Perps, Bybit, OKX)**: Limit orders managed by derivatives market makers and leveraged traders. Perp depth responds rapidly to options hedging and short-term volatility.
+
+### Software, Platforms & Tooling Matrix
+Henry monitors Camera 4 using professional order book visualizers:
+- **Coinglass**: Primary source for *Aggregated Order Book Depth (±1%, ±2%)*, multi-exchange depth profiles, and *Liquidation Heatmap Clusters*.
+- **Bookmap / MobChart**: Employed for tick-level *DOM Ladders*, real-time limit order queue depth arrays, and order book imbalance ratios.
+- **TRDR**: Used for multi-exchange aggregated LOB visualization and spot vs perp order book depth split charts.
 
 ---
 
 ## 4. Litmus Test
 
-Primary Question:
+When Henry looks at Camera 4, he is inspecting Frank's waiting booths on the exchange floor. He does not treat limit order queues as brick walls or guarantees; he evaluates where merchants are waiting right now and applies the SVAF Proximity Hierarchy.
+
+### The Core Question
 "Where are participants currently willing to trade, and what happens when the auction reaches them?"
 
-Secondary Question:
-"Which displayed liquidity is closest to the active auction, and is it demonstrating persistent commitment?"
+### Henry's Step-by-Step Diagnostic Process
+
+1. **Applying the Proximity Hierarchy (Nearest Liquidity First):**
+   - *Henry's Question:* "Which displayed gold offers or cash bids are closest to the current trading price?"
+   - *Gold City Narrative:* A massive stack of 2,000 gold coins sitting on Floor 110 doesn't matter when price is at Floor 90. The 200 coins sitting at Floor 92 represent the immediate potential negotiation.
+   - *Real Market Diagnostic:* Henry scans Depth of Market (DOM) ladders for nearest limit order clusters within ±1% of active price.
+   - *Why This Matters:* Distant orders, no matter how large, are secondary until price approaches. Proximity comes first.
+
+2. **Checking Order Book Density (Thick vs. Thin Book):**
+   - *Henry's Question:* "Is the order book ahead packed tight with merchant booths (thick friction), or is the street empty (thin highway)?"
+   - *Gold City Narrative:* A thick order book is like a crowded market square. Anyone buying must trade with dozens of merchants, slowing price down. A thin order book is an empty street where a single buyer can run through multiple floors without opposition.
+   - *Real Market Diagnostic:* Henry compares ±1% and ±2% Bid/Ask Order Book Depth.
+   - *Why This Matters:* Dense books create price rotation and slowing; sparse books allow rapid price movement and high slippage.
+
+3. **Watching the Execution Interaction (Consumed vs. Pulled):**
+   - *Henry's Question:* "When aggressive buyers arrive at Frank's booth, are they trading with his gold (consumption) or is Frank pulling his gold away before they touch it (pulling)?"
+   - *Gold City Narrative:* If buyers buy Frank's gold and his stack shrinks from 500 to 0 through real trades, the gold was consumed. But if Frank yanks his gold off the counter as buyers run up, Frank is stepping back without trading.
+   - *Real Market Diagnostic:* Henry watches footprint execution and DOM order cancellation logs.
+   - *Why This Matters:* Real execution consumes liquidity; pulling orders removes opposition without trade execution, opening the path for rapid breakout expansion.
+
+### Common Trader Mistake
+*The Retail Mistake:* Calling a large limit order wall "support" or "resistance" and placing trades right in front of it without watching how the market interacts with it.
+*Henry's Rule:* Never assume a DOM wall will hold. Treat order book clusters as potential negotiation zones, and wait for order flow interaction (Camera 2 & Camera 5) to confirm commitment.
+
+### Henry's Scenario & Practical Bias Guide
+
+| What Henry Sees | Gold City Narrative | What It Means for the Market | Henry's Practical Action Guide |
+|---|---|---|---|
+| **Scenario 1: Dense Nearest Friction** | Proximity shows large persistent limit asks immediately above price (or bids below) on a thick LOB. | High passive opposition at the immediate negotiation zone. | **Slow Rotation / Caution Bias.** Momentum will slow down; aggressive orders must devour heavy depth to progress; target quick rotation exits. |
+| **Scenario 2: Sparse Highway** | Proximity shows sparse, thin limit quotes above/below current price across multiple ticks. | Low passive opposition ahead. Slippage risk is high. | **Fast Crossing / Slippage Bias.** Price will glide rapidly across thin ticks if initiative market orders hit the spread; expect fast directional moves. |
+| **Scenario 3: Displayed Liquidity Pulling** | Large limit orders disappearing as price approaches without being executed on footprint. | Passive opposition is withdrawing; Frank is stepping back. | **Unopposed Expansion Bias.** Breakouts encounter less friction and can accelerate rapidly; counter-trend fading is invalidated. |
 
 ---
 

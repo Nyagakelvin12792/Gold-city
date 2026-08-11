@@ -45,47 +45,78 @@ Camera 1 operates on a slow temporal cadence (daily, weekly, and monthly on-chai
 
 ## 3. Real Market Translation
 
-Camera 1 translates into specific on-chain and exchange supply metrics, each paired with a direct question:
+Camera 1 translates the physical narrative of Gold City into on-chain data metrics, public blockchain ledgers, and exchange inventory tracking tools. Because Bitcoin operates on a transparent, public ledger, every movement of supply from miners or dormant vaults can be observed before it executes on the trading floor.
 
-- **Alice (New Supply & Miner Behavior)**:
-  - *Daily BTC Mining Issuance*: How much new BTC is produced daily? (~450 BTC/day post-2024 halving).
-  - *Miner Reserve Balances & Outflows*: How much inventory remains with miners, and are they moving BTC toward exchanges?
+### Metric Category 1: Alice (Miner Production, Reserves & Issuance)
+Alice represents network miners. On-chain data isolates miner wallets to evaluate whether new supply is being retained in reserves or dispatched to market venues:
+- **Daily BTC Mining Issuance (~450 BTC/day post-2024 halving)**: The baseline rate of newly created Bitcoin. This metric sets the constant, predictable inflow of new supply entering miner balances.
+- **Miner Reserve Balances**: The total volume of BTC held in known miner addresses. Rising miner reserves indicate that Alice is in a Retention State, withholding new supply from active markets. Declining reserves indicate that Alice is in a Distribution State.
+- **Miner Exchange Inflow Volume**: The specific volume of BTC transferred directly from miner wallets to exchange deposit addresses. Spikes in miner inflows signal immediate potential sell-side pressure as Alice moves gold onto the floor to cover fiat operating expenses.
 
-- **Jonas (Dormant & Long-Term Holder Supply)**:
-  - *Long-Term Holder (LTH) vs. Short-Term Holder (STH) Supply*: How much BTC remains under long-term holder control?
-  - *Coin Days Destroyed (CDD) & Adjusted CDD*: Are previously dormant coins becoming active?
-  - *HODL Waves (1Y+, 3Y+, 5Y+)*: How much supply has remained inactive across different age bands?
+### Metric Category 2: Jonas (Dormant & Long-Term Holder Supply)
+Jonas represents dormant wealth locked in long-term cold storage. On-chain analysis measures the age and movement of existing UTXOs to determine when Jonas's vault doors open:
+- **Long-Term Holder (LTH) vs. Short-Term Holder (STH) Supply Ratio**: Tracks coins held for more than 155 days (LTH) versus less than 155 days (STH). A rising LTH supply ratio confirms that coins are aging and locking into storage, shrinking market float. A declining LTH ratio confirms that Jonas is distributing inventory into active circulation.
+- **Coin Days Destroyed (CDD) and Adjusted CDD**: When a coin sits unmoved for 100 days and is spent, 100 coin days are destroyed. High CDD spikes confirm that long-dormant coins (Jonas) have moved on-chain, shifting from a Dormant State to an Activated State.
+- **HODL Waves (Supply Last Active 1Y+, 3Y+, 5Y+)**: Visual bands showing the percentage of total Bitcoin supply that has remained unmoved over specific time horizons. Expanding 1Y+ and 3Y+ bands indicate structural supply tightness.
 
-- **Liquid Float (Exchange Availability)**:
-  - *BTC Exchange Balances & Netflows*: Is readily available liquid float expanding or contracting on exchange venues?
+### Metric Category 3: Liquid Float (Exchange Reserves & Netflows)
+Liquid Float represents the immediate supply available across spot and derivative trading venues:
+- **Total BTC Balance on Exchanges**: The aggregate volume of Bitcoin held in exchange cold and hot wallets. Contracting exchange reserves confirm that liquid float is shrinking as buyers (Clara) withdraw coins into self-custody. Expanding exchange reserves confirm that liquid float is expanding, increasing market vulnerability to selling.
+- **Exchange Net Position Change**: The 30-day net change in exchange balances, isolating whether Bitcoin is accumulating on exchanges (supply expansion) or being withdrawn (supply contraction).
 
-Data sources and software: Glassnode (Supply on Exchanges, LTH Supply, Adjusted CDD), CryptoQuant (Exchange Reserve BTC, Miner Outflow), Checkonchain (HODL Waves, Realized Cap HODL Waves).
+### Software, Platforms & Tooling Matrix
+To track Camera 1 data in real time, Henry utilizes specialized on-chain analytics platforms:
+- **Glassnode**: Provides high-resolution metrics for *Supply on Exchanges*, *Long-Term Holder Supply*, *Adjusted CDD*, and *Miner Reserve Balances*.
+- **CryptoQuant**: Offers real-time tracking of *Miner Exchange Outflow*, *Exchange Reserve Balances*, and *Exchange Netflows*.
+- **Checkonchain**: Used for long-term structural charting of *HODL Waves*, *Realized Cap HODL Waves*, and *Unspent Supply Age Distribution*.
 
 ---
 
 ## 4. Litmus Test
 
-Primary Question:
-"Is supply being actively unlocked and pushed onto exchange floors, or is circulating float continuing to shrink into long-term vaults?"
+When Henry looks at Camera 1 every morning, he is not trying to guess today's price movement. He is inspecting the supply pipelines coming down from the hills and out of the deep vaults. Henry uses this Litmus Test to determine whether the supply background is structurally tight or overcrowded with potential gold.
 
-Secondary Question:
-"If supply is becoming available, who is absorbing it?"
+### The Core Question
+"Has the amount of gold available to participate in the auction materially changed?"
+
+### Henry's Step-by-Step Diagnostic Process
+
+1. **Checking Alice's Mines (New Supply Issuance vs. Retention):**
+   - *Henry's Question:* "Is Alice holding onto her newly mined gold, or is she sending heavy supply wagons to the exchange to cover operational expenses?"
+   - *Gold City Narrative:* Alice's miners dig up ~450 BTC every day. If her business is healthy, she holds the gold in her storehouses. But if energy costs rise or margins shrink, she sends wagons down to the exchange to sell.
+   - *Real Market Diagnostic:* Henry checks Miner Reserve Balances and Miner Exchange Inflows. Rising reserves mean Alice is retaining coins. High inflows to exchange deposit addresses mean Alice is distributing.
+   - *Why This Matters:* Baseline mining production is continuous, but active miner selling is variable. Distinguishing retention from distribution reveals whether new supply is hitting the market floor.
+
+2. **Checking Jonas's Ancient Vaults (Dormant Supply Activation):**
+   - *Henry's Question:* "Are Jonas's ancient vault doors staying sealed, or are heavy gold wagons leaving the vaults toward the city?"
+   - *Gold City Narrative:* Jonas holds massive historical gold wealth accumulated over years. As long as his vault doors stay locked, that gold has zero effect on daily trading. But when Jonas opens a vault door, previously inactive wealth becomes mobile.
+   - *Real Market Diagnostic:* Henry checks Coin Days Destroyed (CDD) and Long-Term Holder (LTH) supply metrics. A spike in CDD confirms that coins unmoved for years are shifting on-chain.
+   - *Why This Matters:* Long-term holders control far more Bitcoin than daily miners produce. When Jonas activates dormant supply, large potential overhead resistance enters the market environment.
+
+3. **Evaluating the Exchange Gates (Liquid Float Expansion vs. Contraction):**
+   - *Henry's Question:* "Is the total pool of gold sitting on the exchange floors growing larger or shrinking into long-term storage?"
+   - *Gold City Narrative:* If Alice ships heavy inventory and Jonas opens vaults while buyers stay passive, gold piles up at the exchange gates (expanding float). If buyers like Clara purchase gold and lock it away in cold storage, gold at the exchange gates disappears (contracting float).
+   - *Real Market Diagnostic:* Henry checks Total BTC Exchange Balances and 30-day Exchange Net Position Change.
+   - *Why This Matters:* In a contracting float environment, price becomes inelastic: even modest buying demand drives rapid upward movement because available supply is thin. In an expanding float environment, rallies encounter heavy overhead friction.
+
+### Common Trader Mistake
+*The Retail Mistake:* Seeing a daily miner transfer on Twitter and immediately placing a short trade expecting price to crash in the next 5 minutes.
+*Henry's Rule:* Supply metrics move slowly over days, weeks, and months. Never use Camera 1 for intraday trade timing. Use Camera 1 to establish the structural supply environment, then let the auction cameras dictate execution.
+
+### Henry's Scenario & Practical Bias Guide
+
+| What Henry Sees | Gold City Narrative | What It Means for the Market | Henry's Practical Action Guide |
+|---|---|---|---|
+| **Scenario 1: Supply Expansion** | Alice sends heavy miner reserve wagons to market; Jonas opens old vaults (high CDD); Exchange reserves rising. | Available Liquid Float is expanding. Overhead supply density is high across venues. | **Overhead Supply Bias.** Long breakouts require overwhelming spot demand (Clara/David); rallies into resistance face higher probability of passive absorption and fading. |
+| **Scenario 2: Supply Contraction** | Alice holds minted gold in treasury; Jonas vaults stay locked; Clara purchases gold and removes it (Exchange reserves falling). | Available Liquid Float is shrinking into deep storage. Market supply is structurally tight. | **Supply Scarcity Bias.** Auction is hyper-sensitive to buying demand; value dips into support attract strong responsive buying; breakouts encounter thinner resistance. |
+| **Scenario 3: Supply Stability** | Alice distributes at normal baseline rates; Jonas remains quiet; Exchange balances flat. | Baseline supply environment. No structural supply shift occurring. | **Neutral Supply Bias.** Defer purely to higher timeframe Volume Profile auction boundaries and lower timeframe order flow cameras. |
 
 ---
 
 ## 5. Update Frequency & Data Source
 
 - **Update Frequency**: Daily to Weekly (supply structure changes over days, weeks, and months; never checked intraday).
-- **The 7-Step Morning Workflow for Camera 1**:
-  1. Check Alice: Has new supply issuance changed materially?
-  2. Check Alice's inventory behavior: Are miners retaining or distributing?
-  3. Check Jonas: Is dormant supply remaining dormant or becoming active?
-  4. Check Liquid Float: Is BTC moving onto or leaving exchanges?
-  5. Compare environment with baseline: Is supply availability expanding, contracting, or stable?
-  6. Record conclusion (Supply Expansion, Supply Contraction, or Supply Stability).
-  7. Carry conclusion forward to Camera 6 and Volume Profile auction levels.
-- **Three Conclusion States**:
-  - *Supply Expansion*: More supply becoming available.
-  - *Supply Contraction*: Less supply readily available.
-  - *Supply Stability*: No structural change in supply.
-- **Primary Data Sources**: Glassnode, CryptoQuant, Checkonchain.
+- **Primary Data Sources**:
+  - Glassnode (Supply on Exchanges, LTH Supply, Adjusted CDD)
+  - CryptoQuant (Exchange Reserve BTC, Miner Outflow)
+  - Checkonchain (HODL Waves, Realized Cap HODL Waves)

@@ -38,17 +38,69 @@ When aggressive order flow interacts with passive limit order depth, two distinc
 
 ## 3. Real Market Translation
 
-Henry's CVD reading needs to be split in two, since David's aggression and Ben or Clara's aggression look different once separated. Spot CVD, aggregated across Binance, Coinbase, and Kraken, captures real buying and selling of actual Bitcoin. Perpetual futures CVD, aggregated across Binance, Bybit, and OKX, captures David's leveraged world.
+Camera 2 translates David's aggressive rushes into order flow analytics, delta profiles, open interest tracking, and liquidation metrics across spot and perpetual futures venues.
 
-Alongside CVD, Henry watches Open Interest, the total count of active leveraged contracts still open. Rising price, rising CVD, and rising Open Interest together confirm genuinely new leveraged positions opening, not existing ones being shuffled. Funding rates tell Henry what it currently costs David to hold his position overnight. Liquidation volume matters separately, since a liquidation is David being forced out, not choosing to sell.
+### Metric Category 1: Cumulative Volume Delta (Spot vs. Perp CVD)
+Cumulative Volume Delta measures the aggressive order flow balance. Henry separates Spot CVD from Perpetual Futures CVD to distinguish real physical asset demand from leveraged speculation:
+- **Spot CVD (Coinbase, Binance Spot, Kraken)**: Tracks market orders executing on un-leveraged spot exchanges. Rising Spot CVD confirms that Ben, Clara, or institutional spot buyers are aggressively paying the spread to acquire real Bitcoin. Spot CVD leads sustainable, organic auction trends.
+- **Perpetual Futures CVD (Binance, Bybit, OKX Perps)**: Tracks market orders executing on leveraged derivative venues. Rising Perp CVD confirms that David and leveraged speculators are chasing momentum. Perp CVD without Spot CVD support indicates fragile, leverage-driven rallies vulnerable to sharp liquidations.
 
-Data sources: Coinglass (open interest, funding rates, liquidations), Exocharts (CVD, footprint charts, delta divergence).
+### Metric Category 2: Leverage Dynamics (Open Interest & Funding Rates)
+Leverage metrics evaluate whether aggressive order flow represents new contract creation or position closures:
+- **Open Interest (OI in BTC & USD)**: The total number of open perpetual contracts across major venues. Rising price + rising Perp CVD + rising OI confirms aggressive long creation. Rising price + falling OI confirms short squeeze covering.
+- **Funding Rates & Predicted Funding**: The fee paid between long and short perp traders to anchor contract prices to spot index prices. Extremely high positive funding rates indicate over-leveraged long bias, signaling that David's crowd is paying high costs to hold positions and increasing the risk of a long liquidation cascade.
+
+### Metric Category 3: Non-Discretionary Sweeps (Aggressive Liquidation Volume)
+Forced executions represent non-discretionary market orders that sweep passive order book queues:
+- **Long Liquidations**: Forced market sell orders triggered when long positions breach maintenance margin. Long liquidations accelerate downward price slippage.
+- **Short Liquidations**: Forced market buy orders triggered when short positions breach maintenance margin. Short liquidations accelerate upward price spikes.
+
+### Software, Platforms & Tooling Matrix
+Henry monitors Camera 2 order flow through high-frequency derivatives and delta analytics software:
+- **Coinglass**: Used for real-time tracking of *Aggregated Open Interest*, *Global Funding Rates*, *Liquidation Volume*, and multi-exchange *Perpetual CVD*.
+- **Exocharts**: Provides footprint delta charts, tick-level *CVD Divergence arrays*, and order flow delta profiles.
+- **Velo Data / MobChart**: Employed for advanced multi-exchange delta calculations, spot vs perp CVD divergence overlays, and real-time trade flow aggression metrics.
 
 ---
 
 ## 4. Litmus Test
 
-Who is actually crossing the spread and forcing a trade right now, and is that aggression genuinely moving price, or is it quietly being absorbed by everyone sitting patiently behind it?
+When Henry turns on Camera 2, he is looking directly at the entrance doors of the exchange floor. Most merchants sit quietly at their booths, but Camera 2 catches the people who sprint through the doors shouting orders. Henry uses this Litmus Test as his morning diagnostic tool to filter out dangerous noise and determine who is driving the action.
+
+### The Core Question
+"Who is sprinting through the doors right now, and is Frank actually running out of gold to sell them, or is he quietly absorbing every rush without his booth ever looking short?"
+
+### Henry's Step-by-Step Diagnostic Process
+
+1. **Identifying Who Is Rushing the Floor (David vs. Ben and Clara):**
+   - *Henry's Question:* "Are these aggressive buyers using real cash to buy actual gold for production, or are they borrowing against credit to bet on price?"
+   - *Gold City Narrative:* Ben (the factory owner) and Clara (the long-term accumulator) buy gold with real money to put in factories or vaults. David (the speculator) rushes in with borrowed credit, bringing a noisy crowd with him.
+   - *Real Market Diagnostic:* Henry compares Spot CVD (real Bitcoin purchases) against Perpetual Futures CVD (borrowed futures contracts). If Spot CVD is rising alongside price, Ben and Clara are buying real Bitcoin. If only Perp CVD is spiking while Spot CVD is flat, David is leading a fragile credit rush.
+   - *Why This Matters:* A rush led by real cash (Spot) builds lasting trends. A rush led by borrowed credit (Perps) collapses the moment prices dip and lenders demand their credit back.
+
+2. **Testing for New Borrowers versus Closing Positions (Open Interest):**
+   - *Henry's Question:* "Is David's crowd bringing new borrowed credit onto the floor, or are old buyers simply paying off their debts and leaving?"
+   - *Gold City Narrative:* If David storms the room and fresh credit agreements are signed at the door, new positions are opening. If David is buying simply because he previously sold borrowed gold and must return it, no new buying power is entering the city.
+   - *Real Market Diagnostic:* Henry checks Open Interest (the total count of active leveraged contracts). Rising price with rising CVD and rising Open Interest confirms new leveraged buyers entering. Rising price with falling Open Interest means shorts are simply closing out positions.
+   - *Why This Matters:* Short-covering rallies run out of energy quickly because once the debt is settled, buying stops immediately.
+
+3. **Checking Frank's Booth for Secret Absorption (Delta Divergence):**
+   - *Henry's Question:* "When David storms Frank's booth buying aggressively, is Frank's stack of gold shrinking, or is Frank quietly restocking gold under the table as fast as David buys it?"
+   - *Gold City Narrative:* If David buys 1,000 coins and Frank's table empties, price must move up to the next floor to find gold. But if David buys 1,000 coins and Frank's table stays piled high with gold, Frank is absorbing David's rush. Frank has far more gold than David has credit.
+   - *Real Market Diagnostic:* Henry checks for **Absorption Divergence** (buying volume surges on CVD, but price fails to make higher highs).
+   - *Why This Matters:* When aggressive buying fails to move price, it means a massive passive seller is in control. Buying into an absorption wall is how traders get trapped right before a sharp reversal.
+
+### Common Trader Mistake
+*The Retail Mistake:* Seeing a sudden spike in green buying volume and jumping in immediately out of fear of missing out.
+*Henry's Rule:* Never chase a buying spike until you verify that real spot buyers (Ben/Clara) are supporting it and Frank is not secretly absorbing the volume under the table.
+
+### Henry's Scenario & Practical Bias Guide
+
+| What Henry Sees | Gold City Narrative | What It Means for the Market | Henry's Practical Action Guide |
+|---|---|---|---|
+| **Scenario 1: Real Money Buying** | Ben and Clara bring real cash to the floor. Spot CVD and Perp CVD rise together. | Strong, organic demand. Real Bitcoin is being bought and moved into storage. | **Look to Buy Dips.** The trend is healthy. Wait for price to pull back to the nearest busy district (Value Area) and enter in the direction of the trend. |
+| **Scenario 2: The Speculative Credit Rush** | David storms the floor with borrowed credit. Perp CVD spikes, Open Interest surges, but Spot CVD is flat. | Fragile, leverage-driven rally. No real spot buying backing the move. | **Do Not Buy Breakouts.** High risk of a violent liquidation drop. Keep hands off or wait for the credit crowd to get trapped and wiped out. |
+| **Scenario 3: Frank's Secret Absorption** | David buys aggressively, but price refuses to rise because Frank quietly restocks his counter (Absorption Divergence). | A massive passive seller is absorbing all buying aggression. | **Prepare for Reversal.** Stop buying immediately. The aggressive buyers are exhausting their capital into a brick wall. Expect price to turn down sharply. |
 
 ---
 

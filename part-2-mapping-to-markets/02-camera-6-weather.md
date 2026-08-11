@@ -37,24 +37,71 @@ Camera 6 does not generate 5-minute entry triggers or short-term trade setups. I
 
 ## 3. Real Market Translation
 
-Camera 6 translates into specific macroeconomic and liquidity indicators:
+Camera 6 translates the Gold City narrative of Grace and Ivy into central bank balance sheet data, government treasury account balances, interest rate benchmark series, and global currency indexes. Because macro liquidity dictates the availability of fiat capital entering financial auctions, tracking these data series allows Henry to determine whether market conditions favor liquidity expansion or contraction.
 
-- **Grace (Monetary Policy & Central Banks)**:
-  - Federal Funds Target Rate (FRED: `FEDFUNDS`)
-  - Federal Reserve Total Assets (FRED: `WALCL`)
-  - Global M2 Money Supply Index (Combined Fed, ECB, BOJ, PBOC M2)
-- **Ivy (Fiscal Policy & Treasury Operations)**:
-  - Treasury General Account Balance (FRED: `WTREGEN`)
-  - US Treasury Quarterly Refunding Announcements (QRA)
-  - 10-Year US Treasury Yield (FRED: `DGS10`) & 2Y/10Y Yield Curve Spread
-- **Currency & Conditions**:
-  - US Dollar Index (DXY)
+### Metric Category 1: Grace (Monetary Policy & Central Bank Liquidity)
+Grace represents central bank monetary policy. Tracking Grace requires observing global central bank balance sheets and interest rate targets:
+- **Federal Funds Target Rate (FRED: `FEDFUNDS`)**: The benchmark short-term interest rate set by the Federal Reserve. Higher policy rates raise borrowing costs and default risk, tightening conditions across all asset classes. Easing rate cycles signal expanding monetary liquidity.
+- **Federal Reserve Total Assets (FRED: `WALCL`)**: Measures the size of the Fed's balance sheet. Expanding assets (Quantitative Easing / QE) inject fiat liquidity directly into bank reserves. Contracting assets (Quantitative Tightening / QT) remove liquidity from the financial system.
+- **Global M2 Money Supply Index**: Aggregates broad money supply across the Federal Reserve, European Central Bank, Bank of Japan, and People's Bank of China. Spikes in Global M2 growth strongly correlate with Bitcoin price expansions as excess fiat currency seeks hard asset protection.
+
+### Metric Category 2: Ivy (Fiscal Policy, Treasury Operations & Yields)
+Ivy represents government fiscal operations and Treasury debt issuance. Tracking Ivy requires monitoring government account balances and bond yield dynamics:
+- **Treasury General Account Balance (FRED: `WTREGEN`)**: The government's cash balance at the Federal Reserve. An increasing TGA balance drains commercial bank reserves, acting as a net liquidity drag. A decreasing TGA balance injects cash back into bank reserves, acting as a liquidity stimulus.
+- **US Treasury Quarterly Refunding Announcements (QRA)**: Quarterly reports detailing government borrowing plans, debt issuance maturity schedules (T-bills vs. coupons), and net financing estimates. Short-duration bill issuance funded by RRP drains is liquidity-positive; long-duration bond issuance is liquidity-negative.
+- **10-Year US Treasury Yield (FRED: `DGS10`) & 2Y/10Y Yield Curve Spread**: The benchmark long-term interest rate. Rapid surges in 10-Year yields reflect bond market selling and rising cost of capital, imposing heavy headwind pressures on Bitcoin and risk assets.
+
+### Metric Category 3: Currency & Global Financial Conditions
+Currency dynamics reflect global dollar availability and international financial conditions:
+- **US Dollar Index (DXY)**: Measures USD strength against major foreign currencies. A declining DXY confirms global dollar abundance, creating a tailwind for Bitcoin. A surging DXY confirms global dollar tightening, creating an asset headwind.
+- **Reverse Repurchase Agreement Facility (FRED: `RRPONTSYD`)**: The cash parked by money market funds at the Fed. A draining RRP facility redirects cash into Treasury bills, acting as a temporary liquidity bridge into active financial markets.
+
+### Software, Platforms & Tooling Matrix
+Henry monitors Camera 6 through specialized macroeconomic research tools:
+- **FRED (Federal Reserve Economic Data)**: The primary repository for official US monetary and fiscal data series (`WALCL`, `WTREGEN`, `FEDFUNDS`, `DGS10`, `RRPONTSYD`).
+- **TradingView**: Used for real-time charting of global macro indexes, currency pairs, and yield spreads (`DXY`, `US10Y`, `US02Y`, `GLOBALM2`).
+- **US Department of the Treasury**: Source for direct Quarterly Refunding Announcement (QRA) schedules, debt auction results, and TGA cash projections.
 
 ---
 
 ## 4. Litmus Test
 
+When Henry checks Camera 6, he looks high above the rooftops at the sky. He is not trying to time a 5-minute chart candle; he is determining whether Gold City's merchants are operating under warm, sunny financial weather or a cold, stormy winter.
+
+### The Core Question
 "Is macro liquidity expanding to fuel trade across the city, or are monetary and fiscal authorities draining gold from the streets?"
+
+### Henry's Step-by-Step Diagnostic Process
+
+1. **Checking Grace's Monetary Valves (Central Bank Liquidity & Rates):**
+   - *Henry's Question:* "Is Grace turning on the water valves to expand money supply, or is she tightening credit and raising borrowing costs?"
+   - *Gold City Narrative:* Grace controls central bank money supply (M2) and interest rates. When Grace lowers rates and expands credit, merchants have plenty of cash to spend. When Grace raises rates, borrowing costs soar and cash dries up.
+   - *Real Market Diagnostic:* Henry checks Global M2 Money Supply and the Federal Funds Rate (`FEDFUNDS`). Spikes in M2 growth confirm expanding monetary liquidity. High or rising policy rates confirm tightening conditions.
+   - *Why This Matters:* Bitcoin is a pure macro liquidity sponge. When global fiat money expands, capital flows out of depreciating cash into scarce hard assets.
+
+2. **Checking Ivy's Treasury Accounts (Fiscal Cash Drains vs. Injections):**
+   - *Henry's Question:* "Is Ivy sucking cash out of the city's streets into government coffers, or is she spending government gold back into merchants' hands?"
+   - *Gold City Narrative:* Ivy manages the government treasury. When Ivy sells city bonds to refill the Treasury General Account (TGA), cash is pulled out of commercial banks. When Ivy pays out government contracts, cash flows back onto the streets.
+   - *Real Market Diagnostic:* Henry checks the Treasury General Account balance (`WTREGEN`) and Reverse Repo (`RRP`) balances. An increasing TGA drains liquidity; a decreasing TGA or draining RRP injects cash into active markets.
+   - *Why This Matters:* Even when central banks hold rates steady, Ivy's daily Treasury operations can inject or drain billions in commercial bank reserves, creating sudden macro tides.
+
+3. **Checking the Dollar Wind and Bond Yield Storms (DXY & 10Y Yields):**
+   - *Henry's Question:* "Is a strong dollar gale making borrowing expensive globally, or are bond yields falling to allow trade to flow easily?"
+   - *Gold City Narrative:* A surging US Dollar Index (DXY) and spiking 10-Year Treasury yields represent a harsh winter storm. Borrowers struggle to service debt, and merchants pull back from risky ventures.
+   - *Real Market Diagnostic:* Henry monitors the DXY index and 10-Year US Treasury Yield (`DGS10`).
+   - *Why This Matters:* Surging yields increase the cost of capital across all markets, imposing a heavy headwind on Bitcoin auctions regardless of internal chart patterns.
+
+### Common Trader Mistake
+*The Retail Mistake:* Trying to trade 5-minute candlestick breakouts on inflation data releases without understanding the broader macro regime.
+*Henry's Rule:* Macro weather sets the broad background regime over weeks and months. Use Camera 6 to establish whether you have a macro tailwind or headwind, then let the Volume Profile and order flow cameras handle trade execution.
+
+### Henry's Scenario & Practical Bias Guide
+
+| What Henry Sees | Gold City Narrative | What It Means for the Market | Henry's Practical Action Guide |
+|---|---|---|---|
+| **Scenario 1: Expanding Weather** | Grace expands M2; Ivy spends out of TGA; RRP drains into bills; DXY declining; yields falling. | Abundant fiat liquidity flowing into financial markets. Cost of capital is low. | **Macro Tailwind Bias.** Aggressive trend-continuation setups favored; shorting value extremes carries high structural risk; hold winning trades longer. |
+| **Scenario 2: Contracting Weather** | Grace tightens balance sheet (QT); Ivy refills TGA via bond auctions; DXY surging; 10Y yields spiking. | Tightening fiat liquidity and high cost of capital. Capital is fleeing to cash and yield. | **Macro Headwind Bias.** Range-bound rotations and responsive fading favored; breakout momentum struggles for follow-through; reduce risk sizing. |
+| **Scenario 3: Mixed Weather** | Fed pausing rates; TGA balance stable; DXY ranging; M2 growth flat. | Transitional or balanced macro environment. No dominant macro liquidity driver. | **Neutral Macro Bias.** Defer purely to higher timeframe Volume Profile auction boundaries and lower timeframe order flow cameras. |
 
 ---
 

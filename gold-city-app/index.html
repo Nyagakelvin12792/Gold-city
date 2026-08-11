@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gold City AI Trading Terminal — Layer 1</title>
+  <meta name="description" content="SVAF Gold City AI Terminal — Layer 1 Pre-Session Climate & Supply Ingestion Engine">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div id="app" class="terminal-layout">
+    <!-- Top Navigation Header -->
+    <header class="terminal-header">
+      <div class="brand-container">
+        <div class="brand-icon">🏛️</div>
+        <div>
+          <h1 class="brand-title">GOLD CITY AI TERMINAL</h1>
+          <p class="brand-subtitle">Structural Volume & Auction Framework (SVAF) — Operational Co-Pilot</p>
+        </div>
+      </div>
+      <div class="header-controls">
+        <button id="auto-fetch-btn" class="btn btn-secondary" title="Auto-fetch macro data using Gemini AI Web Research">
+          🔍 Auto-Fetch Macro (AI)
+        </button>
+        <button id="reset-session-btn" class="btn btn-danger" title="Clear inputs and start a fresh session">
+          🔄 Reset Session
+        </button>
+        <button id="theme-toggle-btn" class="btn btn-icon" title="Toggle Light/Dark Theme">
+          🌙
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Split -->
+    <main class="terminal-workspace">
+      <!-- Left Column: Sequential Step-Down Wizard -->
+      <section class="wizard-container" id="wizard-section">
+        <div class="layer-badge-header">
+          <span class="badge badge-gold">LAYER 1 WIZARD</span>
+          <h2>Pre-Session Climate & Supply Ingestion</h2>
+          <p class="section-desc">Complete each sub-step sequentially. Each step requires screenshot or numeric confirmation to unlock the next.</p>
+        </div>
+
+        <!-- Progress Tracker Bar -->
+        <div class="progress-stepper" id="progress-stepper">
+          <div class="step-pill active" id="pill-1a">1A. M2</div>
+          <div class="step-pill locked" id="pill-1b">1B. Ivy</div>
+          <div class="step-pill locked" id="pill-1c">1C. Yields</div>
+          <div class="step-pill locked" id="pill-1d">1D. Alice</div>
+          <div class="step-pill locked" id="pill-1e">1E. Jonas</div>
+          <div class="step-pill locked" id="pill-1f">1F. Float</div>
+        </div>
+
+        <!-- Dynamic Accordion Cards Container -->
+        <div class="accordion-cards" id="accordion-cards">
+          <!-- Rendered dynamically by src/components/wizard.js -->
+        </div>
+      </section>
+
+      <!-- Right Column: Live Assembling Dual Narrative Briefing -->
+      <aside class="briefing-container" id="briefing-section">
+        <div class="briefing-card glass-panel">
+          <div class="briefing-header">
+            <h3>MASTER LAYER 1 CLIMATE BRIEFING</h3>
+            <div class="briefing-tabs">
+              <button class="tab-btn active" id="tab-story-btn">🏛️ Gold City Story</button>
+              <button class="tab-btn" id="tab-btc-btn">📊 Real BTC Analysis</button>
+            </div>
+          </div>
+
+          <div class="briefing-body">
+            <!-- Story Narrative Tab Content -->
+            <div class="tab-content active" id="tab-story-content">
+              <p class="placeholder-text">Complete Sub-Step 1A (Grace: M2) to begin assembling the Gold City climate narrative...</p>
+            </div>
+
+            <!-- Real BTC Market Analysis Tab Content -->
+            <div class="tab-content" id="tab-btc-content">
+              <p class="placeholder-text">Complete Sub-Step 1A to begin assembling institutional BTC market metrics...</p>
+            </div>
+          </div>
+
+          <!-- Footer Macro Weight Badge -->
+          <div class="briefing-footer" id="briefing-footer">
+            <div class="status-badge-container">
+              <span class="badge-label">MACRO CLIMATE STATUS:</span>
+              <span class="badge badge-neutral" id="macro-status-badge">AWAITING LAYER 1 INPUTS</span>
+            </div>
+            <button id="unlock-layer-2-btn" class="btn btn-gold btn-full" disabled>
+              🔒 Complete Layer 1 to Unlock Layer 2 (Volume Profile)
+            </button>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

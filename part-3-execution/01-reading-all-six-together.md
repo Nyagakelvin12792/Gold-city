@@ -2,6 +2,8 @@
 
 ## 1. Gold City Narrative
 
+![Henry's Six-Monitor Balcony Console](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/01-reading-all-six-together/balcony_console.png)
+
 Every morning at sunrise, long before the first merchant shouts across the trading floor, Henry steps out onto his balcony high above the Gold City central square. Before him sits a custom six-monitor console, each screen displaying a dedicated live feed from one of the city's key observational posts.
 
 For a long time, retail traders in Gold City made a fatal mistake: they stared at a single window, usually Camera 2 right at the floor entrance, watching people sprint back and forth with gold coins. When someone ran through the door buying aggressively, retail traders panicked and bought too. They never looked up at the sky to see if a storm was brewing, nor did they check if the storehouses were overflowing with gold. They were driving a wagon at full speed while staring only at the wheels, completely blind to the road ahead.

@@ -116,3 +116,16 @@ This document serves as the authoritative chronological log tracking all progres
 ### [2026-08-11 23:35 UTC] — QRA Source Link & Metric Explanation Update
 - **Target File:** `gold-city-app/src/data/metricsSpec.js`
 - **Actions Taken:** Updated QRA (Quarterly Refunding Announcement) direct link to point directly to the official U.S. Department of the Treasury Refunding page (`home.treasury.gov`). Clarified QRA release schedule (Feb, May, Aug, Nov) and T-Bill vs Coupon liquidity mechanics.
+
+---
+
+### [2026-08-11 23:51 UTC] — Macro Lock Button, Step 1B Interpretation Guidance & AI Architecture Documentation
+- **Target Files:** `gold-city-app/index.html`, `gold-city-app/src/app.js`, `gold-city-app/src/state.js`, `gold-city-app/src/data/metricsSpec.js`
+- **Actions Taken:**
+  1. Added `isMacroLocked` state property and `toggleMacroLock()` method to `state.js`.
+  2. Added '🔒 Lock Macro State' button to header bar in `index.html`, with click handler in `app.js` that toggles macro lock and updates button appearance.
+  3. Rewrote Step 1B tooltip to include a numbered 1-2-3 interpretation guide explaining exactly how to read Net Liquidity, TGA, and RRP chart slopes.
+  4. Documented Auto-Fetch Macro (AI) workflow and Gemini Vision chart reading architecture.
+- **Reasoning:** Camera 6 macro metrics (M2, WALCL, Fed Rate, TGA, RRP, DXY) change on weekly/monthly cycles, not intraday. Locking them prevents accidental overwrites during daily trading sessions.
+- **Git Commit:** `e88c9e6` (Pushed to `main`).
+

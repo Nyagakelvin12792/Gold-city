@@ -104,3 +104,9 @@ This document serves as the authoritative chronological log tracking all progres
 - **Target Directory:** `gold-city-app/` (`index.html`, `index.css`, `src/state.js`, `src/app.js`, `src/components/wizard.js`, `src/components/sourcingGuides.js`, `src/components/briefingPanel.js`, `src/data/metricsSpec.js`, `src/ai/gemini.js`)
 - **Actions Taken:** Built the complete Layer 1 single-page web app. Resolved `stepSequence` ReferenceError in `wizard.js`, added `StateManager.editStep(stepId)` logic to properly collapse and re-expand steps when editing, and updated `resetSession()` to clear localStorage and restore clean initial state. Tested and verified 100% functional in headless browser.
 - **Git Commit:** `2cdd5ec` (Pushed to `main`).
+
+---
+
+### [2026-08-11 23:04 UTC] — Per-Metric Dropzones & Direct TradingView Symbol Links UI Refinement
+- **Target Files:** `gold-city-app/src/data/metricsSpec.js`, `gold-city-app/src/components/wizard.js`, `gold-city-app/index.css`
+- **Actions Taken:** Redesigned active step cards to feature dedicated drag-and-drop screenshot dropzones for EVERY individual metric (e.g. M2 dropzone, WALCL dropzone, Fed Funds dropzone). Updated all source links to point directly to exact TradingView symbol chart URLs (`FRED:M2SL`, `FRED:WALCL`, `FRED:FEDFUNDS`, `FRED:WTREGEN`, `FRED:RRPONTSYD`, `TVC:DXY`, `FRED:DGS10`). Verified in browser.

@@ -242,6 +242,38 @@ body {
   color: var(--text-main);
 }
 
+/* Per-Metric Blocks System */
+.metrics-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.metric-block-card {
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.metric-label-title {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--primary-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* Direct Source Link Tabs */
 .source-tabs {
   display: flex;

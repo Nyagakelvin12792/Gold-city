@@ -1,9 +1,9 @@
 /* ==========================================================================
-   SEQUENTIAL STEP-DOWN WIZARD COMPONENT
+   SEQUENTIAL STEP-DOWN WIZARD COMPONENT (PER-METRIC DROPZONES & DIRECT LINKS)
    ========================================================================== */
 
 import { METRICS_SPEC } from '../data/metricsSpec.js';
-import { renderSourceTabs, renderTooltipCard } from './sourcingGuides.js';
+import { renderTooltipCard } from './sourcingGuides.js';
 import { generateSubStepNarrative } from '../ai/gemini.js';
 
 export function renderWizard(container, state, stateManager) {
@@ -33,7 +33,6 @@ export function renderWizard(container, state, stateManager) {
     const spec = METRICS_SPEC[stepId];
     const isCompleted = state.completedSteps.includes(stepId);
     const isActive = stepId === state.currentStepId;
-    const isLocked = !isCompleted && !isActive;
 
     const currentData = state.subStepsData[stepId] || {};
 
@@ -56,30 +55,61 @@ export function renderWizard(container, state, stateManager) {
     }
 
     if (isActive) {
-      // Active Expanded Card Render
-      const fieldsHtml = spec.fields.map(field => {
-        const value = currentData[field.id] || '';
-        if (field.type === 'select') {
-          const optionsHtml = field.options.map(opt => 
+      // Active Expanded Card Render — Per-Metric Blocks
+      const metricBlocksHtml = spec.metrics.map(metric => {
+        const value = currentData[metric.id] || '';
+        const metricImage = currentData[`image_${metric.id}`] || null;
+
+        let inputControlHtml = '';
+        if (metric.type === 'select') {
+          const optionsHtml = metric.options.map(opt => 
             `<option value="${opt}" ${value === opt ? 'selected' : ''}>${opt}</option>`
           ).join('');
-          return `
+          inputControlHtml = `
             <div class="form-field">
-              <label for="${field.id}">${field.label}</label>
-              <select class="form-select" id="${field.id}" data-field-id="${field.id}">
-                <option value="">-- Select ${field.label} --</option>
+              <label for="${metric.id}">${metric.label}</label>
+              <select class="form-select" id="${metric.id}" data-field-id="${metric.id}">
+                <option value="">-- Select ${metric.label} --</option>
                 ${optionsHtml}
               </select>
             </div>
           `;
         } else {
-          return `
+          inputControlHtml = `
             <div class="form-field">
-              <label for="${field.id}">${field.label}</label>
-              <input type="text" class="form-input" id="${field.id}" data-field-id="${field.id}" placeholder="${field.placeholder || ''}" value="${value}">
+              <label for="${metric.id}">${metric.label}</label>
+              <input type="text" class="form-input" id="${metric.id}" data-field-id="${metric.id}" placeholder="${metric.placeholder || ''}" value="${value}">
             </div>
           `;
         }
+
+        return `
+          <div class="metric-block-card">
+            <div class="metric-header">
+              <span class="metric-label-title">${metric.label}</span>
+              <a href="${metric.tradingViewUrl}" target="_blank" rel="noopener noreferrer" class="source-tab-link" title="Open ${metric.sourceLabel} in new tab">
+                🌐 ${metric.sourceLabel}
+              </a>
+            </div>
+
+            <div class="dual-input-grid">
+              <!-- Dedicated Dropzone for this Metric -->
+              <div class="dropzone" id="dropzone-${stepId}-${metric.id}" data-metric-id="${metric.id}">
+                <div class="dropzone-icon">📸</div>
+                <div class="dropzone-text">
+                  <strong>Drop ${metric.label} Chart Screenshot</strong><br>or click to upload (.png, .jpg)
+                </div>
+                <input type="file" id="file-input-${stepId}-${metric.id}" accept="image/*" style="display: none;">
+                ${metricImage ? `<img src="${metricImage}" class="image-preview" alt="Preview">` : ''}
+              </div>
+
+              <!-- Value Selector / Input -->
+              <div class="fields-group">
+                ${inputControlHtml}
+              </div>
+            </div>
+          </div>
+        `;
       }).join('');
 
       return `
@@ -91,28 +121,15 @@ export function renderWizard(container, state, stateManager) {
             </div>
           </div>
 
-          ${renderSourceTabs(spec.sourceTabs)}
           ${renderTooltipCard(spec.tooltip)}
 
-          <div class="dual-input-grid">
-            <!-- Left Column: Dropzone -->
-            <div class="dropzone" id="dropzone-${stepId}" data-dropzone-step="${stepId}">
-              <div class="dropzone-icon">📸</div>
-              <div class="dropzone-text">
-                <strong>Drag & Drop Chart Screenshot</strong><br>or click to upload (.png, .jpg)
-              </div>
-              <input type="file" id="file-input-${stepId}" accept="image/*" style="display: none;">
-              ${currentData.image ? `<img src="${currentData.image}" class="image-preview" alt="Preview">` : ''}
-            </div>
-
-            <!-- Right Column: Fields & Action -->
-            <div class="fields-group">
-              ${fieldsHtml}
-              <button class="btn btn-gold btn-full validate-btn" id="validate-btn-${stepId}" data-validate-step="${stepId}">
-                ⚡ VALIDATE & UNLOCK NEXT STEP ➔
-              </button>
-            </div>
+          <div class="metrics-list-container">
+            ${metricBlocksHtml}
           </div>
+
+          <button class="btn btn-gold btn-full validate-btn" id="validate-btn-${stepId}" data-validate-step="${stepId}">
+            ⚡ VALIDATE & UNLOCK NEXT STEP ➔
+          </button>
         </div>
       `;
     }
@@ -140,6 +157,7 @@ function attachWizardEventHandlers(container, stateManager) {
   const state = stateManager.getState();
   const currentStepId = state.currentStepId;
   const stepSequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
+  const spec = METRICS_SPEC[currentStepId];
 
   // Edit Step Buttons & Completed Pills Click
   container.querySelectorAll('[data-edit-step]').forEach(btn => {
@@ -158,28 +176,32 @@ function attachWizardEventHandlers(container, stateManager) {
     }
   });
 
-  // Dropzone File Uploads
-  const dropzone = container.querySelector(`#dropzone-${currentStepId}`);
-  const fileInput = container.querySelector(`#file-input-${currentStepId}`);
+  // Per-Metric Dropzone File Uploads & Click Handlers
+  if (spec && spec.metrics) {
+    spec.metrics.forEach(metric => {
+      const dropzone = container.querySelector(`#dropzone-${currentStepId}-${metric.id}`);
+      const fileInput = container.querySelector(`#file-input-${currentStepId}-${metric.id}`);
 
-  if (dropzone && fileInput) {
-    dropzone.addEventListener('click', () => fileInput.click());
-    dropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropzone.classList.add('drag-over');
-    });
-    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
-    dropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropzone.classList.remove('drag-over');
-      if (e.dataTransfer.files.length) {
-        handleImageFile(e.dataTransfer.files[0], currentStepId, stateManager);
-      }
-    });
+      if (dropzone && fileInput) {
+        dropzone.addEventListener('click', () => fileInput.click());
+        dropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropzone.classList.add('drag-over');
+        });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+        dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('drag-over');
+          if (e.dataTransfer.files.length) {
+            handleMetricImageFile(e.dataTransfer.files[0], currentStepId, metric.id, stateManager);
+          }
+        });
 
-    fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length) {
-        handleImageFile(e.target.files[0], currentStepId, stateManager);
+        fileInput.addEventListener('change', (e) => {
+          if (e.target.files.length) {
+            handleMetricImageFile(e.target.files[0], currentStepId, metric.id, stateManager);
+          }
+        });
       }
     });
   }
@@ -201,17 +223,17 @@ function attachWizardEventHandlers(container, stateManager) {
       validateBtn.textContent = '⏳ AI Engine Verifying...';
 
       const currentData = stateManager.getState().subStepsData[currentStepId];
-      const { storySnippet, btcSnippet } = await generateSubStepNarrative(currentStepId, currentData, currentData.image);
+      const { storySnippet, btcSnippet } = await generateSubStepNarrative(currentStepId, currentData);
 
       stateManager.completeStep(currentStepId, storySnippet, btcSnippet);
     });
   }
 }
 
-function handleImageFile(file, stepId, stateManager) {
+function handleMetricImageFile(file, stepId, metricId, stateManager) {
   const reader = new FileReader();
   reader.onload = (e) => {
-    stateManager.updateSubStepData(stepId, { image: e.target.result });
+    stateManager.updateSubStepData(stepId, { [`image_${metricId}`]: e.target.result });
   };
   reader.readAsDataURL(file);
 }

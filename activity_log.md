@@ -110,3 +110,9 @@ This document serves as the authoritative chronological log tracking all progres
 ### [2026-08-11 23:04 UTC] — Per-Metric Dropzones & Direct TradingView Symbol Links UI Refinement
 - **Target Files:** `gold-city-app/src/data/metricsSpec.js`, `gold-city-app/src/components/wizard.js`, `gold-city-app/index.css`
 - **Actions Taken:** Redesigned active step cards to feature dedicated drag-and-drop screenshot dropzones for EVERY individual metric (e.g. M2 dropzone, WALCL dropzone, Fed Funds dropzone). Updated all source links to point directly to exact TradingView symbol chart URLs (`FRED:M2SL`, `FRED:WALCL`, `FRED:FEDFUNDS`, `FRED:WTREGEN`, `FRED:RRPONTSYD`, `TVC:DXY`, `FRED:DGS10`). Verified in browser.
+
+---
+
+### [2026-08-11 23:35 UTC] — QRA Source Link & Metric Explanation Update
+- **Target File:** `gold-city-app/src/data/metricsSpec.js`
+- **Actions Taken:** Updated QRA (Quarterly Refunding Announcement) direct link to point directly to the official U.S. Department of the Treasury Refunding page (`home.treasury.gov`). Clarified QRA release schedule (Feb, May, Aug, Nov) and T-Bill vs Coupon liquidity mechanics.

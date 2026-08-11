@@ -41,7 +41,7 @@ export const METRICS_SPEC = {
     title: 'STEP 1B: CAMERA 6B — IVY (FISCAL POLICY & NET LIQUIDITY)',
     camera: 'Camera 6 (Weather)',
     character: 'Ivy (Exchequer & Fiscal Treasury)',
-    tooltip: 'Ivy manages city bonds and treasury cash. Use TradingView Net Liquidity formula: FRED:WALCL - FRED:WTREGEN - FRED:RRPONTSYD. Downward TGA slope = cash injected into bank reserves (Bullish).',
+    tooltip: 'Ivy manages city bonds and treasury cash. Use TradingView Net Liquidity formula: FRED:WALCL - FRED:WTREGEN - FRED:RRPONTSYD. QRA is released quarterly (Feb, May, Aug, Nov) detailing T-Bill vs Coupon debt issuance.',
     metrics: [
       {
         id: 'netLiquidityValue',
@@ -73,7 +73,7 @@ export const METRICS_SPEC = {
         type: 'select',
         options: ['Short-Duration T-Bills (Liquidity Positive)', 'Long-Duration Coupons (Liquidity Negative)', 'Neutral Mix'],
         tradingViewUrl: 'https://home.treasury.gov/policy-issues/financing-the-government/quarterly-refunding',
-        sourceLabel: 'US Treasury QRA Announcements ↗'
+        sourceLabel: 'US Treasury Official QRA Page ↗'
       }
     ]
   },

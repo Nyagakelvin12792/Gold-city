@@ -20,9 +20,6 @@ When Henry sits down at his console, he is not guessing what pattern might form 
 **Status**: `[HYPOTHESIS - NOT YET BACKTESTED]`
 
 ### 1. Gold City Narrative
-
-![Setup 1: The Highway Sprint](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/02-recurring-conditions/highway_sprint.png)
-
 Ben (the factory owner) and Clara (the long-term accumulator) walk onto the exchange floor with heavy chests of real cash. Ben's factory needs gold immediately to fulfill commercial contracts. Finding limited gold offered on the current floor, Ben and Clara pay up, devouring Frank's small inventory.
 
 Finding no passive opposition ahead, Ben and Clara drive price out of the crowded Market District onto an empty Highway (Low Volume Node). Frank, seeing real cash hitting the floor, pulls his ask quotes higher and steps back. Aggressive buyers sprint across the highway toward the next city district without encountering friction.
@@ -51,12 +48,9 @@ Before Henry classifies a move as a true Highway Sprint, he ticks off all six ca
 ---
 
 ## Setup 2: The Brick Wall Rejection (Failed Migration Snapback)
-**Status**: `[HYPOTHESIS - NOT YET BACKTESTED]`
+**Status**: `[HYPOTHESIS — NOT YET BACKTESTED]`
 
 ### 1. Gold City Narrative
-
-![Setup 2: The Brick Wall Rejection](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/02-recurring-conditions/brick_wall_rejection.png)
-
 David (the speculator) storms onto the exchange floor shouting buy orders, bringing a noisy crowd of leveraged traders behind him. David does not have real cash; he is borrowing credit to bet on price. He attempts to force price out of the Market District onto the highway.
 
 However, behind the counter sits Frank, standing in front of a massive, hidden storehouse of gold. As David's crowd buys aggressively, Frank quietly restocks his counter under the table, absorbing every buy order without his booth ever running short. David's crowd expends all their borrowed credit against Frank's brick wall. Realizing they cannot push price higher, panic sets in. Lenders demand their credit back, forcing long liquidations, and price snaps violently back across the entire district to the central Town Center.
@@ -84,12 +78,9 @@ Aggressive market orders alone cannot move price if a large passive limit trader
 ---
 
 ## Setup 3: The Town Square Fair (Responsive Value Area Rotation)
-**Status**: `[HYPOTHESIS - NOT YET BACKTESTED]`
+**Status**: `[HYPOTHESIS — NOT YET BACKTESTED]`
 
 ### 1. Gold City Narrative
-
-![Setup 3: The Town Square Fair](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/02-recurring-conditions/town_square_fair.png)
-
 The sun rises over a quiet, peaceful Gold City. There are no major announcements from Grace or Ivy, and supply wagons from the hills are moving at normal baseline rates. The merchants gather in the central Market District for a day of routine, two-way trading.
 
 When price drifts down to the southern district gate (VAL), buyers step in, declaring gold is cheap and bidding it back toward the Town Center (VPOC). When price drifts up to the northern district gate (VAH), sellers step in, declaring gold is expensive and offering it back down. Price rotates comfortably back and forth inside the district like a pendulum.
@@ -117,12 +108,9 @@ When a market is in two-sided balance (equilibrium), participants agree on fair 
 ---
 
 ## Setup 4: Frank's Magnet Pin (Options Settlement Pin)
-**Status**: `[HYPOTHESIS - NOT YET BACKTESTED]`
+**Status**: `[HYPOTHESIS — NOT YET BACKTESTED]`
 
 ### 1. Gold City Narrative
-
-![Setup 4: Frank's Magnet Pin](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/02-recurring-conditions/franks_magnet_pin.png)
-
 As the monthly settlement date for options contracts approaches, Frank (the market maker) finds himself holding massive options positions across the city. To protect his business, Frank must keep his net risk exposure perfectly balanced.
 
 Every time price attempts to rally away from Frank's largest options desk strike, Frank's mandatory risk rules force him to sell gold into the rally. Every time price dips away from the strike, his rules force him to buy gold on the dip. Frank acts like a giant magnetic weight, trapping price in a tight circle around the options desk until settlement passes.
@@ -149,12 +137,9 @@ Options market makers maintain delta-neutral portfolios by dynamically hedging t
 ---
 
 ## Setup 5: The Supply Drought Surge (Macro Supply Squeeze)
-**Status**: `[HYPOTHESIS - NOT YET BACKTESTED]`
+**Status**: `[HYPOTHESIS — NOT YET BACKTESTED]`
 
 ### 1. Gold City Narrative
-
-![Setup 5: The Supply Drought Surge](file:///c:/Users/HP/Documents/antigravity/proud-kepler/gold-city/assets/02-recurring-conditions/supply_drought_surge.png)
-
 High in the mountains, Alice's miners store their gold in balance sheet vaults, refusing to send supply wagons down to the city. Deep underground, Jonas keeps his ancient vault doors double-locked. Meanwhile, down in the city, Grace turns on the monetary water valves, flooding merchants with fresh cash, and institutional buyers (Clara) arrive with continuous daily purchasing mandates.
 
 When buyers enter the exchange buildings, they find the storehouses almost completely bare. Because there is virtually no gold available for sale, even small purchasing orders force merchants to jump several floors higher just to find a single coin for sale. The auction ascends rapidly in a structural supply drought.

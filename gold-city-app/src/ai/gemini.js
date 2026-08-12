@@ -76,16 +76,16 @@ Return ONLY a valid JSON object with these exact keys and values chosen strictly
   "dxyTrend": one of ["Downtrend (Dollar Abundance)", "Uptrend (Dollar Shortage)", "Sideways Consolidation"],
   "yield10Y": one of ["Falling / Easing (Risk Positive)", "Spiking / Surging (Tightening Headwind)", "Flat"],
 
-  "minerReserveState": one of ["Retention State (Miners HODLing / Building Reserves)", "Distribution State (Miners Liquidating Inventory)", "Neutral / Baseline"],
-  "minerInflowVolume": one of ["Low / Baseline Inflows", "Elevated Inflows"],
+  "minerReserveState": one of ["Retention State (Alice HODLing Minted BTC)", "Distribution State (Alice Selling to Cover Costs)"],
+  "minerInflowVolume": one of ["Baseline / Low Transfer Volume", "Spike / Capitulation Selling Inflows"],
   
-  "lthRatio": string of current LTH supply percentage like "74.8% LTH Supply",
-  "cddActivity": one of ["Low Baseline CDD (Vaults Double-Locked)", "Elevated CDD Spike (Old Coin Distribution)"],
-  "hodlWavesTrend": one of ["HODL Waves Aging (Accumulation)", "HODL Waves Thinning (Distribution)"],
+  "lthRatio": string of current LTH supply percentage like "74.8% LTH",
+  "cddActivity": one of ["Low Baseline (Jonas Vaults Sealed)", "Massive CDD Spike (Dormant Supply Activated)"],
+  "hodlWaveTrend": one of ["Expanding (Supply Scarcity)", "Contracting (Supply Unlocking)"],
 
-  "netflow7d": string of 7-day exchange netflow like "-14,200 BTC (Net Outflow)" or "+5,100 BTC (Net Inflow)",
-  "exchangeReserveLevel": one of ["Multi-Year Lows (Supply Squeeze)", "Building Exchange Reserves", "Stable"],
-  "sthSoprValue": one of ["0.995 (Capitulation Reset / Buy Signal)", "> 1.0 (Profit Taking)", "1.0 Neutral / Rebound"]
+  "netflow7d": string of 7-day exchange netflow like "-14,200 BTC Net Outflow",
+  "exchangeReserveLevel": one of ["Multi-Month / Multi-Year Lows (Contracted Float)", "Swelling Exchange Balances (Expanding Float)"],
+  "sthSoprValue": one of ["STH-SOPR < 1.0 (Loss Realization / Capitulation Reset)", "STH-SOPR > 1.0 (Profit Taking)", "STH-SOPR = 1.0 (Neutral Baseline)"]
 }
 
 Search for: FRED M2SL, FRED WALCL, Federal Funds Rate, TGA balance, Reverse Repo balance, Treasury QRA, DXY index, 10Y Yield, Bitcoin miner reserve trend, BTC Long Term Holder supply ratio, Coin Days Destroyed (CDD) activity, BTC 7-day exchange netflows, BTC exchange reserve levels, and Bitcoin STH-SOPR value. Return ONLY the JSON, no markdown fences, no explanation.`;

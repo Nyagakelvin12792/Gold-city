@@ -236,31 +236,51 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const final1d = {
-          minerReserveState: geminiData?.minerReserveState || 'Retention State (Miners HODLing / Building Reserves)',
-          minerInflowVolume: geminiData?.minerInflowVolume || 'Low / Baseline Inflows'
+          minerReserveState: geminiData?.minerReserveState || 'Retention State (Alice HODLing Minted BTC)',
+          minerInflowVolume: geminiData?.minerInflowVolume || 'Baseline / Low Transfer Volume'
         };
 
         const final1e = {
-          lthRatio: geminiData?.lthRatio || '74.8% LTH Supply',
-          cddActivity: geminiData?.cddActivity || 'Low Baseline CDD (Vaults Double-Locked)',
-          hodlWavesTrend: geminiData?.hodlWavesTrend || 'HODL Waves Aging (Accumulation)'
+          lthRatio: geminiData?.lthRatio || '74.8% LTH',
+          cddActivity: geminiData?.cddActivity || 'Low Baseline (Jonas Vaults Sealed)',
+          hodlWaveTrend: geminiData?.hodlWaveTrend || 'Expanding (Supply Scarcity)'
         };
 
         const final1f = {
-          netflow7d: geminiData?.netflow7d || '-14,200 BTC (Net Outflow)',
-          exchangeReserveLevel: geminiData?.exchangeReserveLevel || 'Multi-Year Lows (Supply Squeeze)',
-          sthSoprValue: geminiData?.sthSoprValue || '0.995 (Capitulation Reset / Buy Signal)'
+          netflow7d: geminiData?.netflow7d || '-14,200 BTC Net Outflow',
+          exchangeReserveLevel: geminiData?.exchangeReserveLevel || 'Multi-Month / Multi-Year Lows (Contracted Float)',
+          sthSoprValue: geminiData?.sthSoprValue || 'STH-SOPR < 1.0 (Loss Realization / Capitulation Reset)'
         };
 
-        stateManager.updateSubStepData('1a', final1a);
-        stateManager.updateSubStepData('1b', final1b);
-        stateManager.updateSubStepData('1c', final1c);
-        stateManager.updateSubStepData('1d', final1d);
-        stateManager.updateSubStepData('1e', final1e);
-        stateManager.updateSubStepData('1f', final1f);
+        const stepMap = {
+          '1a': final1a,
+          '1b': final1b,
+          '1c': final1c,
+          '1d': final1d,
+          '1e': final1e,
+          '1f': final1f
+        };
 
-        autoFetchBtn.textContent = '✨ Full Layer 1 Auto-Fetch Complete';
+        const stepSequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
+
+        // Generate narratives and mark all steps as completed automatically
+        for (const stepId of stepSequence) {
+          const stepData = stepMap[stepId];
+          stateManager.updateSubStepData(stepId, stepData);
+
+          try {
+            const narratives = await generateSubStepNarrative(stepId, stepData);
+            stateManager.saveNarrative(stepId, narratives.storySnippet, narratives.btcSnippet);
+          } catch (nErr) {
+            console.warn(`Narrative fallback for ${stepId}:`, nErr);
+          }
+
+          stateManager.completeStep(stepId);
+        }
+
+        autoFetchBtn.textContent = '✨ Full Layer 1 Completed!';
       } catch (err) {
+        console.error('Auto-fetch execution error:', err);
         autoFetchBtn.textContent = '✗ Fetch Failed';
       } finally {
         autoFetchBtn.disabled = false;

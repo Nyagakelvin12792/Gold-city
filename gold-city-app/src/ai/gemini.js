@@ -135,8 +135,11 @@ export async function generateSubStepNarrative(stepId, stepData) {
     '1b': 'Step 1B: Camera 6B Ivy (Fiscal Policy & Net Liquidity). Metrics: Net Fed Liquidity formula, TGA balance, RRP balance, QRA composition.',
     '1c': 'Step 1C: Camera 6C Bond Yields, DXY & Catalysts. Metrics: DXY level and trend, 10-Year Treasury Yield.',
     '1d': 'Step 1D: Camera 1A Alice (Miner Issuance & Reserves). Metrics: Miner reserve state, miner-to-exchange inflow volume.',
-    '1e': 'Step 1E: Camera 1B Jonas (Dormant Vaults & CDD). Metrics: LTH Supply Ratio, Coin Days Destroyed activity, HODL Waves trend.',
-    '1f': 'Step 1F: Camera 1C Liquid Float & STH-SOPR. Metrics: 7-day exchange netflow, exchange reserve level, STH-SOPR value.'
+    '1e': 'Step 1E: Camera 1F Jonas (Dormant Vaults & CDD). Metrics: LTH Supply Ratio, Coin Days Destroyed activity, HODL Waves trend.',
+    '1f': 'Step 1F: Camera 1C Liquid Float & STH-SOPR. Metrics: 7-day exchange netflow, exchange reserve level, STH-SOPR value.',
+    '2a': 'Step 2A: Tier 1 Strategic Auction (Weekly Volume Profile). Metrics: Weekly VPOC, Weekly Value Area High/Low boundaries (VAH/VAL). Character: Frank (District Surveyor).',
+    '2b': 'Step 2B: Tier 2 Operational Campaign (Daily Volume Profile). Metrics: Daily VPOC, Daily Value Area Migration State (Initiative vs Responsive Rotation). Character: Frank (Daily Inspector).',
+    '2c': 'Step 2C: Tier 3 Intraday Microstructure (4H Volume Profile). Metrics: Low Volume Node (LVN) Highways, Poor Highs / Poor Lows. Character: Frank (Highway Surveyor).'
   };
 
   const inputSummary = Object.entries(stepData)
@@ -144,16 +147,18 @@ export async function generateSubStepNarrative(stepId, stepData) {
     .map(([k, v]) => `${k}: ${v}`)
     .join('\n');
 
-  const prompt = `You are the Gold City AI Terminal narrative engine. You produce TWO narratives for each sub-step:
+  const isLayer2 = stepId.startsWith('2');
 
-1. **Gold City Story**: A metaphorical narrative using Gold City characters. Grace manages monetary water valves. Ivy manages the treasury vault. Alice runs gold mines. Jonas guards ancient dormant vaults. Use vivid but concise language. No em dashes.
-2. **Real BTC Analysis**: A factual institutional-grade market brief using the actual metric names (M2, WALCL, TGA, RRP, DXY, DGS10, CDD, SOPR, etc).
+  const prompt = `You are the Gold City AI Terminal narrative engine. You produce TWO distinct, highly tailored narratives for each sub-step:
+
+1. **Gold City Story**: A metaphorical narrative using Gold City characters. ${isLayer2 ? 'Frank is the District Surveyor and Volume Mapper who inspects market district boundaries, Town Center VPOC, and Low Volume Node highways.' : 'Grace manages monetary water valves. Ivy manages treasury vaults. Alice runs gold mines. Jonas guards subterranean vaults.'} Use vivid, concise narrative prose without em dashes.
+2. **Real BTC Analysis**: ${isLayer2 ? 'A strict Single Volume Analysis Framework (SVAF) institutional market brief. Use exact Volume Profile terminology: Tier 1 Strategic VPOC, Tier 2 Operational Value Area, Initiative Migration, Responsive Rotation, Low Volume Nodes (LVN), Single Print Tails, Poor Highs/Lows.' : 'A factual institutional-grade market brief using exact metric names (M2, WALCL, TGA, RRP, DXY, DGS10, CDD, SOPR).'}
 
 Current step: ${stepDescriptions[stepId] || stepId}
 User inputs:
 ${inputSummary}
 
-${imageParts.length > 0 ? 'The user has also uploaded chart screenshot(s). Analyze the chart images to validate the selected inputs and add any visual observations to both narratives.' : ''}
+${imageParts.length > 0 ? 'The user has uploaded chart screenshot(s). Analyze the chart images visually to extract specific Volume Profile levels (VPOC, VAH, VAL, LVN gaps) and incorporate them directly into both narratives.' : ''}
 
 Return ONLY a valid JSON object with these exact keys:
 {
@@ -371,9 +376,9 @@ function getFallbackNarrative(stepId, stepData) {
     '1d': `High in the surrounding mountains, Alice's miners (${stepData.minerReserveState || 'Retention State'}) are storing their daily harvest (~450 BTC/day) in private balance sheet inventory, withholding gold from exchange floor wagons.`,
     '1e': `Deep inside the city, Jonas keeps his ancient subterranean vaults double-locked (${stepData.cddActivity || 'Low Baseline CDD'}). Long-term wealth (${stepData.lthRatio || '74.8% LTH'}) remains immobile in storage, restricting active market float.`,
     '1f': `On the central exchange floor, liquid float is severely contracted (${stepData.exchangeReserveLevel || 'Multi-Year Lows'}). 7-day netflows show net outflows (${stepData.netflow7d || '-14,200 BTC'}), while STH-SOPR (${stepData.sthSoprValue || '0.995'}) confirms a clean capitulation reset.`,
-    '2a': `Frank's spatial survey maps the Market District boundaries between ${stepData.valueAreaHighLow || 'VAH and VAL'}. The Town Center (VPOC) sits firmly at ${stepData.vpocLevel || '$95,800'}, with the city currently in ${stepData.auctionState || 'Balanced Rotation'}.`,
-    '2b': `On the exchange floor, shouting merchants display ${stepData.cvdState || 'Passive Buyer Absorption'}. Open interest positioning indicates ${stepData.openInterestTrend || 'OI Compression'}, coiling market energy for the upcoming auction move.`,
-    '2c': `Order book depth maps heavy bid walls sitting below at ${stepData.bidAskWalls || 'key liquidity levels'}. The optimal merchant playbook confirms a ${stepData.primaryExecutionSetup || 'Responsive Trade'} scenario.`
+    '2a': `Frank's spatial survey maps the Strategic District boundaries across the Weekly Volume Profile. Weekly VPOC (${stepData.weeklyVpoc || 'read from Weekly chart'}) acts as the central fair value anchor, with value area boundaries defined by ${stepData.weeklyValueAreaRange || 'Weekly VAH and VAL'}.`,
+    '2b': `Moving to the Daily Operational Campaign, Frank tracks day-to-day value migration. Daily VPOC sits at ${stepData.dailyVpoc || 'the daily volume peak'}, with auction state currently reflecting ${stepData.dailyAuctionState || 'Daily Value Area Rotation'}.`,
+    '2c': `Zooming into intraday 4-Hour roads, Frank identifies Low Volume Node highways (${stepData.lvnHighways || 'LVN gaps'}) where price moves with low friction. Auction inspection confirms ${stepData.poorHighsLows || 'Clean Tailed Rejections'}.`
   };
 
   const btcMap = {
@@ -383,9 +388,9 @@ function getFallbackNarrative(stepId, stepData) {
     '1d': `Network producers are in a ${stepData.minerReserveState || 'Retention State'}, holding block rewards on balance sheets with baseline exchange inflow volume (${stepData.minerInflowVolume || 'Low'}). Primary issuance remains ~450 BTC/day.`,
     '1e': `UTXO age distribution shows Long-Term Holder Supply (>155d) at ${stepData.lthRatio || '74.8%'}. Coin Days Destroyed (CDD) shows a ${stepData.cddActivity || 'low baseline'}, confirming zero old-coin distribution.`,
     '1f': `Exchange liquid float is severely contracted at ${stepData.exchangeReserveLevel || 'Multi-Year Lows'}. 7-day netflows read ${stepData.netflow7d || '-14,200 BTC'}, and STH-SOPR stands at ${stepData.sthSoprValue || '0.995 (Capitulation Reset)'}.`,
-    '2a': `Session Volume Profile establishes VPOC at ${stepData.vpocLevel || '$95,800'} within the 68% Value Area (${stepData.valueAreaHighLow || 'VAH-VAL'}). Market structure reflects ${stepData.auctionState || 'balanced rotation'}.`,
-    '2b': `Order flow delta shows ${stepData.cvdState || 'Passive Absorption'}, indicating institutional limit orders taking market liquidity. Derivatives market shows ${stepData.openInterestTrend || 'OI Compression'}.`,
-    '2c': `DOM depth displays concentrated resting liquidity: ${stepData.bidAskWalls || 'DOM walls'}. Execution context aligns with a ${stepData.primaryExecutionSetup || 'Responsive Trade'} setup.`
+    '2a': `Weekly Volume Profile analysis establishes Tier 1 Strategic VPOC at ${stepData.weeklyVpoc || 'the primary high-volume node'} within ${stepData.weeklyValueAreaRange || 'Weekly VAH and VAL'}. Market structure reflects multi-week fair value acceptance and macro district positioning.`,
+    '2b': `Tier 2 Operational Volume Profile establishes Daily VPOC at ${stepData.dailyVpoc || 'current session point of control'}. Auction mechanics confirm ${stepData.dailyAuctionState || 'Daily Value Area Rotation'}, determining whether merchants are initiating value migration or rotating inside established range boundaries.`,
+    '2c': `Tier 3 Intraday 4-Hour Profile highlights Low Volume Node (LVN) liquidity gaps at ${stepData.lvnHighways || 'thin volume nodes'}. Auction structure indicates ${stepData.poorHighsLows || 'Clean Tailed Rejections'}, confirming whether intraday auctions are complete or leaving unrepaired poor highs/lows.`
   };
 
   return {

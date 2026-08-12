@@ -38,15 +38,55 @@ class StateManager {
   }
 
   loadState() {
+    const validStepIds = ['1a', '1b', '1c', '1d', '1e', '1f', '2a', '2b', '2c'];
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
+        
+        // Filter completedSteps to only valid active steps
+        const cleanCompleted = Array.isArray(parsed.completedSteps)
+          ? parsed.completedSteps.filter(id => validStepIds.includes(id))
+          : [];
+
+        // Clean narrative outputs
+        const cleanStory = {};
+        const cleanBtc = {};
+        if (parsed.narrativeOutputs) {
+          if (parsed.narrativeOutputs.story) {
+            Object.keys(parsed.narrativeOutputs.story).forEach(k => {
+              if (validStepIds.includes(k)) cleanStory[k] = parsed.narrativeOutputs.story[k];
+            });
+          }
+          if (parsed.narrativeOutputs.btc) {
+            Object.keys(parsed.narrativeOutputs.btc).forEach(k => {
+              if (validStepIds.includes(k)) cleanBtc[k] = parsed.narrativeOutputs.btc[k];
+            });
+          }
+        }
+
+        // Clean subStepsData
+        const cleanSubSteps = { ...initialState.subStepsData };
+        if (parsed.subStepsData) {
+          validStepIds.forEach(k => {
+            if (parsed.subStepsData[k]) {
+              cleanSubSteps[k] = { ...cleanSubSteps[k], ...parsed.subStepsData[k] };
+            }
+          });
+        }
+
+        const activeLayer = (parsed.activeLayer === 'layer2') ? 'layer2' : 'layer1';
+        let currentStepId = parsed.currentStepId || '1a';
+        if (!validStepIds.includes(currentStepId)) currentStepId = activeLayer === 'layer2' ? '2a' : '1a';
+
         return {
           ...initialState,
           ...parsed,
-          subStepsData: { ...initialState.subStepsData, ...parsed.subStepsData },
-          deribitData: { ...initialState.deribitData, ...parsed.deribitData }
+          activeLayer,
+          currentStepId,
+          completedSteps: cleanCompleted,
+          subStepsData: cleanSubSteps,
+          narrativeOutputs: { story: cleanStory, btc: cleanBtc }
         };
       }
     } catch (e) {

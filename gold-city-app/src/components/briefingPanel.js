@@ -6,11 +6,18 @@ export function renderBriefingPanel(state) {
   const storyContainer = document.getElementById('tab-story-content');
   const btcContainer = document.getElementById('tab-btc-content');
   const badgeElement = document.getElementById('macro-status-badge');
+  const briefingTitle = document.getElementById('briefing-card-title');
 
   if (!storyContainer || !btcContainer) return;
 
   const activeLayer = state.activeLayer || 'layer1';
   const prefix = activeLayer === 'layer2' ? '2' : '1';
+
+  if (briefingTitle) {
+    briefingTitle.textContent = activeLayer === 'layer2' 
+      ? 'MASTER LAYER 2 SPATIAL AUCTION BRIEFING' 
+      : 'MASTER LAYER 1 CLIMATE BRIEFING';
+  }
 
   const storyOutputs = state.narrativeOutputs.story;
   const btcOutputs = state.narrativeOutputs.btc;

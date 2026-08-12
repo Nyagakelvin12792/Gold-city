@@ -103,30 +103,36 @@
       </aside>
     </main>
 
-    <!-- Gemini API Key Settings Modal -->
+    <!-- API Keys Settings Modal -->
     <div class="modal-overlay" id="api-key-modal" style="display:none;">
       <div class="modal-card">
         <div class="modal-header">
-          <h3>🔑 Gemini API Key Settings</h3>
+          <h3>🔑 API Keys & Data Integration Settings</h3>
           <button class="btn btn-icon modal-close-btn" id="api-key-modal-close">✕</button>
         </div>
         <div class="modal-body">
-          <p class="modal-desc">Enter your Google Gemini API key to enable live AI features: Auto-Fetch Macro Data (with web search), AI Chart Vision (reads your uploaded screenshots), and AI Narrative Generation.</p>
-          <p class="modal-desc" style="font-size:12px; opacity:0.7;">Your key is stored locally in your browser's localStorage only. It is never sent anywhere except directly to Google's Gemini API.</p>
+          <p class="modal-desc">Enter your API keys to enable live data integration and AI co-pilot features. All keys are stored strictly in your browser's localStorage.</p>
+
           <div class="form-field">
-            <label for="api-key-input">Gemini API Key</label>
+            <label for="api-key-input">1. Google Gemini API Key <span style="font-size:11px; color:var(--text-muted);">(Required for AI Reasoning & Vision)</span></label>
             <input type="password" class="form-input" id="api-key-input" placeholder="AIzaSy...">
           </div>
+
+          <div class="form-field" style="margin-top: 14px;">
+            <label for="fred-api-key-input">2. FRED API Key <span style="font-size:11px; color:var(--text-muted);">(Free at fred.stlouisfed.org — Exact Macro Data)</span></label>
+            <input type="password" class="form-input" id="fred-api-key-input" placeholder="e.g. abcdef0123456789...">
+          </div>
+
           <div id="api-key-status" class="api-key-status"></div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" id="api-key-test-btn">🧪 Test Connection</button>
-          <button class="btn btn-gold" id="api-key-save-btn">💾 Save Key</button>
+          <button class="btn btn-secondary" id="api-key-test-btn">🧪 Test Connections</button>
+          <button class="btn btn-gold" id="api-key-save-btn">💾 Save Keys</button>
         </div>
       </div>
     </div>
   </div>
 
-  <script type="module" src="src/app.js?v=4"></script>
+  <script type="module" src="src/app.js?v=5"></script>
 </body>
 </html>

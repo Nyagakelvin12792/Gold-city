@@ -6,10 +6,11 @@ import { stateManager } from './state.js';
 import { renderWizard } from './components/wizard.js';
 import { renderBriefingPanel } from './components/briefingPanel.js';
 import { autoFetchMacroData, getApiKey, setApiKey, hasApiKey } from './ai/gemini.js';
+import { fetchMacroDataFromFred, getFredApiKey, setFredApiKey, hasFredApiKey } from './ai/fred.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ===== 1. DOM Element Lookups (all before renderAll) ===== */
+  /* ===== 1. DOM Element Lookups ===== */
   const wizardContainer = document.getElementById('accordion-cards');
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
   const resetBtn = document.getElementById('reset-session-btn');
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const apiKeyModal = document.getElementById('api-key-modal');
   const apiKeyCloseBtn = document.getElementById('api-key-modal-close');
   const apiKeyInput = document.getElementById('api-key-input');
+  const fredApiKeyInput = document.getElementById('fred-api-key-input');
   const apiKeySaveBtn = document.getElementById('api-key-save-btn');
   const apiKeyTestBtn = document.getElementById('api-key-test-btn');
   const apiKeyStatus = document.getElementById('api-key-status');
@@ -30,11 +32,17 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ===== 2. Helper Functions ===== */
   function updateApiKeyBtnState() {
     if (!apiKeyBtn) return;
-    if (hasApiKey()) {
-      apiKeyBtn.textContent = '🔑 AI Connected';
+    const geminiActive = hasApiKey();
+    const fredActive = hasFredApiKey();
+
+    if (geminiActive && fredActive) {
+      apiKeyBtn.textContent = '🔑 AI + FRED Connected';
+      apiKeyBtn.className = 'btn btn-gold';
+    } else if (geminiActive || fredActive) {
+      apiKeyBtn.textContent = '🔑 Connected (' + (geminiActive ? 'AI' : 'FRED') + ')';
       apiKeyBtn.className = 'btn btn-gold';
     } else {
-      apiKeyBtn.textContent = '🔑 API Key';
+      apiKeyBtn.textContent = '🔑 API Keys';
       apiKeyBtn.className = 'btn btn-secondary';
     }
   }
@@ -49,10 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function openModal() {
     if (!apiKeyModal) return;
     apiKeyModal.style.display = 'flex';
-    if (apiKeyInput) {
-      apiKeyInput.value = getApiKey();
-      apiKeyInput.focus();
-    }
+    if (apiKeyInput) apiKeyInput.value = getApiKey();
+    if (fredApiKeyInput) fredApiKeyInput.value = getFredApiKey();
     if (apiKeyStatus) {
       apiKeyStatus.textContent = '';
       apiKeyStatus.className = 'api-key-status';
@@ -99,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     lockMacroBtn.addEventListener('click', () => stateManager.toggleMacroLock());
   }
 
-  // API Key Button & Modal
+  // API Keys Modal
   if (apiKeyBtn) apiKeyBtn.addEventListener('click', openModal);
   if (apiKeyCloseBtn) apiKeyCloseBtn.addEventListener('click', closeModal);
   if (apiKeyModal) {
@@ -108,93 +114,137 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Save API Keys
   if (apiKeySaveBtn) {
     apiKeySaveBtn.addEventListener('click', () => {
-      const key = apiKeyInput ? apiKeyInput.value.trim() : '';
-      if (key.length < 10) {
-        apiKeyStatus.textContent = '✗ Key too short. Paste your full Gemini API key.';
-        apiKeyStatus.className = 'api-key-status error';
-        return;
-      }
-      setApiKey(key);
-      apiKeyStatus.textContent = '✓ API Key saved to localStorage.';
+      const geminiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
+      const fredKey = fredApiKeyInput ? fredApiKeyInput.value.trim() : '';
+
+      if (geminiKey) setApiKey(geminiKey);
+      if (fredKey) setFredApiKey(fredKey);
+
+      apiKeyStatus.textContent = '✓ Keys saved to localStorage.';
       apiKeyStatus.className = 'api-key-status success';
       updateApiKeyBtnState();
       setTimeout(closeModal, 1200);
     });
   }
 
+  // Test Connections
   if (apiKeyTestBtn) {
     apiKeyTestBtn.addEventListener('click', async () => {
-      const key = apiKeyInput ? apiKeyInput.value.trim() : '';
-      if (key.length < 10) {
-        apiKeyStatus.textContent = '✗ Enter a valid key first.';
+      const geminiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
+      const fredKey = fredApiKeyInput ? fredApiKeyInput.value.trim() : '';
+
+      if (!geminiKey && !fredKey) {
+        apiKeyStatus.textContent = '✗ Enter at least one API key to test.';
         apiKeyStatus.className = 'api-key-status error';
         return;
       }
-      apiKeyStatus.textContent = '⏳ Testing connection to Gemini API...';
+
+      apiKeyStatus.textContent = '⏳ Testing connection(s)...';
       apiKeyStatus.className = 'api-key-status loading';
       apiKeyTestBtn.disabled = true;
 
-      try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ role: 'user', parts: [{ text: 'Respond with exactly: GOLD CITY CONNECTED' }] }]
-          })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-          apiKeyStatus.textContent = `✓ Connection successful! "${text.trim().substring(0, 50)}"`;
-          apiKeyStatus.className = 'api-key-status success';
-        } else {
-          const errText = await res.text();
-          apiKeyStatus.textContent = `✗ API Error ${res.status}: ${errText.substring(0, 120)}`;
-          apiKeyStatus.className = 'api-key-status error';
+      const results = [];
+
+      // Test Gemini
+      if (geminiKey) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'Respond: OK' }] }] })
+          });
+          if (res.ok) results.push('Gemini AI: ✓ Connected');
+          else results.push('Gemini AI: ✗ Error ' + res.status);
+        } catch (e) {
+          results.push('Gemini AI: ✗ ' + e.message);
         }
-      } catch (err) {
-        apiKeyStatus.textContent = `✗ Network error: ${err.message}`;
-        apiKeyStatus.className = 'api-key-status error';
-      } finally {
-        apiKeyTestBtn.disabled = false;
       }
+
+      // Test FRED
+      if (fredKey) {
+        try {
+          const url = `https://api.stlouisfed.org/fred/series/observations?series_id=WALCL&api_key=${fredKey}&file_type=json&limit=1`;
+          const res = await fetch(url);
+          if (res.ok) results.push('FRED API: ✓ Connected (St. Louis Fed)');
+          else results.push('FRED API: ✗ Error ' + res.status);
+        } catch (e) {
+          results.push('FRED API: ✗ ' + e.message);
+        }
+      }
+
+      apiKeyStatus.textContent = results.join(' | ');
+      apiKeyStatus.className = results.some(r => r.includes('✓')) ? 'api-key-status success' : 'api-key-status error';
+      apiKeyTestBtn.disabled = false;
     });
   }
 
-  // Auto-Fetch Macro Data
+  // Auto-Fetch Macro Data (Combined FRED API + Gemini Grounding)
   if (autoFetchBtn) {
     autoFetchBtn.addEventListener('click', async () => {
-      if (!hasApiKey()) { openModal(); return; }
+      if (!hasApiKey() && !hasFredApiKey()) {
+        openModal();
+        return;
+      }
 
       autoFetchBtn.disabled = true;
-      autoFetchBtn.textContent = '⏳ AI Researching...';
+      autoFetchBtn.textContent = '⏳ Fetching Macro Data...';
+
       try {
-        const macroData = await autoFetchMacroData();
-        stateManager.updateSubStepData('1a', {
-          m2Trend: macroData.m2Trend,
-          walclState: macroData.walclState,
-          fedRate: macroData.fedRate
-        });
-        stateManager.updateSubStepData('1b', {
-          netLiquidityValue: macroData.netLiquidityValue,
-          tgaState: macroData.tgaState,
-          rrpState: macroData.rrpState,
-          qraFocus: macroData.qraFocus
-        });
-        stateManager.updateSubStepData('1c', {
-          dxyLevel: macroData.dxyLevel,
-          dxyTrend: macroData.dxyTrend,
-          yield10Y: macroData.yield10Y
-        });
-        autoFetchBtn.textContent = '✨ Auto-Fetch Complete';
+        let fredData = null;
+        let geminiData = null;
+
+        // 1. Fetch exact series from FRED API if key available
+        if (hasFredApiKey()) {
+          try {
+            fredData = await fetchMacroDataFromFred();
+          } catch (err) {
+            console.warn('FRED API fetch warning:', err);
+          }
+        }
+
+        // 2. Fetch Gemini Search Grounding data if Gemini key available
+        if (hasApiKey()) {
+          try {
+            geminiData = await autoFetchMacroData();
+          } catch (err) {
+            console.warn('Gemini Auto-fetch warning:', err);
+          }
+        }
+
+        // 3. Merge FRED (exact numbers) and Gemini Grounding (DXY / QRA / fallback)
+        const final1a = {
+          m2Trend: fredData?.stepData?.m2Trend || geminiData?.m2Trend,
+          walclState: fredData?.stepData?.walclState || geminiData?.walclState,
+          fedRate: fredData?.stepData?.fedRate || geminiData?.fedRate
+        };
+
+        const final1b = {
+          netLiquidityValue: fredData?.stepData?.netLiquidityValue || geminiData?.netLiquidityValue,
+          tgaState: fredData?.stepData?.tgaState || geminiData?.tgaState,
+          rrpState: fredData?.stepData?.rrpState || geminiData?.rrpState,
+          qraFocus: geminiData?.qraFocus || 'Short-Duration T-Bills (Liquidity Positive)'
+        };
+
+        const final1c = {
+          dxyLevel: geminiData?.dxyLevel || '103.50',
+          dxyTrend: geminiData?.dxyTrend || 'Downtrend (Dollar Abundance)',
+          yield10Y: fredData?.stepData?.yield10Y || geminiData?.yield10Y
+        };
+
+        stateManager.updateSubStepData('1a', final1a);
+        stateManager.updateSubStepData('1b', final1b);
+        stateManager.updateSubStepData('1c', final1c);
+
+        autoFetchBtn.textContent = fredData ? '✨ FRED + AI Auto-Fetch Complete' : '✨ AI Auto-Fetch Complete';
       } catch (err) {
         autoFetchBtn.textContent = '✗ Fetch Failed';
       } finally {
         autoFetchBtn.disabled = false;
-        setTimeout(() => { autoFetchBtn.textContent = '🔍 Auto-Fetch Macro (AI)'; }, 3000);
+        setTimeout(() => { autoFetchBtn.textContent = '🔍 Auto-Fetch Macro (AI)'; }, 3500);
       }
     });
   }

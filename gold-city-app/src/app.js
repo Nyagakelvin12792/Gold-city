@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       } else if (currentLayer === 'layer2') {
         autoFetchBtn.disabled = true;
-        autoFetchBtn.textContent = '📸 Analyzing 3 Profiles with AI Vision...';
+        autoFetchBtn.textContent = '📸 Analyzing 3 Profiles with AI Vision (SVAF)...';
 
         try {
           const binanceData = await fetchBinanceBtcPrice();
@@ -326,24 +326,41 @@ document.addEventListener('DOMContentLoaded', async () => {
 
           const visionResult = await analyzeLayer2VisionCharts(state.subStepsData, deribitData, binanceData);
 
-          if (visionResult.directionalBias) {
-            state.layer2DirectionalBias = visionResult.directionalBias;
-          }
+          // Store directional bias + final narrative in state
+          stateManager.setState({
+            layer2DirectionalBias: visionResult.directionalBias || 'AWAITING CHART UPLOADS',
+            layer2FinalNarrative: visionResult.finalBiasNarrative || ''
+          });
 
-          const final2a = { weeklyVpoc: visionResult.weeklyVpoc || '', weeklyValueAreaRange: '' };
-          const final2b = { dailyVpoc: visionResult.dailyVpoc || '', dailyAuctionState: visionResult.directionalBias || 'Inside Daily Value Area' };
-          const final2c = { lvnHighways: '', poorHighsLows: 'Clean Auctions' };
+          // Update subStepsData with real values read from charts (2a, 2b, 2c)
+          const step2aData = visionResult['2a'] || {};
+          const step2bData = visionResult['2b'] || {};
+          const step2cData = visionResult['2c'] || {};
 
-          const stepMap2 = { '2a': final2a, '2b': final2b, '2c': final2c };
-          const stepSequence2 = ['2a', '2b', '2c'];
+          stateManager.updateSubStepData('2a', {
+            weeklyVpoc: step2aData.weeklyVpoc || '',
+            weeklyVah: step2aData.weeklyVah || '',
+            weeklyVal: step2aData.weeklyVal || '',
+            weeklyAuctionState: step2aData.weeklyAuctionState || ''
+          });
+          stateManager.updateSubStepData('2b', {
+            dailyVpoc: step2bData.dailyVpoc || '',
+            dailyVah: step2bData.dailyVah || '',
+            dailyVal: step2bData.dailyVal || '',
+            dailyAuctionState: step2bData.dailyAuctionState || ''
+          });
+          stateManager.updateSubStepData('2c', {
+            lvnHighways: step2cData.lvnHighways || '',
+            poorHighsLows: step2cData.poorHighsLows || '',
+            intraday4hState: step2cData.intraday4hState || ''
+          });
 
-          for (const stepId of stepSequence2) {
-            const stepData = stepMap2[stepId];
-            stateManager.updateSubStepData(stepId, stepData);
-            stateManager.completeStep(stepId, visionResult.storySnippet, visionResult.btcSnippet);
-          }
+          // Assign each step its own unique narrative — no more repeated generic text
+          stateManager.completeStep('2a', step2aData.story || '', step2aData.btc || '');
+          stateManager.completeStep('2b', step2bData.story || '', step2bData.btc || '');
+          stateManager.completeStep('2c', step2cData.story || '', step2cData.btc || '');
 
-          autoFetchBtn.textContent = '✨ Layer 2 Directional Bias Set!';
+          autoFetchBtn.textContent = '✨ SVAF Analysis Complete — Directional Bias Set!';
         } catch (err) {
           console.error(err);
           autoFetchBtn.textContent = '✗ Analysis Failed';

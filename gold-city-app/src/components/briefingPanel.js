@@ -25,30 +25,76 @@ export function renderBriefingPanel(state) {
   const completedKeys = Object.keys(storyOutputs).filter(k => k.startsWith(prefix));
   const validKeys = completedKeys.filter(k => storyOutputs[k] && storyOutputs[k].trim() !== '');
 
-  if (validKeys.length === 0) {
-    if (activeLayer === 'layer1') {
+  if (activeLayer === 'layer2') {
+    // ---- Layer 2: Final Bias Block first, then per-tier readings ----
+    const bias = state.layer2DirectionalBias || '';
+    const finalNarrative = state.layer2FinalNarrative || '';
+
+    const biasColor = bias.includes('BULLISH') ? 'var(--emerald-primary)' :
+                      bias.includes('BEARISH') ? '#f04' :
+                      'var(--gold-primary)';
+
+    const tierLabels = { '2a': 'TIER 1 — WEEKLY VP (STRATEGIC DISTRICT)', '2b': 'TIER 2 — DAILY VP (OPERATIONAL CAMPAIGN)', '2c': 'TIER 3 — 4H VP (INTRADAY HIGHWAYS)' };
+
+    if (validKeys.length === 0 && !bias) {
+      storyContainer.innerHTML = '<p class="placeholder-text">Upload Weekly, Daily, and 4H Volume Profile screenshots, then click "Analyze 3 Profiles" to generate your SVAF-guided directional bias narrative.</p>';
+      btcContainer.innerHTML = '<p class="placeholder-text">SVAF Tier 1 (Weekly), Tier 2 (Daily), and Tier 3 (4H) institutional readings will appear here after analysis.</p>';
+    } else {
+      // Story Tab: Final Bias conclusion + per-tier Gold City narratives
+      const finalBiasBlock = bias ? `
+        <div class="narrative-paragraph" style="border-left: 3px solid ${biasColor}; background: rgba(255,255,255,0.03); padding: 12px 14px; margin-bottom: 16px;">
+          <strong style="color:${biasColor}; font-size:12px; display:block; margin-bottom:6px; letter-spacing:1px;">◉ SVAF DIRECTIONAL BIAS — ${bias}</strong>
+          ${finalNarrative || 'Analysis complete. See tier-by-tier readings below.'}
+        </div>` : '';
+
+      const tierStoryBlocks = validKeys.map(key => {
+        const tierLabel = tierLabels[key] || `TIER ${key.toUpperCase()}`;
+        return `<div class="narrative-paragraph">
+          <strong style="color:var(--gold-primary); font-size:11px; display:block; margin-bottom:4px;">[${tierLabel}]</strong>
+          ${storyOutputs[key]}
+        </div>`;
+      }).join('');
+
+      storyContainer.innerHTML = finalBiasBlock + tierStoryBlocks;
+
+      // BTC Tab: Final Bias conclusion + per-tier institutional readings
+      const btcFinalBlock = bias ? `
+        <div class="narrative-paragraph" style="border-left: 3px solid ${biasColor}; background: rgba(255,255,255,0.03); padding: 12px 14px; margin-bottom: 16px;">
+          <strong style="color:${biasColor}; font-size:12px; display:block; margin-bottom:6px; letter-spacing:1px;">◉ SVAF DIRECTIONAL VERDICT — ${bias}</strong>
+          ${finalNarrative || 'See institutional tier readings below.'}
+        </div>` : '';
+
+      const tierBtcBlocks = validKeys.map(key => {
+        const tierLabel = tierLabels[key] || `TIER ${key.toUpperCase()}`;
+        return `<div class="narrative-paragraph">
+          <strong style="color:var(--emerald-primary); font-size:11px; display:block; margin-bottom:4px;">[${tierLabel}]</strong>
+          ${btcOutputs[key] || storyOutputs[key]}
+        </div>`;
+      }).join('');
+
+      btcContainer.innerHTML = btcFinalBlock + tierBtcBlocks;
+    }
+
+  } else {
+    // ---- Layer 1: Existing behavior unchanged ----
+    if (validKeys.length === 0) {
       storyContainer.innerHTML = '<p class="placeholder-text">Complete Sub-Step 1A (Grace: M2) to begin assembling the Gold City climate narrative...</p>';
       btcContainer.innerHTML = '<p class="placeholder-text">Complete Sub-Step 1A to begin assembling institutional BTC market metrics...</p>';
     } else {
-      storyContainer.innerHTML = '<p class="placeholder-text">Complete Sub-Step 2A (Frank: Volume Profile) to map Frank\'s Gold City market district...</p>';
-      btcContainer.innerHTML = '<p class="placeholder-text">Complete Sub-Step 2A to calculate VPOC, VAH, VAL, and order flow metrics...</p>';
-    }
-  } else {
-    // Render Story snippets with Step Badges
-    storyContainer.innerHTML = validKeys.map(key => `
-      <div class="narrative-paragraph">
-        <strong style="color:var(--gold-primary); font-size:11px; display:block; margin-bottom:4px;">[SUB-STEP ${key.toUpperCase()}]</strong>
-        ${storyOutputs[key]}
-      </div>
-    `).join('');
+      storyContainer.innerHTML = validKeys.map(key => `
+        <div class="narrative-paragraph">
+          <strong style="color:var(--gold-primary); font-size:11px; display:block; margin-bottom:4px;">[SUB-STEP ${key.toUpperCase()}]</strong>
+          ${storyOutputs[key]}
+        </div>
+      `).join('');
 
-    // Render BTC Market snippets with Step Badges
-    btcContainer.innerHTML = validKeys.map(key => `
-      <div class="narrative-paragraph">
-        <strong style="color:var(--emerald-primary); font-size:11px; display:block; margin-bottom:4px;">[INSTITUTIONAL METRIC ${key.toUpperCase()}]</strong>
-        ${btcOutputs[key] || storyOutputs[key]}
-      </div>
-    `).join('');
+      btcContainer.innerHTML = validKeys.map(key => `
+        <div class="narrative-paragraph">
+          <strong style="color:var(--emerald-primary); font-size:11px; display:block; margin-bottom:4px;">[INSTITUTIONAL METRIC ${key.toUpperCase()}]</strong>
+          ${btcOutputs[key] || storyOutputs[key]}
+        </div>
+      `).join('');
+    }
   }
 
   // Update Status Badge

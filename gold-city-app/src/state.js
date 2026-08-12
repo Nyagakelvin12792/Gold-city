@@ -23,6 +23,7 @@ const initialState = {
   },
   deribitData: {},
   layer2DirectionalBias: '',
+  layer2FinalNarrative: '',
   narrativeOutputs: {
     story: {},
     btc: {}
@@ -163,6 +164,13 @@ class StateManager {
 
   toggleMacroLock() {
     this.state.isMacroLocked = !this.state.isMacroLocked;
+    this.saveState();
+    this.notify();
+  }
+
+  // General-purpose setter for any top-level state fields
+  setState(partialState) {
+    Object.assign(this.state, partialState);
     this.saveState();
     this.notify();
   }

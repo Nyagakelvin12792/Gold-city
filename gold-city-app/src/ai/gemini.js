@@ -262,68 +262,108 @@ export function getFallbackLayer2Data(currentPriceStr = '') {
 }
 
 /**
- * Multimodal Vision Analysis Engine for Layer 2:
- * Analyzes uploaded chart screenshots (2A Weekly Profile, 2B Daily Profile, 2C 4H Profile)
- * combined with Deribit Programmatic Options Data to determine the DEFINITIVE DIRECTIONAL BIAS.
+ * Multimodal Vision Analysis Engine for Layer 2 (SVAF-Guided):
+ * Analyzes uploaded chart screenshots — 2A (Weekly VP), 2B (Daily VP), 2C (4H VP) —
+ * following the Single Volume Analysis Framework (SVAF) top-down hierarchy.
+ * Returns per-step narratives for 2a, 2b, 2c AND a final SVAF directional bias conclusion.
  */
 export async function analyzeLayer2VisionCharts(subStepsDataMap, deribitData, binanceData) {
   const apiKey = getApiKey();
 
-  // Collect uploaded chart screenshots across 2a, 2b, 2c
-  const imageParts = [];
-  ['2a', '2b', '2c'].forEach(stepId => {
+  // Collect uploaded chart screenshots per step, preserving which step each image belongs to
+  const imageParts2a = [];
+  const imageParts2b = [];
+  const imageParts2c = [];
+
+  const collectImages = (stepId, bucket) => {
     const data = subStepsDataMap[stepId] || {};
     Object.keys(data).forEach(k => {
       if (k.startsWith('image_') && data[k] && data[k].startsWith('data:image')) {
         const [header, base64] = data[k].split(',');
         const mimeMatch = header.match(/data:(image\/\w+);/);
         const mimeType = mimeMatch ? mimeMatch[1] : 'image/png';
-        imageParts.push({
-          inline_data: { mime_type: mimeType, data: base64 }
-        });
+        bucket.push({ inline_data: { mime_type: mimeType, data: base64 } });
       }
     });
-  });
+  };
+  collectImages('2a', imageParts2a);
+  collectImages('2b', imageParts2b);
+  collectImages('2c', imageParts2c);
+
+  const allImageParts = [...imageParts2a, ...imageParts2b, ...imageParts2c];
 
   const deribitSummary = deribitData?.monthlyCallWall ? `
-- Spot Price: ${binanceData?.lastPrice || deribitData?.underlyingPrice || ''}
-- Monthly Call Wall: ${deribitData?.monthlyCallWall || ''}
-- Monthly Put Wall: ${deribitData?.monthlyPutWall || ''}
-- Zero-Gamma Flip Level: ${deribitData?.zeroGammaFlip || ''}
-- Put/Call Open Interest Ratio: ${deribitData?.putCallRatio || ''}
-` : '';
+Options Derivatives Context (Programmatically Fetched from Deribit):
+- BTC Spot Price: ${binanceData?.lastPrice || deribitData?.underlyingPrice || 'N/A'}
+- Monthly Call Wall (dealer hedging ceiling): ${deribitData.monthlyCallWall}
+- Monthly Put Wall (dealer hedging floor): ${deribitData.monthlyPutWall}
+- Zero-Gamma Flip Level (vol regime boundary): ${deribitData.zeroGammaFlip}
+- Put/Call OI Ratio: ${deribitData.putCallRatio}
+Note: Above the Gamma Flip = dealers are long gamma (suppresses vol). Below = dealers short gamma (amplifies moves).` : '';
 
-  if (!apiKey || imageParts.length === 0) {
+  // No images uploaded — return no-data state, do not fabricate
+  if (!apiKey || allImageParts.length === 0) {
+    const noDataMsg = 'No chart uploaded yet. Upload the screenshot to generate a real reading.';
     return {
-      directionalBias: 'AUCTION ROTATION IN VALUE AREA',
-      storySnippet: `Frank is mapping the Market District boundaries between Weekly and Daily Volume Profiles. Price remains enclosed between established value area walls as merchants negotiate two-way trade.`,
-      btcSnippet: `Volume Profile analysis indicates balance within the operational Value Area. Options positioning aligns with neutral gamma (+GEX) market-maker volatility suppression.`
+      directionalBias: 'AWAITING CHART UPLOADS',
+      finalBiasNarrative: noDataMsg,
+      '2a': { story: noDataMsg, btc: noDataMsg },
+      '2b': { story: noDataMsg, btc: noDataMsg },
+      '2c': { story: noDataMsg, btc: noDataMsg }
     };
   }
 
-  const prompt = `You are the Lead Market Structure & Auction Analyst for the Gold City trading terminal.
-Analyze the uploaded chart screenshots (Weekly Volume Profile, Daily Volume Profile, and 4-Hour Profile) following SVAF top-down rules (Weekly -> Daily -> 4H).
+  const imageCountHint = `(${imageParts2a.length} Weekly VP image(s), ${imageParts2b.length} Daily VP image(s), ${imageParts2c.length} 4H VP image(s) uploaded)`;
+
+  const prompt = `You are the Lead Market Structure and Auction Analyst for the Gold City trading terminal, applying the Single Volume Analysis Framework (SVAF).
+
+The trader has uploaded ${allImageParts.length} chart screenshot(s) ${imageCountHint}:
+- TIER 1 STRATEGIC: Weekly Volume Profile (top of SVAF hierarchy — defines the macro district)
+- TIER 2 OPERATIONAL: Daily Volume Profile (defines the current campaign direction)
+- TIER 3 INTRADAY: 4-Hour Volume Profile (identifies LVN highways and intraday entry zones)
 
 ${deribitSummary}
 
-INSTRUCTIONS:
-1. Examine the volume profile structures visible in the chart images.
-2. Identify VPOC, VAH, VAL, and LVN highway gaps strictly from what is visible in the uploaded charts. Do NOT invent fake numbers.
-3. Determine the DEFINITIVE DIRECTIONAL BIAS for the trader.
+SVAF ANALYSIS RULES (STRICT):
+1. Start at Weekly VP (Tier 1). Identify: Weekly VPOC (Town Center), Weekly VAH, Weekly VAL, and whether price is INSIDE or OUTSIDE the weekly value area. This defines the macro district.
+2. Move to Daily VP (Tier 2). Identify: Daily VPOC, Daily VAH, Daily VAL. Determine if the daily campaign shows INITIATIVE (value migrating away from weekly VPOC) or RESPONSIVE (rotating back toward weekly VPOC). The daily auction direction must confirm or deny the weekly bias.
+3. Move to 4H VP (Tier 3). Identify: LVN Highway gaps, Poor Highs (unfinished auction above), Poor Lows (unfinished auction below). These reveal where price can move with minimal friction.
+4. ONLY read levels visible in the uploaded images. Do NOT fabricate or hallucinate specific price numbers if you cannot clearly read them. Use descriptive language like "above the visible VPOC" instead.
+5. Combine all three tiers to determine the DEFINITIVE DIRECTIONAL BIAS.
 
-Return ONLY a valid JSON object with these exact keys:
+Gold City narrative vocabulary: Frank is the District Surveyor who maps the Exchange Building. VPOC = Town Center (most business done here). VAH = Upper District Wall. VAL = Lower District Wall. LVN = Empty Highway (frictionless travel corridor). Poor High = Unfinished Roof (overhead work to be done). Poor Low = Cracked Foundation (underside work to be done). Initiative = merchants packing up and migrating to a new district. Responsive = merchants rotating back to fair value anchor.
+
+Return ONLY a valid JSON object with EXACTLY these keys — no markdown fences, no explanation:
 {
-  "directionalBias": "BULLISH VALUE MIGRATION INITIATIVE" or "BEARISH VALUE MIGRATION INITIATIVE" or "BALANCED ROTATION IN VALUE AREA",
-  "weeklyVpoc": "string of Weekly VPOC level read from chart",
-  "dailyVpoc": "string of Daily VPOC level read from chart",
-  "storySnippet": "Gold City Frank spatial geography narrative paragraph (2-3 sentences)",
-  "btcSnippet": "Institutional Volume Profile market brief paragraph (2-3 sentences)"
-}
-
-No markdown fences. No explanation. Just the JSON.`;
+  "directionalBias": one of ["BULLISH VALUE MIGRATION INITIATIVE", "BEARISH VALUE MIGRATION INITIATIVE", "BALANCED ROTATION IN VALUE AREA"],
+  "finalBiasNarrative": "2-3 sentence SVAF conclusion explaining the bias across all three tiers",
+  "2a": {
+    "weeklyVpoc": "Weekly VPOC level read from chart, or 'not visible' if unclear",
+    "weeklyVah": "Weekly VAH level or 'not visible'",
+    "weeklyVal": "Weekly VAL level or 'not visible'",
+    "weeklyAuctionState": "e.g. 'Price inside Weekly Value Area — balanced rotation' or 'Price above Weekly VAH — initiative breakout attempt'",
+    "story": "Frank Tier 1 Strategic Survey Gold City narrative paragraph (2-3 sentences)",
+    "btc": "SVAF Tier 1 institutional brief paragraph (2-3 sentences) using exact VP terminology"
+  },
+  "2b": {
+    "dailyVpoc": "Daily VPOC level read from chart, or 'not visible' if unclear",
+    "dailyVah": "Daily VAH level or 'not visible'",
+    "dailyVal": "Daily VAL level or 'not visible'",
+    "dailyAuctionState": "e.g. 'Daily campaign initiating value migration above weekly VPOC' or 'Daily responsive rotation back to weekly VPOC'",
+    "story": "Frank Tier 2 Operational Campaign Gold City narrative paragraph (2-3 sentences)",
+    "btc": "SVAF Tier 2 institutional brief paragraph (2-3 sentences)"
+  },
+  "2c": {
+    "lvnHighways": "LVN price zones read from 4H chart, or 'not visible' if unclear",
+    "poorHighsLows": "e.g. 'Poor High visible above at [level]' or 'Clean tailed rejection — no overhead unfinished work'",
+    "intraday4hState": "e.g. 'LVN highway above current price — frictionless upside corridor available' or 'Poor Low below — downside magnet for price cleanup'",
+    "story": "Frank Tier 3 Intraday 4H Highway Inspection Gold City narrative paragraph (2-3 sentences)",
+    "btc": "SVAF Tier 3 institutional brief paragraph (2-3 sentences)"
+  }
+}`;
 
   try {
-    const parts = [{ text: prompt }, ...imageParts];
+    const parts = [{ text: prompt }, ...allImageParts];
     const text = await callGemini(
       [{ role: 'user', parts }],
       [],
@@ -334,11 +374,26 @@ No markdown fences. No explanation. Just the JSON.`;
     const parsed = JSON.parse(jsonStr);
     return parsed;
   } catch (err) {
-    console.warn('Vision chart analysis warning:', err);
+    console.warn('Vision chart analysis warning:', err.message);
+    // Return honest no-read state — do not invent numbers
     return {
-      directionalBias: 'AUCTION ROTATION IN VALUE AREA',
-      storySnippet: `Frank's spatial survey maps the Market District between Weekly and Daily Volume Profiles. The Town Center VPOC acts as a fair value anchor while price rotates inside the district.`,
-      btcSnippet: `Volume Profile analysis shows market rotation within established Value Area High and Low boundaries. Derivatives positioning confirms neutral market maker hedging.`
+      directionalBias: 'ANALYSIS INCOMPLETE',
+      finalBiasNarrative: 'Vision analysis encountered an error reading the uploaded charts. Please ensure chart images are clear and retry.',
+      '2a': {
+        weeklyVpoc: 'not visible',
+        story: 'Frank attempted to survey the Weekly District but the chart image could not be read clearly. Re-upload a clearer screenshot.',
+        btc: 'Weekly Volume Profile could not be parsed from the uploaded image. No fabricated levels will be reported.'
+      },
+      '2b': {
+        dailyVpoc: 'not visible',
+        story: 'Frank could not map the Daily Campaign. Re-upload the daily volume profile screenshot.',
+        btc: 'Daily Volume Profile analysis incomplete. Upload a clear daily session profile.'
+      },
+      '2c': {
+        lvnHighways: 'not visible',
+        story: 'Frank could not identify the 4H Highway corridors. Re-upload the 4-hour profile.',
+        btc: '4-Hour LVN and Poor High/Low analysis incomplete. Upload a clear 4H profile.'
+      }
     };
   }
 }

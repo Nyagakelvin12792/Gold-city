@@ -131,6 +131,20 @@ This document serves as the authoritative chronological log tracking all progres
 
 ---
 
+### [2026-08-12 11:38 UTC] — Streamlined Layer 2: Removed Step 2D & 2E & Eliminated Fabricated Numbers
+- **Target Files:** `gold-city-app/src/data/metricsSpec.js`, `gold-city-app/src/state.js`, `gold-city-app/src/ai/gemini.js`, `gold-city-app/src/components/briefingPanel.js`, `gold-city-app/src/app.js`, `gold-city-app/index.html`
+- **Actions Taken:**
+  1. Completely eliminated **Step 2D** and **Step 2E** as requested.
+  2. Streamlined **Layer 2** strictly to the core SVAF 3-Tier Volume Profile dropzones:
+     - **Step 2A:** Weekly Candle Chart Volume Profile (Strategic Auction)
+     - **Step 2B:** Daily Candle Chart Volume Profile (Operational Campaign)
+     - **Step 2C:** 4-Hour Candle Chart Volume Profile (Intraday Microstructure)
+  3. Completely removed hardcoded fallback text numbers (`$95,800`, `$94,500`, `$100,000`) across `gemini.js`, `state.js`, and `app.js`.
+  4. Updated `analyzeLayer2VisionCharts()` so Gemini Vision outputs only what it visually reads from your actual uploaded chart screenshots.
+- **Git Commit:** `daa6d3d` (Pushed to `main`).
+
+---
+
 ### [2026-08-12 10:34 UTC] — Vision-First Layer 2 (5 SVAF Chart Dropzones + Programmatic Deribit Options Engine) & Layer 3 Position Risk Calculator
 - **Target Files:** `gold-city-app/src/ai/deribit.js`, `gold-city-app/src/data/metricsSpec.js`, `gold-city-app/src/state.js`, `gold-city-app/src/ai/gemini.js`, `gold-city-app/src/components/wizard.js`, `gold-city-app/src/components/briefingPanel.js`, `gold-city-app/src/app.js`, `gold-city-app/index.html`
 - **Actions Taken:**

@@ -55,12 +55,9 @@ export function renderBriefingPanel(state) {
       } else {
         badgeElement.className = 'badge badge-neutral';
       }
-    } else if (activeLayer === 'layer2') {
-      badgeElement.textContent = state.layer2DirectionalBias || 'BULLISH VALUE MIGRATION INITIATIVE';
-      badgeElement.className = 'badge badge-emerald';
     } else {
-      badgeElement.textContent = 'TRADER EXECUTION & RISK READY';
-      badgeElement.className = 'badge badge-gold';
+      badgeElement.textContent = state.layer2DirectionalBias || 'AUCTION ROTATION IN VALUE AREA';
+      badgeElement.className = 'badge badge-emerald';
     }
   }
 
@@ -71,7 +68,7 @@ export function renderBriefingPanel(state) {
       const l1Done = ['1a', '1b', '1c', '1d', '1e', '1f'].every(k => state.completedSteps.includes(k));
       if (l1Done) {
         unlockBtn.disabled = false;
-        unlockBtn.innerHTML = '✨ Layer 1 Complete! Click to Proceed to Layer 2 (Auction & DOM) ➔';
+        unlockBtn.innerHTML = '✨ Layer 1 Complete! Click to Proceed to Layer 2 (Spatial Auction Mapping) ➔';
         unlockBtn.className = 'btn btn-gold btn-full';
       } else {
         unlockBtn.disabled = true;
@@ -79,22 +76,18 @@ export function renderBriefingPanel(state) {
         unlockBtn.innerHTML = `🔒 Complete All 6 Steps (${count}/6) to Unlock Layer 2`;
         unlockBtn.className = 'btn btn-secondary btn-full';
       }
-    } else if (activeLayer === 'layer2') {
+    } else {
       const l2Done = ['2a', '2b', '2c'].every(k => state.completedSteps.includes(k));
       if (l2Done) {
         unlockBtn.disabled = false;
-        unlockBtn.innerHTML = '⚡ Layer 2 Complete! Click to Open Layer 3 Execution Calculator ➔';
+        unlockBtn.innerHTML = '✨ Layer 2 Complete — Spatial Auction & Directional Bias Mapped!';
         unlockBtn.className = 'btn btn-gold btn-full';
       } else {
         unlockBtn.disabled = true;
         const count = ['2a', '2b', '2c'].filter(k => state.completedSteps.includes(k)).length;
-        unlockBtn.innerHTML = `🔒 Complete All 3 Profile Dropzones (${count}/3) to Unlock Execution Plan`;
+        unlockBtn.innerHTML = `🔒 Complete All 3 Profile Dropzones (${count}/3) to Finalize Mapping`;
         unlockBtn.className = 'btn btn-secondary btn-full';
       }
-    } else {
-      unlockBtn.disabled = false;
-      unlockBtn.innerHTML = '✨ Position Sizing & Execution Matrix Ready';
-      unlockBtn.className = 'btn btn-gold btn-full';
     }
   }
 }

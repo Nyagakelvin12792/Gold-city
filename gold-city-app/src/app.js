@@ -76,11 +76,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   function updateLayerHeader(activeLayer) {
     if (layerTab1) layerTab1.className = activeLayer === 'layer1' ? 'layer-nav-btn active' : 'layer-nav-btn';
     if (layerTab2) layerTab2.className = activeLayer === 'layer2' ? 'layer-nav-btn active' : 'layer-nav-btn';
-    if (layerTab3) {
-      layerTab3.disabled = false;
-      layerTab3.className = activeLayer === 'layer3' ? 'layer-nav-btn active' : 'layer-nav-btn';
-      layerTab3.textContent = '⚡ LAYER 3: EXECUTION';
-    }
 
     if (layerBadgeTag && layerBadgeTitle && layerBadgeDesc) {
       if (activeLayer === 'layer1') {
@@ -88,16 +83,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         layerBadgeTitle.textContent = 'Pre-Session Climate & Supply Ingestion';
         layerBadgeDesc.textContent = 'Complete each sub-step sequentially. Each step requires metric selections or screenshots to assemble the climate briefing.';
         if (autoFetchBtn) autoFetchBtn.textContent = '🔍 Auto-Fetch Macro (AI)';
-      } else if (activeLayer === 'layer2') {
+      } else {
         layerBadgeTag.textContent = 'LAYER 2 WIZARD';
         layerBadgeTitle.textContent = 'Vision-First Spatial Geography & Directional Bias';
-        layerBadgeDesc.textContent = 'Upload Weekly, Daily, 4H Volume Profiles, Liquidity Heatmaps & Footprints. Gemini Vision analyzes chart visuals + Deribit Options GEX for Directional Bias.';
-        if (autoFetchBtn) autoFetchBtn.textContent = '📸 Analyze All 5 Charts (Vision)';
-      } else if (activeLayer === 'layer3') {
-        layerBadgeTag.textContent = 'LAYER 3 WIZARD';
-        layerBadgeTitle.textContent = 'Trader-Driven Execution & Position Sizing Engine';
-        layerBadgeDesc.textContent = 'Define account capital, risk %, entry, stop loss, and targets. System auto-calculates position size (BTC), dollar risk, dollar reward, and R:R ratio.';
-        if (autoFetchBtn) autoFetchBtn.textContent = '⚡ Calculate Position Risk';
+        layerBadgeDesc.textContent = 'Upload Weekly, Daily, and 4H Volume Profiles. Gemini Vision reads visual chart structures following SVAF hierarchy to determine realistic Directional Bias.';
+        if (autoFetchBtn) autoFetchBtn.textContent = '📸 Analyze 3 Profiles (Vision)';
       }
     }
   }
@@ -361,30 +351,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           autoFetchBtn.disabled = false;
           setTimeout(() => { autoFetchBtn.textContent = '📸 Analyze 3 Profiles (Vision)'; }, 3000);
         }
-
-      } else if (currentLayer === 'layer3') {
-        const s3a = state.subStepsData['3a'] || {};
-        const s3b = state.subStepsData['3b'] || {};
-        
-        const account = parseFloat(s3a.accountBalance || '10000');
-        const riskPctStr = s3a.riskPercentage || '1.0%';
-        const riskPct = parseFloat(riskPctStr) || 1.0;
-        const entry = parseFloat(s3b.entryPrice || '94800');
-        const stop = parseFloat(s3b.stopLossPrice || '93900');
-        const target = parseFloat(s3b.takeProfitPrice || '98200');
-
-        const dollarRisk = account * (riskPct / 100);
-        const distance = Math.abs(entry - stop);
-        const rewardDistance = Math.abs(target - entry);
-        const btcSize = distance > 0 ? (dollarRisk / distance).toFixed(4) : '0.1111';
-        const dollarProfit = (btcSize * rewardDistance).toFixed(2);
-        const rrRatio = distance > 0 ? (rewardDistance / distance).toFixed(2) : '3.78';
-
-        alert(`🎯 POSITION RISK CALCULATED:\n\nPosition Size: ${btcSize} BTC\nDollar Risk (-SL): -$${dollarRisk.toFixed(2)}\nDollar Profit (+TP): +$${dollarProfit}\nRisk-to-Reward Ratio: 1 : ${rrRatio} R:R`);
-
-        ['3a', '3b', '3c'].forEach(id => {
-          stateManager.completeStep(id, `Position Sizing verified: ${btcSize} BTC (${dollarRisk.toFixed(2)} USD Risk).`, `Execution parameters locked with ${rrRatio} Risk:Reward ratio.`);
-        });
       }
     });
   }

@@ -5,8 +5,8 @@
 const STORAGE_KEY = 'gold_city_layer1_state_v1';
 
 const initialState = {
-  activeLayer: 'layer1', // 'layer1', 'layer2', 'layer3'
-  currentStepId: '1a',   // 1a..1f, 2a..2e, 3a..3c
+  activeLayer: 'layer1', // 'layer1', 'layer2'
+  currentStepId: '1a',   // 1a..1f, 2a..2c
   completedSteps: [],
   isMacroLocked: false,
   theme: 'dark',
@@ -19,10 +19,7 @@ const initialState = {
     '1f': { netflow7d: '', exchangeReserveLevel: '', sthSoprValue: '' },
     '2a': { weeklyVpoc: '', weeklyValueAreaRange: '' },
     '2b': { dailyVpoc: '', dailyAuctionState: '' },
-    '2c': { lvnHighways: '', poorHighsLows: '' },
-    '3a': { accountBalance: '10000', riskPercentage: '1.0% (Standard SVAF Risk)' },
-    '3b': { entryPrice: '', stopLossPrice: '', takeProfitPrice: '' },
-    '3c': { executionOrderType: 'Limit Order at Structural Retest (VAL/VPOC)' }
+    '2c': { lvnHighways: '', poorHighsLows: '' }
   },
   deribitData: {},
   layer2DirectionalBias: '',
@@ -106,7 +103,6 @@ class StateManager {
     // Determine next step within layer
     const layer1Sequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
     const layer2Sequence = ['2a', '2b', '2c'];
-    const layer3Sequence = ['3a', '3b', '3c'];
 
     if (layer1Sequence.includes(stepId)) {
       const idx = layer1Sequence.indexOf(stepId);
@@ -117,11 +113,6 @@ class StateManager {
       const idx = layer2Sequence.indexOf(stepId);
       if (idx !== -1 && idx < layer2Sequence.length - 1) {
         this.state.currentStepId = layer2Sequence[idx + 1];
-      }
-    } else if (layer3Sequence.includes(stepId)) {
-      const idx = layer3Sequence.indexOf(stepId);
-      if (idx !== -1 && idx < layer3Sequence.length - 1) {
-        this.state.currentStepId = layer3Sequence[idx + 1];
       }
     }
 

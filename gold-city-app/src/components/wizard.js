@@ -10,12 +10,7 @@ export function renderWizard(container, state, stateManager) {
   if (!container) return;
 
   const activeLayer = state.activeLayer || 'layer1';
-  let stepSequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
-  if (activeLayer === 'layer2') {
-    stepSequence = ['2a', '2b', '2c', '2d', '2e'];
-  } else if (activeLayer === 'layer3') {
-    stepSequence = ['3a', '3b', '3c'];
-  }
+  const stepSequence = activeLayer === 'layer2' ? ['2a', '2b', '2c'] : ['1a', '1b', '1c', '1d', '1e', '1f'];
   
   // Render Progress Stepper Pills Container
   const stepperContainer = document.getElementById('progress-stepper-container');

@@ -199,6 +199,24 @@ This document serves as the authoritative chronological log tracking all progres
   4. Updated `briefingPanel.js` to filter out empty entries, render step tags (`[SUB-STEP 1A]`, `[INSTITUTIONAL METRIC 1A]`), and provide rich default fallbacks if local storage had stale empty entries.
 - **Git Commit:** `7cd13f9` (Pushed to `main`).
 
+---
+
+### [2026-08-12 10:04 UTC] — Complete Layer 2 Implementation (Auction Structure, DOM Mapping & Layer Navigation)
+- **Target Files:** `gold-city-app/src/data/metricsSpec.js`, `gold-city-app/src/state.js`, `gold-city-app/src/ai/onchain.js`, `gold-city-app/src/ai/gemini.js`, `gold-city-app/src/components/wizard.js`, `gold-city-app/src/components/briefingPanel.js`, `gold-city-app/src/app.js`, `gold-city-app/index.html`, `gold-city-app/index.css`
+- **Actions Taken:**
+  1. Created **Layer Navigation Bar** in header: `[Layer 1: Climate]` | `[Layer 2: Auction & DOM]` | `[Layer 3: Execution]`.
+  2. Extended `metricsSpec.js` with full Layer 2 specifications (Steps 2A, 2B, 2C):
+     - **Step 2A: Camera 3 — Frank (Volume Profile & Auction Boundaries)**: Live BTC Spot Price, VPOC level, VAH/VAL range, and Auction State (Rotation vs Migration).
+     - **Step 2B: Camera 2 — Aggression & Order Flow (CVD & Open Interest)**: CVD Buyer Absorption vs Seller Aggression, and Open Interest trend.
+     - **Step 2C: Camera 4 & 5 — DOM Waiting Merchants & Execution Setup**: Dominant DOM Order Book Walls (Bids/Asks) and Primary Execution Setup (Responsive Fade vs Initiative Breakout vs Liquidation Reversal).
+  3. Added `fetchBinanceBtcPrice()` in `src/ai/onchain.js` to fetch live 100% free BTC/USDT price, 24h high/low, and volume from Binance public REST API.
+  4. Added `autoFetchLayer2Data()` in `src/ai/gemini.js` for real-time AI Volume Profile level estimation via Google Search Grounding.
+  5. Updated `state.js` and `wizard.js` to dynamically support activeLayer switching, sub-step sequence rendering (`2a`, `2b`, `2c`), and dual narrative generation.
+  6. Updated `briefingPanel.js` to filter narratives per active layer and display Layer 2 Spatial Map status.
+  7. Updated `unlock-layer-2-btn` so completing Layer 1 allows 1-click progression into Layer 2!
+- **Git Commit:** `7e80cfe` (Pushed to `main`).
+
+
 
 
 

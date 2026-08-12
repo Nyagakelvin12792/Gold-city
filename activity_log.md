@@ -129,3 +129,20 @@ This document serves as the authoritative chronological log tracking all progres
 - **Reasoning:** Camera 6 macro metrics (M2, WALCL, Fed Rate, TGA, RRP, DXY) change on weekly/monthly cycles, not intraday. Locking them prevents accidental overwrites during daily trading sessions.
 - **Git Commit:** `e88c9e6` (Pushed to `main`).
 
+---
+
+### [2026-08-12 00:03 UTC] — Live Gemini API Integration (Vision + Search Grounding + Narrative)
+- **Target Files:** `gold-city-app/src/ai/gemini.js`, `gold-city-app/src/app.js`, `gold-city-app/index.html`, `gold-city-app/index.css`
+- **Actions Taken:**
+  1. Complete rewrite of `gemini.js` with live Gemini 2.0 Flash API client:
+     - `autoFetchMacroData()`: Uses Google Search grounding (`tools: [{ google_search: {} }]`) to query real-time FRED data, DXY, 10Y yield, and QRA status. Returns structured JSON matching dropdown option values.
+     - `generateSubStepNarrative()`: Sends user inputs + uploaded chart screenshots (as Base64 inline_data) to Gemini Vision for dual narrative generation (Gold City Story + Real BTC Analysis).
+     - API key management: `getApiKey()`, `setApiKey()`, `hasApiKey()` stored in localStorage under `gold_city_gemini_api_key`.
+     - Deterministic fallback narratives when no API key is present.
+  2. Added `🔑 API Key` button to header bar. Opens a glassmorphic modal for entering/testing/saving the Gemini API key.
+  3. Modal includes `🧪 Test Connection` button that sends a minimal prompt to Gemini and reports success/failure.
+  4. Auto-Fetch button now guards: if no API key is saved, it opens the API Key modal instead of running the fetch.
+  5. After saving a valid key, header button turns gold and reads `🔑 AI Connected`.
+- **Git Commit:** `483fffb` (Pushed to `main`).
+
+

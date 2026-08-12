@@ -127,7 +127,26 @@ This document serves as the authoritative chronological log tracking all progres
   3. Rewrote Step 1B tooltip to include a numbered 1-2-3 interpretation guide explaining exactly how to read Net Liquidity, TGA, and RRP chart slopes.
   4. Documented Auto-Fetch Macro (AI) workflow and Gemini Vision chart reading architecture.
 - **Reasoning:** Camera 6 macro metrics (M2, WALCL, Fed Rate, TGA, RRP, DXY) change on weekly/monthly cycles, not intraday. Locking them prevents accidental overwrites during daily trading sessions.
-- **Git Commit:** `e88c9e6` (Pushed to `main`).
+- **Git Commit:** `1fcfe60` (Pushed to `main`).
+
+---
+
+### [2026-08-12 10:34 UTC] — Vision-First Layer 2 (5 SVAF Chart Dropzones + Programmatic Deribit Options Engine) & Layer 3 Position Risk Calculator
+- **Target Files:** `gold-city-app/src/ai/deribit.js`, `gold-city-app/src/data/metricsSpec.js`, `gold-city-app/src/state.js`, `gold-city-app/src/ai/gemini.js`, `gold-city-app/src/components/wizard.js`, `gold-city-app/src/components/briefingPanel.js`, `gold-city-app/src/app.js`, `gold-city-app/index.html`
+- **Actions Taken:**
+  1. Created **Deribit Programmatic Options Engine (`src/ai/deribit.js`)**: Queries Deribit's 100% free public REST API to automatically calculate Major Call Wall ($), Major Put Wall ($), Zero-Gamma Flip Level ($), and Put/Call Ratio across Weekly vs Monthly OpEx horizons.
+  2. Built **5 Dedicated SVAF Chart Dropzones for Layer 2**:
+     - **Dropzone 2A:** Weekly Candle Chart Volume Profile (Strategic Auction)
+     - **Dropzone 2B:** Daily Candle Chart Volume Profile (Operational Campaign)
+     - **Dropzone 2C:** 4-Hour Candle Chart Volume Profile (Intraday Microstructure)
+     - **Dropzone 2D:** Liquidity Heatmap (7d to 30d DOM Walls & Liquidation Pools)
+     - **Dropzone 2E:** Footprint & CVD Order Flow Delta Chart
+  3. Upgraded `analyzeLayer2VisionCharts()` in `src/ai/gemini.js` to send all 5 chart screenshots to Gemini 2.0 Flash Multimodal Vision alongside Deribit options data to synthesize the **DEFINITIVE DIRECTIONAL BIAS**.
+  4. Built **Layer 3 Trader-Driven Execution Engine**:
+     - **Step 3A:** Account Capital & Risk Budget % Input
+     - **Step 3B:** Interactive Entry Price, Structural Stop Loss, and Primary Target Inputs -> Auto-calculates Position Size (BTC), Dollar Risk ($), Dollar Profit ($), and Risk-to-Reward Ratio (R:R).
+     - **Step 3C:** Pre-Flight Execution Checklist & Signal Webhook Payload.
+- **Git Commit:** `0838027` (Pushed to `main`).
 
 ---
 

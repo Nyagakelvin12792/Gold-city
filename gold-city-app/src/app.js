@@ -8,58 +8,13 @@ import { renderBriefingPanel } from './components/briefingPanel.js';
 import { autoFetchMacroData, getApiKey, setApiKey, hasApiKey } from './ai/gemini.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  /* ===== 1. DOM Element Lookups (all before renderAll) ===== */
   const wizardContainer = document.getElementById('accordion-cards');
-
-  // Initial Render
-  function renderAll() {
-    const state = stateManager.getState();
-    document.documentElement.setAttribute('data-theme', state.theme);
-    renderWizard(wizardContainer, state, stateManager);
-    renderBriefingPanel(state);
-    updateApiKeyBtnState();
-    updateLockMacroBtnState();
-  }
-
-  // Subscribe state changes to re-render UI
-  stateManager.subscribe(renderAll);
-  renderAll();
-
-  /* ---------- Header: Theme Toggle ---------- */
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
-      const currentState = stateManager.getState();
-      const newTheme = currentState.theme === 'dark' ? 'light' : 'dark';
-      currentState.theme = newTheme;
-      themeToggleBtn.textContent = newTheme === 'dark' ? '🌙' : '☀️';
-      stateManager.saveState();
-      stateManager.notify();
-    });
-  }
-
-  /* ---------- Header: Reset Session ---------- */
   const resetBtn = document.getElementById('reset-session-btn');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      stateManager.resetSession();
-    });
-  }
-
-  /* ---------- Header: Lock Macro State ---------- */
   const lockMacroBtn = document.getElementById('lock-macro-btn');
-  function updateLockMacroBtnState() {
-    if (!lockMacroBtn) return;
-    const isLocked = stateManager.getState().isMacroLocked;
-    lockMacroBtn.textContent = isLocked ? '🔒 Macro Locked' : '🔓 Lock Macro';
-    lockMacroBtn.className = isLocked ? 'btn btn-gold' : 'btn btn-secondary';
-  }
-  if (lockMacroBtn) {
-    lockMacroBtn.addEventListener('click', () => {
-      stateManager.toggleMacroLock();
-    });
-  }
-
-  /* ---------- Header: API Key Button & Modal ---------- */
+  const autoFetchBtn = document.getElementById('auto-fetch-btn');
   const apiKeyBtn = document.getElementById('api-key-btn');
   const apiKeyModal = document.getElementById('api-key-modal');
   const apiKeyCloseBtn = document.getElementById('api-key-modal-close');
@@ -67,7 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const apiKeySaveBtn = document.getElementById('api-key-save-btn');
   const apiKeyTestBtn = document.getElementById('api-key-test-btn');
   const apiKeyStatus = document.getElementById('api-key-status');
+  const tabStoryBtn = document.getElementById('tab-story-btn');
+  const tabBtcBtn = document.getElementById('tab-btc-btn');
+  const tabStoryContent = document.getElementById('tab-story-content');
+  const tabBtcContent = document.getElementById('tab-btc-content');
 
+  /* ===== 2. Helper Functions ===== */
   function updateApiKeyBtnState() {
     if (!apiKeyBtn) return;
     if (hasApiKey()) {
@@ -79,26 +39,67 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function updateLockMacroBtnState() {
+    if (!lockMacroBtn) return;
+    const isLocked = stateManager.getState().isMacroLocked;
+    lockMacroBtn.textContent = isLocked ? '🔒 Macro Locked' : '🔓 Lock Macro';
+    lockMacroBtn.className = isLocked ? 'btn btn-gold' : 'btn btn-secondary';
+  }
+
   function openModal() {
-    if (apiKeyModal) {
-      apiKeyModal.style.display = 'flex';
-      if (apiKeyInput) {
-        apiKeyInput.value = getApiKey();
-        apiKeyInput.focus();
-      }
-      if (apiKeyStatus) {
-        apiKeyStatus.textContent = '';
-        apiKeyStatus.className = 'api-key-status';
-      }
+    if (!apiKeyModal) return;
+    apiKeyModal.style.display = 'flex';
+    if (apiKeyInput) {
+      apiKeyInput.value = getApiKey();
+      apiKeyInput.focus();
+    }
+    if (apiKeyStatus) {
+      apiKeyStatus.textContent = '';
+      apiKeyStatus.className = 'api-key-status';
     }
   }
 
   function closeModal() {
-    if (apiKeyModal) {
-      apiKeyModal.style.display = 'none';
-    }
+    if (apiKeyModal) apiKeyModal.style.display = 'none';
   }
 
+  /* ===== 3. Render Function ===== */
+  function renderAll() {
+    const state = stateManager.getState();
+    document.documentElement.setAttribute('data-theme', state.theme);
+    renderWizard(wizardContainer, state, stateManager);
+    renderBriefingPanel(state);
+    updateApiKeyBtnState();
+    updateLockMacroBtnState();
+  }
+
+  stateManager.subscribe(renderAll);
+  renderAll();
+
+  /* ===== 4. Event Listeners ===== */
+
+  // Theme Toggle
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const s = stateManager.getState();
+      s.theme = s.theme === 'dark' ? 'light' : 'dark';
+      themeToggleBtn.textContent = s.theme === 'dark' ? '🌙' : '☀️';
+      stateManager.saveState();
+      stateManager.notify();
+    });
+  }
+
+  // Reset Session
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => stateManager.resetSession());
+  }
+
+  // Lock Macro State
+  if (lockMacroBtn) {
+    lockMacroBtn.addEventListener('click', () => stateManager.toggleMacroLock());
+  }
+
+  // API Key Button & Modal
   if (apiKeyBtn) apiKeyBtn.addEventListener('click', openModal);
   if (apiKeyCloseBtn) apiKeyCloseBtn.addEventListener('click', closeModal);
   if (apiKeyModal) {
@@ -131,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
         apiKeyStatus.className = 'api-key-status error';
         return;
       }
-
       apiKeyStatus.textContent = '⏳ Testing connection to Gemini API...';
       apiKeyStatus.className = 'api-key-status loading';
       apiKeyTestBtn.disabled = true;
@@ -145,11 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
             contents: [{ role: 'user', parts: [{ text: 'Respond with exactly: GOLD CITY CONNECTED' }] }]
           })
         });
-
         if (res.ok) {
           const data = await res.json();
           const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-          apiKeyStatus.textContent = `✓ Connection successful! Model responded: "${text.trim().substring(0, 50)}"`;
+          apiKeyStatus.textContent = `✓ Connection successful! "${text.trim().substring(0, 50)}"`;
           apiKeyStatus.className = 'api-key-status success';
         } else {
           const errText = await res.text();
@@ -165,57 +164,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ---------- Header: Auto-Fetch Macro Data via AI ---------- */
-  const autoFetchBtn = document.getElementById('auto-fetch-btn');
+  // Auto-Fetch Macro Data
   if (autoFetchBtn) {
     autoFetchBtn.addEventListener('click', async () => {
-      if (!hasApiKey()) {
-        openModal();
-        return;
-      }
+      if (!hasApiKey()) { openModal(); return; }
 
       autoFetchBtn.disabled = true;
       autoFetchBtn.textContent = '⏳ AI Researching...';
-
       try {
         const macroData = await autoFetchMacroData();
-
         stateManager.updateSubStepData('1a', {
           m2Trend: macroData.m2Trend,
           walclState: macroData.walclState,
           fedRate: macroData.fedRate
         });
-
         stateManager.updateSubStepData('1b', {
           netLiquidityValue: macroData.netLiquidityValue,
           tgaState: macroData.tgaState,
           rrpState: macroData.rrpState,
           qraFocus: macroData.qraFocus
         });
-
         stateManager.updateSubStepData('1c', {
           dxyLevel: macroData.dxyLevel,
           dxyTrend: macroData.dxyTrend,
           yield10Y: macroData.yield10Y
         });
-
-        autoFetchBtn.textContent = '✨ AI Auto-Fetch Complete';
-        setTimeout(() => { autoFetchBtn.textContent = '🔍 Auto-Fetch Macro (AI)'; }, 3000);
+        autoFetchBtn.textContent = '✨ Auto-Fetch Complete';
       } catch (err) {
         autoFetchBtn.textContent = '✗ Fetch Failed';
-        setTimeout(() => { autoFetchBtn.textContent = '🔍 Auto-Fetch Macro (AI)'; }, 3000);
       } finally {
         autoFetchBtn.disabled = false;
+        setTimeout(() => { autoFetchBtn.textContent = '🔍 Auto-Fetch Macro (AI)'; }, 3000);
       }
     });
   }
 
-  /* ---------- Briefing Tabs Toggle ---------- */
-  const tabStoryBtn = document.getElementById('tab-story-btn');
-  const tabBtcBtn = document.getElementById('tab-btc-btn');
-  const tabStoryContent = document.getElementById('tab-story-content');
-  const tabBtcContent = document.getElementById('tab-btc-content');
-
+  // Briefing Tabs
   if (tabStoryBtn && tabBtcBtn) {
     tabStoryBtn.addEventListener('click', () => {
       tabStoryBtn.classList.add('active');
@@ -223,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
       tabStoryContent.classList.add('active');
       tabBtcContent.classList.remove('active');
     });
-
     tabBtcBtn.addEventListener('click', () => {
       tabBtcBtn.classList.add('active');
       tabStoryBtn.classList.remove('active');

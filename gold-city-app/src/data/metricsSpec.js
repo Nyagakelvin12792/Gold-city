@@ -200,5 +200,100 @@ export const METRICS_SPEC = {
         sourceLabel: 'Glassnode: STH-SOPR Ratio ↗'
       }
     ]
+  },
+
+  /* ==========================================================================
+     LAYER 2: SPATIAL GEOGRAPHY & AUCTION MAPPING (CAMERAS 3, 2, 4, 5)
+     ========================================================================== */
+  '2a': {
+    id: '2a',
+    title: 'STEP 2A: CAMERA 3 — FRANK (VOLUME PROFILE & AUCTION ZONES)',
+    camera: 'Camera 3 (Business & Profile)',
+    character: 'Frank (District Surveyor & Volume Mapper)',
+    tooltip: 'Frank maps the city floor plan. 1) VPOC = Town Center (highest volume level). 2) VAH/VAL = District boundaries (68% Value Area). 3) Inside VAH-VAL = Balanced rotation. 4) Crossing LVN = Value migration across empty highways.',
+    metrics: [
+      {
+        id: 'currentBtcPrice',
+        label: 'Current Bitcoin Spot Price ($)',
+        type: 'text',
+        placeholder: 'e.g. $96,450',
+        tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
+        sourceLabel: 'TradingView: BINANCE:BTCUSDT ↗'
+      },
+      {
+        id: 'vpocLevel',
+        label: 'Volume Point of Control (VPOC / Town Center)',
+        type: 'text',
+        placeholder: 'e.g. $95,800',
+        tradingViewUrl: 'https://exocharts.com/',
+        sourceLabel: 'Exocharts: Session VPOC ↗'
+      },
+      {
+        id: 'valueAreaHighLow',
+        label: 'Value Area Boundaries (VAH - VAL Range)',
+        type: 'text',
+        placeholder: 'e.g. VAH $97,200 | VAL $94,600',
+        tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
+        sourceLabel: 'TradingView: Session Profile ↗'
+      },
+      {
+        id: 'auctionState',
+        label: 'Auction Balance vs Value Migration State',
+        type: 'select',
+        options: ['Inside Value Area (Balanced Rotation Between VAH & VAL)', 'Above VAH (Bullish Value Migration Initiative)', 'Below VAL (Bearish Value Migration Initiative)', 'Failing Breakout (Reentry / Snapping Back Into District)'],
+        tradingViewUrl: 'https://exocharts.com/',
+        sourceLabel: 'Exocharts: Value Migration ↗'
+      }
+    ]
+  },
+  '2b': {
+    id: '2b',
+    title: 'STEP 2B: CAMERA 2 — AGGRESSION & ORDER FLOW (CVD & OPEN INTEREST)',
+    camera: 'Camera 2 (Aggression)',
+    character: 'Market Floor Merchants & Order Flow',
+    tooltip: 'Camera 2 tracks shouting & momentum. Rising price + Falling CVD = Passive Buyer Absorption (Strong institutional accumulators taking market sells). Rising OI + Flat Price = Coiled Spring before a major breakout cascade.',
+    metrics: [
+      {
+        id: 'cvdState',
+        label: 'Cumulative Volume Delta (CVD) Market Pressure',
+        type: 'select',
+        options: ['Passive Buyer Absorption (Price Rising / CVD Down)', 'Aggressive Market Buying (Price Up / CVD Up)', 'Passive Seller Absorption (Price Falling / CVD Up)', 'Aggressive Market Selling (Price Down / CVD Down)'],
+        tradingViewUrl: 'https://www.coinglass.com/CumulativeVolumeDelta',
+        sourceLabel: 'Coinglass: Aggregated BTC CVD ↗'
+      },
+      {
+        id: 'openInterestTrend',
+        label: 'Open Interest (OI) & Leverage Positioning',
+        type: 'select',
+        options: ['OI Compression (Leverage Coiling at Range Highs/Lows)', 'OI Expansion (Aggressive Trend Continuation)', 'OI Liquidation Flush (Long/Short Squeeze Completed)'],
+        tradingViewUrl: 'https://www.coinglass.com/BitcoinOpenInterest',
+        sourceLabel: 'Coinglass: Open Interest Chart ↗'
+      }
+    ]
+  },
+  '2c': {
+    id: '2c',
+    title: 'STEP 2C: CAMERA 4 & 5 — DOM WAITING MERCHANTS & EXECUTION SCENARIO',
+    camera: 'Camera 4 & 5 (DOM & Execution Context)',
+    character: 'Merchant Order Books & Trade Setup',
+    tooltip: 'Camera 4 maps resting limit orders on the DOM. Camera 5 identifies the trade scenario: Responsive Fade (buying VAL / selling VAH), Initiative Breakout (riding LVN across highway), or Liquidation Sweep.',
+    metrics: [
+      {
+        id: 'bidAskWalls',
+        label: 'Dominant DOM Order Book Walls (Bids & Asks)',
+        type: 'text',
+        placeholder: 'e.g. Bids at $94,000 (1,200 BTC) | Asks at $98,500 (1,500 BTC)',
+        tradingViewUrl: 'https://www.coinglass.com/pro/orderbook/BTC',
+        sourceLabel: 'Coinglass: Orderbook Liquidity Depth ↗'
+      },
+      {
+        id: 'primaryExecutionSetup',
+        label: 'Primary Execution Scenario Setup',
+        type: 'select',
+        options: ['Responsive Trade (Fade VAL/VAH Back to VPOC)', 'Initiative Breakout (Ride Value Migration Across LVN)', 'Liquidation Sweep & Reversal (Fade Stop-Run Into Key Wall)'],
+        tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
+        sourceLabel: 'TradingView: Execution Setup ↗'
+      }
+    ]
   }
 };

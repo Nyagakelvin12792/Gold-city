@@ -86,6 +86,53 @@ body {
   z-index: 100;
 }
 
+/* Top Header Controls */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Layer Navigation Bar */
+.layer-nav-bar {
+  display: flex;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 8px 24px;
+  gap: 12px;
+}
+
+.layer-nav-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.layer-nav-btn:hover:not(.disabled) {
+  border-color: var(--primary-gold);
+  color: var(--text-main);
+  background: var(--bg-card-hover);
+}
+
+.layer-nav-btn.active {
+  background: var(--primary-gold);
+  border-color: var(--primary-gold);
+  color: #0F172A;
+  box-shadow: 0 0 12px var(--primary-gold-glow);
+}
+
+.layer-nav-btn.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .brand-container {
   display: flex;
   align-items: center;

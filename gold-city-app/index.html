@@ -40,24 +40,32 @@
       </div>
     </header>
 
+    <!-- Layer Navigation Bar -->
+    <nav class="layer-nav-bar">
+      <button class="layer-nav-btn active" id="layer-tab-1">
+        🏛️ LAYER 1: CLIMATE & SUPPLY
+      </button>
+      <button class="layer-nav-btn" id="layer-tab-2">
+        📊 LAYER 2: AUCTION & DOM
+      </button>
+      <button class="layer-nav-btn disabled" id="layer-tab-3" disabled>
+        ⚡ LAYER 3: EXECUTION (COMING SOON)
+      </button>
+    </nav>
+
     <!-- Main Workspace Split -->
     <main class="terminal-workspace">
       <!-- Left Column: Sequential Step-Down Wizard -->
       <section class="wizard-container" id="wizard-section">
-        <div class="layer-badge-header">
-          <span class="badge badge-gold">LAYER 1 WIZARD</span>
-          <h2>Pre-Session Climate & Supply Ingestion</h2>
-          <p class="section-desc">Complete each sub-step sequentially. Each step requires screenshot or numeric confirmation to unlock the next.</p>
+        <div class="layer-badge-header" id="layer-badge-header">
+          <span class="badge badge-gold" id="layer-badge-tag">LAYER 1 WIZARD</span>
+          <h2 id="layer-badge-title">Pre-Session Climate & Supply Ingestion</h2>
+          <p class="section-desc" id="layer-badge-desc">Complete each sub-step sequentially. Each step requires metric selections or screenshots to assemble the climate briefing.</p>
         </div>
 
-        <!-- Progress Tracker Bar -->
-        <div class="progress-stepper" id="progress-stepper">
-          <div class="step-pill active" id="pill-1a">1A. M2</div>
-          <div class="step-pill locked" id="pill-1b">1B. Ivy</div>
-          <div class="step-pill locked" id="pill-1c">1C. Yields</div>
-          <div class="step-pill locked" id="pill-1d">1D. Alice</div>
-          <div class="step-pill locked" id="pill-1e">1E. Jonas</div>
-          <div class="step-pill locked" id="pill-1f">1F. Float</div>
+        <!-- Dynamic Progress Tracker Bar -->
+        <div class="progress-stepper" id="progress-stepper-container">
+          <!-- Dynamically rendered by wizard.js -->
         </div>
 
         <!-- Dynamic Accordion Cards Container -->
@@ -133,6 +141,6 @@
     </div>
   </div>
 
-  <script type="module" src="src/app.js?v=9"></script>
+  <script type="module" src="src/app.js?v=10"></script>
 </body>
 </html>

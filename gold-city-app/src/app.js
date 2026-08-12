@@ -1,12 +1,13 @@
 /* ==========================================================================
-   GOLD CITY AI TERMINAL — SPA INITIALIZER & CONTROLLER
+   GOLD CITY AI TERMINAL — SPA INITIALIZER & CONTROLLER (LAYER 1 & LAYER 2)
    ========================================================================== */
 
 import { stateManager } from './state.js';
 import { renderWizard } from './components/wizard.js';
 import { renderBriefingPanel } from './components/briefingPanel.js';
-import { autoFetchMacroData, getApiKey, setApiKey, hasApiKey } from './ai/gemini.js';
+import { autoFetchMacroData, autoFetchLayer2Data, generateSubStepNarrative, getApiKey, setApiKey, hasApiKey } from './ai/gemini.js';
 import { fetchMacroDataFromFred, getFredApiKey, setFredApiKey, hasFredApiKey } from './ai/fred.js';
+import { fetchBinanceBtcPrice } from './ai/onchain.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -28,6 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabBtcBtn = document.getElementById('tab-btc-btn');
   const tabStoryContent = document.getElementById('tab-story-content');
   const tabBtcContent = document.getElementById('tab-btc-content');
+
+  const layerTab1 = document.getElementById('layer-tab-1');
+  const layerTab2 = document.getElementById('layer-tab-2');
+  const layerTab3 = document.getElementById('layer-tab-3');
+  const unlockLayer2Btn = document.getElementById('unlock-layer-2-btn');
+
+  const layerBadgeTag = document.getElementById('layer-badge-tag');
+  const layerBadgeTitle = document.getElementById('layer-badge-title');
+  const layerBadgeDesc = document.getElementById('layer-badge-desc');
 
   /* ===== 2. Helper Functions ===== */
   function updateApiKeyBtnState() {
@@ -54,6 +64,25 @@ document.addEventListener('DOMContentLoaded', () => {
     lockMacroBtn.className = isLocked ? 'btn btn-gold' : 'btn btn-secondary';
   }
 
+  function updateLayerHeader(activeLayer) {
+    if (layerTab1) layerTab1.className = activeLayer === 'layer1' ? 'layer-nav-btn active' : 'layer-nav-btn';
+    if (layerTab2) layerTab2.className = activeLayer === 'layer2' ? 'layer-nav-btn active' : 'layer-nav-btn';
+
+    if (layerBadgeTag && layerBadgeTitle && layerBadgeDesc) {
+      if (activeLayer === 'layer1') {
+        layerBadgeTag.textContent = 'LAYER 1 WIZARD';
+        layerBadgeTitle.textContent = 'Pre-Session Climate & Supply Ingestion';
+        layerBadgeDesc.textContent = 'Complete each sub-step sequentially. Each step requires metric selections or screenshots to assemble the climate briefing.';
+        if (autoFetchBtn) autoFetchBtn.textContent = '🔍 Auto-Fetch Macro (AI)';
+      } else if (activeLayer === 'layer2') {
+        layerBadgeTag.textContent = 'LAYER 2 WIZARD';
+        layerBadgeTitle.textContent = 'Spatial Geography & Auction Structure Mapping';
+        layerBadgeDesc.textContent = 'Map Volume Profile (VPOC, VAH, VAL), Order Flow CVD, Open Interest, and DOM liquidity walls to determine trade setups.';
+        if (autoFetchBtn) autoFetchBtn.textContent = '🔍 Auto-Fetch Layer 2 (AI)';
+      }
+    }
+  }
+
   function openModal() {
     if (!apiKeyModal) return;
     apiKeyModal.style.display = 'flex';
@@ -73,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderAll() {
     const state = stateManager.getState();
     document.documentElement.setAttribute('data-theme', state.theme);
+    updateLayerHeader(state.activeLayer || 'layer1');
     renderWizard(wizardContainer, state, stateManager);
     renderBriefingPanel(state);
     updateApiKeyBtnState();
@@ -83,6 +113,22 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAll();
 
   /* ===== 4. Event Listeners ===== */
+
+  // Layer Tab Navigation
+  if (layerTab1) {
+    layerTab1.addEventListener('click', () => stateManager.setLayer('layer1'));
+  }
+  if (layerTab2) {
+    layerTab2.addEventListener('click', () => stateManager.setLayer('layer2'));
+  }
+  if (unlockLayer2Btn) {
+    unlockLayer2Btn.addEventListener('click', () => {
+      const state = stateManager.getState();
+      if ((state.activeLayer || 'layer1') === 'layer1') {
+        stateManager.setLayer('layer2');
+      }
+    });
+  }
 
   // Theme Toggle
   if (themeToggleBtn) {
@@ -182,114 +228,152 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Auto-Fetch Macro Data (Combined FRED API + Gemini Grounding)
+  // Auto-Fetch Handler (Supports Layer 1 and Layer 2)
   if (autoFetchBtn) {
     autoFetchBtn.addEventListener('click', async () => {
-      if (!hasApiKey() && !hasFredApiKey()) {
-        openModal();
-        return;
-      }
+      const state = stateManager.getState();
+      const currentLayer = state.activeLayer || 'layer1';
 
-      autoFetchBtn.disabled = true;
-      autoFetchBtn.textContent = '⏳ Fetching Macro Data...';
-
-      try {
-        let fredData = null;
-        let geminiData = null;
-
-        // 1. Fetch exact series from FRED API if key available
-        if (hasFredApiKey()) {
-          try {
-            fredData = await fetchMacroDataFromFred();
-          } catch (err) {
-            console.warn('FRED API fetch warning:', err);
-          }
+      if (currentLayer === 'layer1') {
+        if (!hasApiKey() && !hasFredApiKey()) {
+          openModal();
+          return;
         }
 
-        // 2. Fetch Gemini Search Grounding data if Gemini key available
-        if (hasApiKey()) {
-          try {
-            geminiData = await autoFetchMacroData();
-          } catch (err) {
-            console.warn('Gemini Auto-fetch warning:', err);
+        autoFetchBtn.disabled = true;
+        autoFetchBtn.textContent = '⏳ Fetching Layer 1 Macro Data...';
+
+        try {
+          let fredData = null;
+          let geminiData = null;
+
+          if (hasFredApiKey()) {
+            try { fredData = await fetchMacroDataFromFred(); } catch (err) { console.warn(err); }
           }
-        }
-
-        // 3. Merge FRED (exact numbers), Gemini Grounding (on-chain & macro), and free APIs
-        const final1a = {
-          m2Trend: fredData?.stepData?.m2Trend || geminiData?.m2Trend || 'Expanding (+GEX Tailwind)',
-          walclState: fredData?.stepData?.walclState || geminiData?.walclState || 'Neutral / Flat',
-          fedRate: fredData?.stepData?.fedRate || geminiData?.fedRate || 'Paused / Stationary'
-        };
-
-        const final1b = {
-          netLiquidityValue: fredData?.stepData?.netLiquidityValue || geminiData?.netLiquidityValue || '$6.15 Trillion',
-          tgaState: fredData?.stepData?.tgaState || geminiData?.tgaState || 'Draining TGA (Injecting Cash into Reserves)',
-          rrpState: fredData?.stepData?.rrpState || geminiData?.rrpState || 'Draining RRP (Liquidity Bridge to T-Bills)',
-          qraFocus: geminiData?.qraFocus || 'Short-Duration T-Bills (Liquidity Positive)'
-        };
-
-        const final1c = {
-          dxyLevel: geminiData?.dxyLevel || '103.50',
-          dxyTrend: geminiData?.dxyTrend || 'Downtrend (Dollar Abundance)',
-          yield10Y: fredData?.stepData?.yield10Y || geminiData?.yield10Y || 'Falling / Easing (Risk Positive)'
-        };
-
-        const final1d = {
-          minerReserveState: geminiData?.minerReserveState || 'Retention State (Alice HODLing Minted BTC)',
-          minerInflowVolume: geminiData?.minerInflowVolume || 'Baseline / Low Transfer Volume'
-        };
-
-        const final1e = {
-          lthRatio: geminiData?.lthRatio || '74.8% LTH',
-          cddActivity: geminiData?.cddActivity || 'Low Baseline (Jonas Vaults Sealed)',
-          hodlWaveTrend: geminiData?.hodlWaveTrend || 'Expanding (Supply Scarcity)'
-        };
-
-        const final1f = {
-          netflow7d: geminiData?.netflow7d || '-14,200 BTC Net Outflow',
-          exchangeReserveLevel: geminiData?.exchangeReserveLevel || 'Multi-Month / Multi-Year Lows (Contracted Float)',
-          sthSoprValue: geminiData?.sthSoprValue || 'STH-SOPR < 1.0 (Loss Realization / Capitulation Reset)'
-        };
-
-        const stepMap = {
-          '1a': final1a,
-          '1b': final1b,
-          '1c': final1c,
-          '1d': final1d,
-          '1e': final1e,
-          '1f': final1f
-        };
-
-        const stepSequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
-
-        // Generate narratives and mark all steps as completed automatically
-        for (const stepId of stepSequence) {
-          const stepData = stepMap[stepId];
-          stateManager.updateSubStepData(stepId, stepData);
-
-          let storySnippet = '';
-          let btcSnippet = '';
-
-          try {
-            const narratives = await generateSubStepNarrative(stepId, stepData);
-            storySnippet = narratives.storySnippet || '';
-            btcSnippet = narratives.btcSnippet || '';
-          } catch (nErr) {
-            console.warn(`Narrative fallback for ${stepId}:`, nErr);
+          if (hasApiKey()) {
+            try { geminiData = await autoFetchMacroData(); } catch (err) { console.warn(err); }
           }
 
-          // completeStep(stepId, storySnippet, btcSnippet) — all three args required
-          stateManager.completeStep(stepId, storySnippet, btcSnippet);
+          const final1a = {
+            m2Trend: fredData?.stepData?.m2Trend || geminiData?.m2Trend || 'Expanding (+GEX Tailwind)',
+            walclState: fredData?.stepData?.walclState || geminiData?.walclState || 'Neutral / Flat',
+            fedRate: fredData?.stepData?.fedRate || geminiData?.fedRate || 'Paused / Stationary'
+          };
+
+          const final1b = {
+            netLiquidityValue: fredData?.stepData?.netLiquidityValue || geminiData?.netLiquidityValue || '$6.15 Trillion',
+            tgaState: fredData?.stepData?.tgaState || geminiData?.tgaState || 'Draining TGA (Injecting Cash into Reserves)',
+            rrpState: fredData?.stepData?.rrpState || geminiData?.rrpState || 'Draining RRP (Liquidity Bridge to T-Bills)',
+            qraFocus: geminiData?.qraFocus || 'Short-Duration T-Bills (Liquidity Positive)'
+          };
+
+          const final1c = {
+            dxyLevel: geminiData?.dxyLevel || '103.50',
+            dxyTrend: geminiData?.dxyTrend || 'Downtrend (Dollar Abundance)',
+            yield10Y: fredData?.stepData?.yield10Y || geminiData?.yield10Y || 'Falling / Easing (Risk Positive)'
+          };
+
+          const final1d = {
+            minerReserveState: geminiData?.minerReserveState || 'Retention State (Alice HODLing Minted BTC)',
+            minerInflowVolume: geminiData?.minerInflowVolume || 'Baseline / Low Transfer Volume'
+          };
+
+          const final1e = {
+            lthRatio: geminiData?.lthRatio || '74.8% LTH',
+            cddActivity: geminiData?.cddActivity || 'Low Baseline (Jonas Vaults Sealed)',
+            hodlWaveTrend: geminiData?.hodlWaveTrend || 'Expanding (Supply Scarcity)'
+          };
+
+          const final1f = {
+            netflow7d: geminiData?.netflow7d || '-14,200 BTC Net Outflow',
+            exchangeReserveLevel: geminiData?.exchangeReserveLevel || 'Multi-Month / Multi-Year Lows (Contracted Float)',
+            sthSoprValue: geminiData?.sthSoprValue || 'STH-SOPR < 1.0 (Loss Realization / Capitulation Reset)'
+          };
+
+          const stepMap = { '1a': final1a, '1b': final1b, '1c': final1c, '1d': final1d, '1e': final1e, '1f': final1f };
+          const stepSequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
+
+          for (const stepId of stepSequence) {
+            const stepData = stepMap[stepId];
+            stateManager.updateSubStepData(stepId, stepData);
+            let storySnippet = '';
+            let btcSnippet = '';
+            try {
+              const narratives = await generateSubStepNarrative(stepId, stepData);
+              storySnippet = narratives.storySnippet || '';
+              btcSnippet = narratives.btcSnippet || '';
+            } catch (nErr) { console.warn(nErr); }
+            stateManager.completeStep(stepId, storySnippet, btcSnippet);
+          }
+
+          autoFetchBtn.textContent = '✨ Layer 1 Completed!';
+        } catch (err) {
+          console.error(err);
+          autoFetchBtn.textContent = '✗ Fetch Failed';
+        } finally {
+          autoFetchBtn.disabled = false;
+          setTimeout(() => { autoFetchBtn.textContent = '🔍 Auto-Fetch Macro (AI)'; }, 3000);
         }
 
-        autoFetchBtn.textContent = '✨ Full Layer 1 Completed!';
-      } catch (err) {
-        console.error('Auto-fetch execution error:', err);
-        autoFetchBtn.textContent = '✗ Fetch Failed';
-      } finally {
-        autoFetchBtn.disabled = false;
-        setTimeout(() => { autoFetchBtn.textContent = '🔍 Auto-Fetch Macro (AI)'; }, 3500);
+      } else if (currentLayer === 'layer2') {
+        autoFetchBtn.disabled = true;
+        autoFetchBtn.textContent = '⏳ Fetching Live BTC & Profile...';
+
+        try {
+          // 1. Fetch live 100% free Binance price
+          const binanceData = await fetchBinanceBtcPrice();
+
+          // 2. Fetch Layer 2 Gemini Search Grounding (or fallback)
+          let layer2Data = null;
+          if (hasApiKey()) {
+            try {
+              layer2Data = await autoFetchLayer2Data(binanceData.lastPrice);
+            } catch (e) {
+              console.warn('Layer 2 Gemini fetch warning:', e);
+            }
+          }
+
+          const final2a = {
+            currentBtcPrice: binanceData.lastPrice || layer2Data?.currentBtcPrice || '$96,450',
+            vpocLevel: layer2Data?.vpocLevel || '$95,800',
+            valueAreaHighLow: layer2Data?.valueAreaHighLow || 'VAH $97,200 | VAL $94,600',
+            auctionState: layer2Data?.auctionState || 'Inside Value Area (Balanced Rotation Between VAH & VAL)'
+          };
+
+          const final2b = {
+            cvdState: layer2Data?.cvdState || 'Passive Buyer Absorption (Price Rising / CVD Down)',
+            openInterestTrend: layer2Data?.openInterestTrend || 'OI Compression (Leverage Coiling at Range Highs/Lows)'
+          };
+
+          const final2c = {
+            bidAskWalls: layer2Data?.bidAskWalls || 'Bids at $94,000 (1,200 BTC) | Asks at $98,500 (1,500 BTC)',
+            primaryExecutionSetup: layer2Data?.primaryExecutionSetup || 'Responsive Trade (Fade VAL/VAH Back to VPOC)'
+          };
+
+          const stepMap2 = { '2a': final2a, '2b': final2b, '2c': final2c };
+          const stepSequence2 = ['2a', '2b', '2c'];
+
+          for (const stepId of stepSequence2) {
+            const stepData = stepMap2[stepId];
+            stateManager.updateSubStepData(stepId, stepData);
+            let storySnippet = '';
+            let btcSnippet = '';
+            try {
+              const narratives = await generateSubStepNarrative(stepId, stepData);
+              storySnippet = narratives.storySnippet || '';
+              btcSnippet = narratives.btcSnippet || '';
+            } catch (nErr) { console.warn(nErr); }
+            stateManager.completeStep(stepId, storySnippet, btcSnippet);
+          }
+
+          autoFetchBtn.textContent = '✨ Layer 2 Completed!';
+        } catch (err) {
+          console.error(err);
+          autoFetchBtn.textContent = '✗ Fetch Failed';
+        } finally {
+          autoFetchBtn.disabled = false;
+          setTimeout(() => { autoFetchBtn.textContent = '🔍 Auto-Fetch Layer 2 (AI)'; }, 3000);
+        }
       }
     });
   }

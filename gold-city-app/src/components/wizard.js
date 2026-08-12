@@ -9,24 +9,20 @@ import { generateSubStepNarrative } from '../ai/gemini.js';
 export function renderWizard(container, state, stateManager) {
   if (!container) return;
 
-  const stepSequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
+  const activeLayer = state.activeLayer || 'layer1';
+  const stepSequence = activeLayer === 'layer2' ? ['2a', '2b', '2c'] : ['1a', '1b', '1c', '1d', '1e', '1f'];
   
-  // Render Progress Stepper Pills
-  stepSequence.forEach(stepId => {
-    const pill = document.getElementById(`pill-${stepId}`);
-    if (pill) {
-      if (state.completedSteps.includes(stepId)) {
-        pill.className = 'step-pill completed';
-        pill.innerHTML = `✓ ${stepId.toUpperCase()}`;
-      } else if (stepId === state.currentStepId) {
-        pill.className = 'step-pill active';
-        pill.innerHTML = `▶ ${stepId.toUpperCase()}`;
-      } else {
-        pill.className = 'step-pill locked';
-        pill.innerHTML = `🔒 ${stepId.toUpperCase()}`;
-      }
-    }
-  });
+  // Render Progress Stepper Pills Container
+  const stepperContainer = document.getElementById('progress-stepper-container');
+  if (stepperContainer) {
+    stepperContainer.innerHTML = stepSequence.map(stepId => {
+      const isDone = state.completedSteps.includes(stepId);
+      const isCurrent = stepId === state.currentStepId;
+      const cls = isDone ? 'step-pill completed' : isCurrent ? 'step-pill active' : 'step-pill locked';
+      const icon = isDone ? '✓' : isCurrent ? '▶' : '🔒';
+      return `<span class="${cls}" id="pill-${stepId}">${icon} ${stepId.toUpperCase()}</span>`;
+    }).join('');
+  }
 
   // Render Accordion Cards
   const cardsHtml = stepSequence.map(stepId => {

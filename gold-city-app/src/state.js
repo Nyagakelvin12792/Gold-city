@@ -5,9 +5,10 @@
 const STORAGE_KEY = 'gold_city_layer1_state_v1';
 
 const initialState = {
-  currentStepId: '1a', // 1a, 1b, 1c, 1d, 1e, 1f
-  completedSteps: [],  // ['1a', '1b', ...]
-  isMacroLocked: false, // True if user locked Camera 6 macro climate for multi-day use
+  activeLayer: 'layer1', // 'layer1', 'layer2', 'layer3'
+  currentStepId: '1a',   // 1a..1f or 2a..2c
+  completedSteps: [],    // ['1a', '1b', ..., '2a', '2b', '2c']
+  isMacroLocked: false,
   theme: 'dark',
   subStepsData: {
     '1a': { m2Trend: '', walclState: '', fedRate: '' },
@@ -15,13 +16,17 @@ const initialState = {
     '1c': { yield10Y: '', dxyLevel: '', dxyTrend: '', catalysts: [] },
     '1d': { minerReserveState: '', minerInflowVolume: '' },
     '1e': { lthRatio: '', cddActivity: '', hodlWaveTrend: '' },
-    '1f': { netflow7d: '', exchangeReserveLevel: '', sthSoprValue: '' }
+    '1f': { netflow7d: '', exchangeReserveLevel: '', sthSoprValue: '' },
+    '2a': { currentBtcPrice: '', vpocLevel: '', valueAreaHighLow: '', auctionState: '' },
+    '2b': { cvdState: '', openInterestTrend: '' },
+    '2c': { bidAskWalls: '', primaryExecutionSetup: '' }
   },
   narrativeOutputs: {
     story: {},
     btc: {}
   },
-  macroClimateStatus: 'AWAITING LAYER 1 INPUTS' // EXPANSION TAILWIND | CONTRACTING HEADWIND | NEUTRAL
+  macroClimateStatus: 'AWAITING LAYER 1 INPUTS',
+  spatialMapStatus: 'AWAITING LAYER 2 INPUTS'
 };
 
 class StateManager {
@@ -34,7 +39,9 @@ class StateManager {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Ensure defaults for layer 2 if upgrading from old state
+        return { ...initialState, ...parsed, subStepsData: { ...initialState.subStepsData, ...parsed.subStepsData } };
       }
     } catch (e) {
       console.warn('Failed to load saved state from localStorage:', e);
@@ -54,6 +61,17 @@ class StateManager {
     return this.state;
   }
 
+  setLayer(layerId) {
+    this.state.activeLayer = layerId;
+    if (layerId === 'layer2' && !this.state.currentStepId.startsWith('2')) {
+      this.state.currentStepId = '2a';
+    } else if (layerId === 'layer1' && !this.state.currentStepId.startsWith('1')) {
+      this.state.currentStepId = '1a';
+    }
+    this.saveState();
+    this.notify();
+  }
+
   updateSubStepData(stepId, data) {
     this.state.subStepsData[stepId] = { ...this.state.subStepsData[stepId], ...data };
     this.saveState();
@@ -68,11 +86,20 @@ class StateManager {
     this.state.narrativeOutputs.story[stepId] = storySnippet;
     this.state.narrativeOutputs.btc[stepId] = btcSnippet;
 
-    // Determine next step
-    const stepSequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
-    const idx = stepSequence.indexOf(stepId);
-    if (idx !== -1 && idx < stepSequence.length - 1) {
-      this.state.currentStepId = stepSequence[idx + 1];
+    // Determine next step within layer
+    const layer1Sequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
+    const layer2Sequence = ['2a', '2b', '2c'];
+
+    if (layer1Sequence.includes(stepId)) {
+      const idx = layer1Sequence.indexOf(stepId);
+      if (idx !== -1 && idx < layer1Sequence.length - 1) {
+        this.state.currentStepId = layer1Sequence[idx + 1];
+      }
+    } else if (layer2Sequence.includes(stepId)) {
+      const idx = layer2Sequence.indexOf(stepId);
+      if (idx !== -1 && idx < layer2Sequence.length - 1) {
+        this.state.currentStepId = layer2Sequence[idx + 1];
+      }
     }
 
     this.updateMacroClimateStatus();
@@ -88,11 +115,14 @@ class StateManager {
 
   editStep(stepId) {
     this.state.currentStepId = stepId;
-    const stepSequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
+    const layer1Sequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
+    const layer2Sequence = ['2a', '2b', '2c'];
+
+    const stepSequence = layer1Sequence.includes(stepId) ? layer1Sequence : layer2Sequence;
     const idx = stepSequence.indexOf(stepId);
     if (idx !== -1) {
       this.state.completedSteps = this.state.completedSteps.filter(id => {
-        return stepSequence.indexOf(id) < idx;
+        return !stepSequence.includes(id) || stepSequence.indexOf(id) < idx;
       });
       for (let i = idx; i < stepSequence.length; i++) {
         delete this.state.narrativeOutputs.story[stepSequence[i]];

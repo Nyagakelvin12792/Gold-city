@@ -13,22 +13,25 @@ export function renderBriefingPanel(state) {
   const btcOutputs = state.narrativeOutputs.btc;
 
   const completedKeys = Object.keys(storyOutputs);
+  const validKeys = completedKeys.filter(k => storyOutputs[k] && storyOutputs[k].trim() !== '');
 
-  if (completedKeys.length === 0) {
+  if (validKeys.length === 0) {
     storyContainer.innerHTML = '<p class="placeholder-text">Complete Sub-Step 1A (Grace: M2) to begin assembling the Gold City climate narrative...</p>';
     btcContainer.innerHTML = '<p class="placeholder-text">Complete Sub-Step 1A to begin assembling institutional BTC market metrics...</p>';
   } else {
-    // Render Story snippets
-    storyContainer.innerHTML = completedKeys.map(key => `
+    // Render Story snippets with Step Badges
+    storyContainer.innerHTML = validKeys.map(key => `
       <div class="narrative-paragraph">
+        <strong style="color:var(--gold-primary); font-size:11px; display:block; margin-bottom:4px;">[SUB-STEP ${key.toUpperCase()}]</strong>
         ${storyOutputs[key]}
       </div>
     `).join('');
 
-    // Render BTC Market snippets
-    btcContainer.innerHTML = completedKeys.map(key => `
+    // Render BTC Market snippets with Step Badges
+    btcContainer.innerHTML = validKeys.map(key => `
       <div class="narrative-paragraph">
-        ${btcOutputs[key]}
+        <strong style="color:var(--emerald-primary); font-size:11px; display:block; margin-bottom:4px;">[INSTITUTIONAL METRIC ${key.toUpperCase()}]</strong>
+        ${btcOutputs[key] || storyOutputs[key]}
       </div>
     `).join('');
   }

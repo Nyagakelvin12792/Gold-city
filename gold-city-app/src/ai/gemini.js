@@ -93,7 +93,7 @@ Search for: FRED M2SL, FRED WALCL, Federal Funds Rate, TGA balance, Reverse Repo
   try {
     const text = await callGemini(
       [{ role: 'user', parts: [{ text: prompt }] }],
-      [{ google_search: {} }],
+      [{ googleSearch: {} }],
       apiKey
     );
 
@@ -101,7 +101,7 @@ Search for: FRED M2SL, FRED WALCL, Federal Funds Rate, TGA balance, Reverse Repo
     const parsed = JSON.parse(jsonStr);
     return parsed;
   } catch (err) {
-    console.error('Auto-fetch failed, using fallback:', err);
+    console.warn('Google Search Grounding fetch failed or unsupported key, using fallback:', err);
     return getFallbackMacroData();
   }
 }
@@ -117,7 +117,6 @@ export async function generateSubStepNarrative(stepId, stepData) {
   for (const key of imageKeys) {
     const dataUrl = stepData[key];
     if (dataUrl && dataUrl.startsWith('data:image')) {
-      // Extract base64 and mime type
       const [header, base64] = dataUrl.split(',');
       const mimeMatch = header.match(/data:(image\/\w+);/);
       const mimeType = mimeMatch ? mimeMatch[1] : 'image/png';
@@ -172,11 +171,30 @@ No markdown fences. No explanation. Just the JSON.`;
       apiKey
     );
 
-    const jsonStr = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const parsed = JSON.parse(jsonStr);
+    let storySnippet = '';
+    let btcSnippet = '';
+
+    try {
+      const jsonStr = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+      const parsed = JSON.parse(jsonStr);
+      storySnippet = parsed.storySnippet || parsed.story || parsed.goldCityStory || '';
+      btcSnippet = parsed.btcSnippet || parsed.btc || parsed.realBtcAnalysis || '';
+    } catch (pErr) {
+      // Fallback text parsing if Gemini responded with plain text paragraphs
+      const paragraphs = text.split('\n\n').filter(p => p.trim());
+      if (paragraphs.length >= 2) {
+        storySnippet = paragraphs[0].trim();
+        btcSnippet = paragraphs[1].trim();
+      } else {
+        storySnippet = text.trim();
+        btcSnippet = text.trim();
+      }
+    }
+
+    const fallback = getFallbackNarrative(stepId, stepData);
     return {
-      storySnippet: parsed.storySnippet || 'Step completed.',
-      btcSnippet: parsed.btcSnippet || 'Metric verified.'
+      storySnippet: (storySnippet && storySnippet.length > 10) ? storySnippet : fallback.storySnippet,
+      btcSnippet: (btcSnippet && btcSnippet.length > 10) ? btcSnippet : fallback.btcSnippet
     };
   } catch (err) {
     console.error('Narrative generation failed, using fallback:', err);

@@ -172,6 +172,20 @@ This document serves as the authoritative chronological log tracking all progres
   3. Updated `app.js` Auto-Fetch button handler so a single click automatically populates **all 6 sub-steps (1A through 1F)** in sequence.
 - **Git Commit:** `59eab71` (Pushed to `main`).
 
+---
+
+### [2026-08-12 08:52 UTC] — Auto-Fetch Bug Fix: Auto-Completion, Narrative Generation & Option String Alignment
+- **Target Files:** `gold-city-app/src/ai/gemini.js`, `gold-city-app/src/app.js`, `gold-city-app/index.html`
+- **Root Cause Analysis:**
+  1. The option strings requested in `gemini.js` for steps 1D, 1E, and 1F did not match the exact `<option>` text strings in `metricsSpec.js` (e.g. `hodlWaveTrend` vs `hodlWavesTrend`), causing HTML `<select>` elements to ignore the fetched data and remain at `-- Select --`.
+  2. `autoFetchBtn` updated the underlying state data but did not trigger `generateSubStepNarrative()` or `stateManager.completeStep()`, leaving the UI locked on Step 1A.
+- **Actions Taken:**
+  1. Aligned all 18 metric field IDs and dropdown option strings in `gemini.js` to match `metricsSpec.js` with 100% precision.
+  2. Updated `app.js` Auto-Fetch handler to iterate through all 6 sub-steps (`1a` through `1f`), generate dual narratives for each step, and automatically mark all steps as `completed: true`.
+  3. Complete Layer 1 now unlocks instantly on Auto-Fetch click.
+- **Git Commit:** `5ff11ea` (Pushed to `main`).
+
+
 
 
 

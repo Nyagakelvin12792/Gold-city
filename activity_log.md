@@ -201,7 +201,19 @@ This document serves as the authoritative chronological log tracking all progres
   2. Updated Settings Modal in `index.html` to accept both **Gemini API Key** and **FRED API Key**.
   3. Added multi-key connection tester (`🧪 Test Connections`) that tests both API keys independently.
   4. Updated Auto-Fetch handler in `app.js` to use a hybrid approach: exact official series data from FRED API merged with Gemini Search Grounding for DXY / QRA.
-- **Git Commit:** `ffa42a4` (Pushed to `main`).
+- **Git Commit:** `fe3a5ad` (Pushed to `main`).
+
+---
+
+### [2026-08-12 12:24 UTC] — Purged Obsolete LocalStorage Cache & Enforced Strict SVAF Prompt Rules
+- **Target Files:** `gold-city-app/src/state.js`, `gold-city-app/src/ai/gemini.js`, `gold-city-app/src/components/briefingPanel.js`, `gold-city-app/index.html`
+- **Actions Taken:**
+  1. **Purged Obsolete LocalStorage Cache (`src/state.js`)**: Added state sanitization logic inside `stateManager.loadState()` that automatically strips out leftover `2d`, `2e`, `3a`, `3b`, `3c` step keys from `completedSteps`, `subStepsData`, and `narrativeOutputs`. This permanently clears old cached dummy data from the browser on page load.
+  2. **Enforced Strict SVAF Rules for Layer 2 Narratives (`src/ai/gemini.js`)**:
+     - Upgraded `generateSubStepNarrative()` prompt with explicit instructions for SVAF Terminology: Tier 1 Strategic VPOC, Tier 2 Operational Value Area Migration, Initiative vs Responsive Rotation, Low Volume Nodes (LVN), Single Print Tails, Poor Highs/Lows.
+     - Updated `getFallbackNarrative()` for `2a`, `2b`, and `2c` to match current metric keys without injecting empty brackets or generic text.
+  3. **Dynamic Briefing Card Header (`src/components/briefingPanel.js`)**: Title now dynamically switches between `MASTER LAYER 1 CLIMATE BRIEFING` and `MASTER LAYER 2 SPATIAL AUCTION BRIEFING`.
+- **Git Commit:** `adf65c0` (Pushed to `main`).
 
 ---
 

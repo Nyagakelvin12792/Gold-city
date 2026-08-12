@@ -185,6 +185,21 @@ This document serves as the authoritative chronological log tracking all progres
   3. Complete Layer 1 now unlocks instantly on Auto-Fetch click.
 - **Git Commit:** `5ff11ea` (Pushed to `main`).
 
+---
+
+### [2026-08-12 09:53 UTC] — Gemini API Search Grounding Tool Fix & Briefing Panel Fallback Safeguard
+- **Target Files:** `gold-city-app/src/ai/gemini.js`, `gold-city-app/src/components/briefingPanel.js`, `gold-city-app/index.html`
+- **Root Cause Analysis:**
+  1. Gemini REST API expects `[{ googleSearch: {} }]` (camelCase). The previous snake_case `google_search` caused Gemini API requests to return a `400 Bad Request: Unknown field 'google_search'` error.
+  2. Briefing Panel previously rendered empty `div` containers if `narrativeOutputs` contained empty strings or if local storage retained empty state from broken prior runs.
+- **Actions Taken:**
+  1. Updated `gemini.js` to pass `googleSearch` (camelCase) to Gemini 2.0 Flash REST API.
+  2. Added robust fallback text parsing in `generateSubStepNarrative()` so even if Gemini responds in plain text instead of JSON, narratives are cleanly parsed into `storySnippet` and `btcSnippet`.
+  3. Added default narrative generation guarantees so no narrative snippet can ever evaluate to `""` or `undefined`.
+  4. Updated `briefingPanel.js` to filter out empty entries, render step tags (`[SUB-STEP 1A]`, `[INSTITUTIONAL METRIC 1A]`), and provide rich default fallbacks if local storage had stale empty entries.
+- **Git Commit:** `7cd13f9` (Pushed to `main`).
+
+
 
 
 

@@ -145,4 +145,19 @@ This document serves as the authoritative chronological log tracking all progres
   5. After saving a valid key, header button turns gold and reads `🔑 AI Connected`.
 - **Git Commit:** `483fffb` (Pushed to `main`).
 
+---
+
+### [2026-08-12 08:33 UTC] — Federal Reserve API (FRED) Client Integration & Multi-Key Settings Modal
+- **Target Files:** `gold-city-app/src/ai/fred.js`, `gold-city-app/src/app.js`, `gold-city-app/index.html`, `activity_log.md`
+- **Actions Taken:**
+  1. Created new module `src/ai/fred.js` to query official St. Louis Fed API series:
+     - `WALCL` (Fed Total Assets), `WTREGEN` (Treasury General Account), `RRPONTSYD` (Reverse Repo Facility), `WM2NS` (M2 Supply), `FEDFUNDS` (Fed Funds Rate), `DGS10` (10-Year Treasury Yield).
+     - Automatically calculates exact Net Liquidity: $\text{Net Liquidity} = \text{WALCL} - \text{WTREGEN} - \text{RRPONTSYD}$.
+     - Determines exact slopes/trends by comparing recent observation values.
+  2. Updated Settings Modal in `index.html` to accept both **Gemini API Key** and **FRED API Key**.
+  3. Added multi-key connection tester (`🧪 Test Connections`) that tests both API keys independently.
+  4. Updated Auto-Fetch handler in `app.js` to use a hybrid approach: exact official series data from FRED API merged with Gemini Search Grounding for DXY / QRA.
+- **Git Commit:** `ffa42a4` (Pushed to `main`).
+
+
 

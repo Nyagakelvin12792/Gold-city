@@ -52,7 +52,7 @@ async function callGemini(contents, tools, apiKey) {
   return textParts.join('\n');
 }
 
-/* ---------- Auto-Fetch Macro Data via Google Search Grounding ---------- */
+/* ---------- Auto-Fetch All Layer 1 Data via Google Search Grounding ---------- */
 
 export async function autoFetchMacroData() {
   const apiKey = getApiKey();
@@ -60,24 +60,35 @@ export async function autoFetchMacroData() {
     return getFallbackMacroData();
   }
 
-  const prompt = `You are a macro-economic research assistant for a Bitcoin trading terminal. 
-Using real-time web search, find the CURRENT state of each indicator below. 
-Return ONLY a valid JSON object with these exact keys and values chosen from the allowed options:
+  const prompt = `You are an institutional macro and Bitcoin on-chain research assistant for the Gold City trading terminal. 
+Using real-time web search, research current macro conditions AND Bitcoin on-chain metrics. 
+Return ONLY a valid JSON object with these exact keys and values chosen strictly from the allowed options:
 
 {
   "m2Trend": one of ["Expanding (+GEX Tailwind)", "Contracting (-GEX Headwind)", "Neutral / Flat"],
   "walclState": one of ["Expanding (QE / Liquidity Injection)", "Contracting (QT)", "Neutral / Flat"],
   "fedRate": one of ["Easing / Cutting Cycle", "Paused / Stationary", "Hiking / Tightening Cycle"],
-  "netLiquidityValue": string like "$X.XX Trillion" (calculate FRED:WALCL minus FRED:WTREGEN minus FRED:RRPONTSYD),
+  "netLiquidityValue": string like "$6.15 Trillion",
   "tgaState": one of ["Draining TGA (Injecting Cash into Reserves)", "Rebuilding TGA (Draining Cash)", "Stable"],
   "rrpState": one of ["Draining RRP (Liquidity Bridge to T-Bills)", "Building RRP", "Stable"],
   "qraFocus": one of ["Short-Duration T-Bills (Liquidity Positive)", "Long-Duration Coupons (Liquidity Negative)", "Neutral Mix"],
   "dxyLevel": string of current DXY price like "103.50",
   "dxyTrend": one of ["Downtrend (Dollar Abundance)", "Uptrend (Dollar Shortage)", "Sideways Consolidation"],
-  "yield10Y": one of ["Falling / Easing (Risk Positive)", "Spiking / Surging (Tightening Headwind)", "Flat"]
+  "yield10Y": one of ["Falling / Easing (Risk Positive)", "Spiking / Surging (Tightening Headwind)", "Flat"],
+
+  "minerReserveState": one of ["Retention State (Miners HODLing / Building Reserves)", "Distribution State (Miners Liquidating Inventory)", "Neutral / Baseline"],
+  "minerInflowVolume": one of ["Low / Baseline Inflows", "Elevated Inflows"],
+  
+  "lthRatio": string of current LTH supply percentage like "74.8% LTH Supply",
+  "cddActivity": one of ["Low Baseline CDD (Vaults Double-Locked)", "Elevated CDD Spike (Old Coin Distribution)"],
+  "hodlWavesTrend": one of ["HODL Waves Aging (Accumulation)", "HODL Waves Thinning (Distribution)"],
+
+  "netflow7d": string of 7-day exchange netflow like "-14,200 BTC (Net Outflow)" or "+5,100 BTC (Net Inflow)",
+  "exchangeReserveLevel": one of ["Multi-Year Lows (Supply Squeeze)", "Building Exchange Reserves", "Stable"],
+  "sthSoprValue": one of ["0.995 (Capitulation Reset / Buy Signal)", "> 1.0 (Profit Taking)", "1.0 Neutral / Rebound"]
 }
 
-Search for the latest FRED M2SL data, FRED WALCL, Federal Funds Rate, Treasury General Account balance, Reverse Repo Facility balance, latest Quarterly Refunding Announcement, DXY index price, and 10-Year Treasury Yield. Return ONLY the JSON, no markdown fences, no explanation.`;
+Search for: FRED M2SL, FRED WALCL, Federal Funds Rate, TGA balance, Reverse Repo balance, Treasury QRA, DXY index, 10Y Yield, Bitcoin miner reserve trend, BTC Long Term Holder supply ratio, Coin Days Destroyed (CDD) activity, BTC 7-day exchange netflows, BTC exchange reserve levels, and Bitcoin STH-SOPR value. Return ONLY the JSON, no markdown fences, no explanation.`;
 
   try {
     const text = await callGemini(
@@ -86,7 +97,6 @@ Search for the latest FRED M2SL data, FRED WALCL, Federal Funds Rate, Treasury G
       apiKey
     );
 
-    // Parse JSON from response (strip any markdown fences if present)
     const jsonStr = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
     const parsed = JSON.parse(jsonStr);
     return parsed;

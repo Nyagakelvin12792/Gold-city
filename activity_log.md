@@ -159,5 +159,19 @@ This document serves as the authoritative chronological log tracking all progres
   4. Updated Auto-Fetch handler in `app.js` to use a hybrid approach: exact official series data from FRED API merged with Gemini Search Grounding for DXY / QRA.
 - **Git Commit:** `ffa42a4` (Pushed to `main`).
 
+---
+
+### [2026-08-12 08:39 UTC] — Complete Layer 1 Auto-Fetch (Steps 1A through 1F)
+- **Target Files:** `gold-city-app/src/ai/onchain.js`, `gold-city-app/src/ai/gemini.js`, `gold-city-app/src/app.js`, `gold-city-app/index.html`
+- **Actions Taken:**
+  1. Created `src/ai/onchain.js` for free keyless public APIs (CoinGecko, Alternative.me Fear & Greed, Blockchain.info).
+  2. Extended `autoFetchMacroData()` in `gemini.js` to query both macro metrics AND Camera 1 on-chain supply metrics via Google Search Grounding:
+     - Step 1D: Miner Reserve state & Miner-to-exchange inflow volume.
+     - Step 1E: LTH Supply Ratio, CDD activity, and HODL Waves trend.
+     - Step 1F: 7-day exchange netflow, exchange reserve levels, and STH-SOPR value.
+  3. Updated `app.js` Auto-Fetch button handler so a single click automatically populates **all 6 sub-steps (1A through 1F)** in sequence.
+- **Git Commit:** `59eab71` (Pushed to `main`).
+
+
 
 

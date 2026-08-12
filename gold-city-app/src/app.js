@@ -268,14 +268,19 @@ document.addEventListener('DOMContentLoaded', () => {
           const stepData = stepMap[stepId];
           stateManager.updateSubStepData(stepId, stepData);
 
+          let storySnippet = '';
+          let btcSnippet = '';
+
           try {
             const narratives = await generateSubStepNarrative(stepId, stepData);
-            stateManager.saveNarrative(stepId, narratives.storySnippet, narratives.btcSnippet);
+            storySnippet = narratives.storySnippet || '';
+            btcSnippet = narratives.btcSnippet || '';
           } catch (nErr) {
             console.warn(`Narrative fallback for ${stepId}:`, nErr);
           }
 
-          stateManager.completeStep(stepId);
+          // completeStep(stepId, storySnippet, btcSnippet) — all three args required
+          stateManager.completeStep(stepId, storySnippet, btcSnippet);
         }
 
         autoFetchBtn.textContent = '✨ Full Layer 1 Completed!';

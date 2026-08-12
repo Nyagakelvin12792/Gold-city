@@ -80,15 +80,15 @@ export function renderBriefingPanel(state) {
         unlockBtn.className = 'btn btn-secondary btn-full';
       }
     } else if (activeLayer === 'layer2') {
-      const l2Done = ['2a', '2b', '2c', '2d', '2e'].every(k => state.completedSteps.includes(k));
+      const l2Done = ['2a', '2b', '2c'].every(k => state.completedSteps.includes(k));
       if (l2Done) {
         unlockBtn.disabled = false;
         unlockBtn.innerHTML = '⚡ Layer 2 Complete! Click to Open Layer 3 Execution Calculator ➔';
         unlockBtn.className = 'btn btn-gold btn-full';
       } else {
         unlockBtn.disabled = true;
-        const count = ['2a', '2b', '2c', '2d', '2e'].filter(k => state.completedSteps.includes(k)).length;
-        unlockBtn.innerHTML = `🔒 Complete All 5 Dropzones (${count}/5) to Unlock Execution Plan`;
+        const count = ['2a', '2b', '2c'].filter(k => state.completedSteps.includes(k)).length;
+        unlockBtn.innerHTML = `🔒 Complete All 3 Profile Dropzones (${count}/3) to Unlock Execution Plan`;
         unlockBtn.className = 'btn btn-secondary btn-full';
       }
     } else {

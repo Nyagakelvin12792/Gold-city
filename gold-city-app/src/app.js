@@ -328,11 +328,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       } else if (currentLayer === 'layer2') {
         autoFetchBtn.disabled = true;
-        autoFetchBtn.textContent = '📸 Analyzing 5 Charts with AI Vision...';
+        autoFetchBtn.textContent = '📸 Analyzing 3 Profiles with AI Vision...';
 
         try {
           const binanceData = await fetchBinanceBtcPrice();
-          const deribitData = state.deribitData || await fetchDeribitOptionsData();
+          const deribitData = state.deribitData || {};
 
           const visionResult = await analyzeLayer2VisionCharts(state.subStepsData, deribitData, binanceData);
 
@@ -340,14 +340,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             state.layer2DirectionalBias = visionResult.directionalBias;
           }
 
-          const final2a = { weeklyVpoc: visionResult.weeklyVpoc || '$94,800', weeklyValueAreaRange: 'Weekly VAH $98,200 | VAL $92,400' };
-          const final2b = { dailyVpoc: visionResult.dailyVpoc || '$95,800', dailyAuctionState: visionResult.directionalBias || 'Inside Daily Value Area' };
-          const final2c = { lvnHighways: 'Gap between $96,200 - $97,400', poorHighsLows: 'Clean Auctions' };
-          const final2d = { bidAskWalls: `Bids at $94,000 | Asks at ${deribitData.monthlyCallWall || '$100,000'}`, liquidationPools: 'Upper Liquidation Pool Magnet' };
-          const final2e = { cvdState: 'Passive Buyer Absorption', primaryExecutionSetup: 'Initiative Breakout (Ride Value Migration)' };
+          const final2a = { weeklyVpoc: visionResult.weeklyVpoc || '', weeklyValueAreaRange: '' };
+          const final2b = { dailyVpoc: visionResult.dailyVpoc || '', dailyAuctionState: visionResult.directionalBias || 'Inside Daily Value Area' };
+          const final2c = { lvnHighways: '', poorHighsLows: 'Clean Auctions' };
 
-          const stepMap2 = { '2a': final2a, '2b': final2b, '2c': final2c, '2d': final2d, '2e': final2e };
-          const stepSequence2 = ['2a', '2b', '2c', '2d', '2e'];
+          const stepMap2 = { '2a': final2a, '2b': final2b, '2c': final2c };
+          const stepSequence2 = ['2a', '2b', '2c'];
 
           for (const stepId of stepSequence2) {
             const stepData = stepMap2[stepId];
@@ -361,7 +359,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           autoFetchBtn.textContent = '✗ Analysis Failed';
         } finally {
           autoFetchBtn.disabled = false;
-          setTimeout(() => { autoFetchBtn.textContent = '📸 Analyze All 5 Charts (Vision)'; }, 3000);
+          setTimeout(() => { autoFetchBtn.textContent = '📸 Analyze 3 Profiles (Vision)'; }, 3000);
         }
 
       } else if (currentLayer === 'layer3') {

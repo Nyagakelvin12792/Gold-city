@@ -20,20 +20,12 @@ const initialState = {
     '2a': { weeklyVpoc: '', weeklyValueAreaRange: '' },
     '2b': { dailyVpoc: '', dailyAuctionState: '' },
     '2c': { lvnHighways: '', poorHighsLows: '' },
-    '2d': { bidAskWalls: '', liquidationPools: '' },
-    '2e': { cvdState: '', primaryExecutionSetup: '' },
     '3a': { accountBalance: '10000', riskPercentage: '1.0% (Standard SVAF Risk)' },
-    '3b': { entryPrice: '94800', stopLossPrice: '93900', takeProfitPrice: '98200' },
+    '3b': { entryPrice: '', stopLossPrice: '', takeProfitPrice: '' },
     '3c': { executionOrderType: 'Limit Order at Structural Retest (VAL/VPOC)' }
   },
-  deribitData: {
-    underlyingPrice: '$96,450',
-    monthlyCallWall: '$100,000',
-    monthlyPutWall: '$90,000',
-    zeroGammaFlip: '$94,500',
-    putCallRatio: '0.65'
-  },
-  layer2DirectionalBias: 'BULLISH VALUE MIGRATION INITIATIVE',
+  deribitData: {},
+  layer2DirectionalBias: '',
   narrativeOutputs: {
     story: {},
     btc: {}
@@ -113,7 +105,7 @@ class StateManager {
 
     // Determine next step within layer
     const layer1Sequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
-    const layer2Sequence = ['2a', '2b', '2c', '2d', '2e'];
+    const layer2Sequence = ['2a', '2b', '2c'];
     const layer3Sequence = ['3a', '3b', '3c'];
 
     if (layer1Sequence.includes(stepId)) {

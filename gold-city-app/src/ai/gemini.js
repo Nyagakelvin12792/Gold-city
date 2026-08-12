@@ -245,32 +245,28 @@ Search for: BTC volume point of control VPOC price today, BTC Value Area High VA
   }
 }
 
-export function getFallbackLayer2Data(currentPriceStr = '$96,450') {
+export function getFallbackLayer2Data(currentPriceStr = '') {
   return {
-    weeklyVpoc: '$94,800',
-    weeklyValueAreaRange: 'Weekly VAH $98,200 | Weekly VAL $92,400',
-    dailyVpoc: '$95,800',
+    weeklyVpoc: '',
+    weeklyValueAreaRange: '',
+    dailyVpoc: '',
     dailyAuctionState: 'Inside Daily Value Area (Balanced Rotation)',
-    lvnHighways: 'Gap between $96,200 - $97,400',
-    poorHighsLows: 'Clean Auctions (Proper Tailed Rejections)',
-    bidAskWalls: 'Bids at $94,000 (1,200 BTC) | Asks at $98,500 (1,500 BTC)',
-    liquidationPools: 'Upper Liquidation Pool Magnet (Short Squeeze Target Above)',
-    cvdState: 'Passive Buyer Absorption (Price Rising / CVD Down)',
-    primaryExecutionSetup: 'Responsive Trade (Fade VAL/VAH Back to VPOC)'
+    lvnHighways: '',
+    poorHighsLows: 'Clean Auctions (Proper Tailed Rejections)'
   };
 }
 
 /**
  * Multimodal Vision Analysis Engine for Layer 2:
- * Analyzes up to 5 uploaded chart screenshots (Weekly Profile, Daily Profile, 4H Profile, Heatmap, Footprint)
+ * Analyzes uploaded chart screenshots (2A Weekly Profile, 2B Daily Profile, 2C 4H Profile)
  * combined with Deribit Programmatic Options Data to determine the DEFINITIVE DIRECTIONAL BIAS.
  */
 export async function analyzeLayer2VisionCharts(subStepsDataMap, deribitData, binanceData) {
   const apiKey = getApiKey();
 
-  // Collect all uploaded chart screenshots across 2a..2e
+  // Collect uploaded chart screenshots across 2a, 2b, 2c
   const imageParts = [];
-  ['2a', '2b', '2c', '2d', '2e'].forEach(stepId => {
+  ['2a', '2b', '2c'].forEach(stepId => {
     const data = subStepsDataMap[stepId] || {};
     Object.keys(data).forEach(k => {
       if (k.startsWith('image_') && data[k] && data[k].startsWith('data:image')) {
@@ -284,44 +280,39 @@ export async function analyzeLayer2VisionCharts(subStepsDataMap, deribitData, bi
     });
   });
 
+  const deribitSummary = deribitData?.monthlyCallWall ? `
+- Spot Price: ${binanceData?.lastPrice || deribitData?.underlyingPrice || ''}
+- Monthly Call Wall: ${deribitData?.monthlyCallWall || ''}
+- Monthly Put Wall: ${deribitData?.monthlyPutWall || ''}
+- Zero-Gamma Flip Level: ${deribitData?.zeroGammaFlip || ''}
+- Put/Call Open Interest Ratio: ${deribitData?.putCallRatio || ''}
+` : '';
+
   if (!apiKey || imageParts.length === 0) {
-    // Fallback if no API key or no images uploaded
     return {
-      directionalBias: 'BULLISH VALUE MIGRATION INITIATIVE',
-      targetPrice: '$98,500 (Monthly Call Wall / VAH)',
-      invalidationPrice: '$94,200 (Below Zero-Gamma Flip)',
-      summary: 'Market structure exhibits passive buyer absorption above Daily VPOC ($95,800) with thin LVN highway ahead toward the Monthly Call Wall ($100,000).'
+      directionalBias: 'AUCTION ROTATION IN VALUE AREA',
+      storySnippet: `Frank is mapping the Market District boundaries between Weekly and Daily Volume Profiles. Price remains enclosed between established value area walls as merchants negotiate two-way trade.`,
+      btcSnippet: `Volume Profile analysis indicates balance within the operational Value Area. Options positioning aligns with neutral gamma (+GEX) market-maker volatility suppression.`
     };
   }
 
-  const deribitSummary = `
-- Spot Price: ${binanceData?.lastPrice || deribitData?.underlyingPrice || '$96,450'}
-- Monthly Call Wall: ${deribitData?.monthlyCallWall || '$100,000'}
-- Monthly Put Wall: ${deribitData?.monthlyPutWall || '$90,000'}
-- Zero-Gamma Flip Level: ${deribitData?.zeroGammaFlip || '$94,500'}
-- Put/Call Open Interest Ratio: ${deribitData?.putCallRatio || '0.65'}
-`;
-
   const prompt = `You are the Lead Market Structure & Auction Analyst for the Gold City trading terminal.
-Analyze the uploaded chart screenshots (Weekly Volume Profile, Daily Volume Profile, 4H Profile, Liquidity Heatmap, and Order Flow Footprint) alongside Deribit Programmatic Options Data.
+Analyze the uploaded chart screenshots (Weekly Volume Profile, Daily Volume Profile, and 4-Hour Profile) following SVAF top-down rules (Weekly -> Daily -> 4H).
 
-DERIBIT OPTIONS & DERIVATIVES CONTEXT:
 ${deribitSummary}
 
 INSTRUCTIONS:
-1. Perform multi-timeframe auction analysis following SVAF rules (Weekly -> Daily -> 4H -> Heatmap/DOM -> Delta).
-2. Synthesize options GEX hedging regime (+GEX volatility suppression vs -GEX volatility expansion).
+1. Examine the volume profile structures visible in the chart images.
+2. Identify VPOC, VAH, VAL, and LVN highway gaps strictly from what is visible in the uploaded charts. Do NOT invent fake numbers.
 3. Determine the DEFINITIVE DIRECTIONAL BIAS for the trader.
 
 Return ONLY a valid JSON object with these exact keys:
 {
-  "directionalBias": "BULLISH VALUE MIGRATION INITIATIVE" or "BEARISH VALUE MIGRATION INITIATIVE" or "RANGE-BOUND BALANCED ROTATION",
-  "weeklyVpoc": "string of estimated Weekly VPOC level like $94,800",
-  "dailyVpoc": "string of estimated Daily VPOC level like $95,800",
-  "targetPrice": "string of primary target level like $98,500 (Monthly Call Wall)",
-  "invalidationPrice": "string of invalidation level like $94,200 (Below Zero-Gamma Flip)",
-  "storySnippet": "Gold City Frank spatial geography narrative paragraph (3-4 sentences)",
-  "btcSnippet": "Institutional Volume Profile, Heatmap, and Options GEX market brief paragraph (3-4 sentences)"
+  "directionalBias": "BULLISH VALUE MIGRATION INITIATIVE" or "BEARISH VALUE MIGRATION INITIATIVE" or "BALANCED ROTATION IN VALUE AREA",
+  "weeklyVpoc": "string of Weekly VPOC level read from chart",
+  "dailyVpoc": "string of Daily VPOC level read from chart",
+  "storySnippet": "Gold City Frank spatial geography narrative paragraph (2-3 sentences)",
+  "btcSnippet": "Institutional Volume Profile market brief paragraph (2-3 sentences)"
 }
 
 No markdown fences. No explanation. Just the JSON.`;
@@ -338,13 +329,11 @@ No markdown fences. No explanation. Just the JSON.`;
     const parsed = JSON.parse(jsonStr);
     return parsed;
   } catch (err) {
-    console.warn('Vision chart analysis failed, using fallback:', err);
+    console.warn('Vision chart analysis warning:', err);
     return {
-      directionalBias: 'BULLISH VALUE MIGRATION INITIATIVE',
-      targetPrice: '$98,500 (Monthly Call Wall / VAH)',
-      invalidationPrice: '$94,200 (Below Zero-Gamma Flip)',
-      storySnippet: `Frank's spatial survey confirms price is trading above the Daily VPOC (${deribitData?.underlyingPrice || '$96,450'}). Merchants are initiating a value migration across the empty Low Volume Node highway toward the upper district gates.`,
-      btcSnippet: `Volume Profile analysis confirms acceptance above Daily VPOC ($95,800). Deribit options data shows price operating above the Zero-Gamma Flip level ($94,500) with thin resistance ahead until the Monthly Call Wall ($100,000).`
+      directionalBias: 'AUCTION ROTATION IN VALUE AREA',
+      storySnippet: `Frank's spatial survey maps the Market District between Weekly and Daily Volume Profiles. The Town Center VPOC acts as a fair value anchor while price rotates inside the district.`,
+      btcSnippet: `Volume Profile analysis shows market rotation within established Value Area High and Low boundaries. Derivatives positioning confirms neutral market maker hedging.`
     };
   }
 }

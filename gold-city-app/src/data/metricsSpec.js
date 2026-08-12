@@ -283,56 +283,6 @@ export const METRICS_SPEC = {
       }
     ]
   },
-  '2d': {
-    id: '2d',
-    title: 'STEP 2D: ORDER BOOK DEPTH & LIQUIDITY HEATMAP (7D TO 30D)',
-    camera: 'Camera 4 (DOM Waiting Merchants)',
-    character: 'Resting Order Book & Liquidation Pools',
-    tooltip: 'Upload your 7-Day to 30-Day Liquidity Heatmap screenshot to map major DOM bid/ask walls and high-density leverage liquidation magnets.',
-    metrics: [
-      {
-        id: 'bidAskWalls',
-        label: 'Dominant DOM Order Book Walls (Bids & Asks)',
-        type: 'text',
-        placeholder: 'e.g. Heavy Bids at $94,000 | Heavy Asks at $98,500',
-        tradingViewUrl: 'https://www.coinglass.com/pro/orderbook/BTC',
-        sourceLabel: 'Coinglass: Order Book Depth ↗'
-      },
-      {
-        id: 'liquidationPools',
-        label: 'Primary Leverage Liquidation Pool Magnets',
-        type: 'select',
-        options: ['Upper Liquidation Pool Magnet (Short Squeeze Target Above)', 'Lower Liquidation Pool Magnet (Long Liquidation Target Below)', 'Balanced Liquidity Pools (Equal Both Sides)'],
-        tradingViewUrl: 'https://www.coinglass.com/LiquidationData',
-        sourceLabel: 'Coinglass: Liquidation Heatmap ↗'
-      }
-    ]
-  },
-  '2e': {
-    id: '2e',
-    title: 'STEP 2E: FOOTPRINT & CVD ORDER FLOW DELTA CHART',
-    camera: 'Camera 2 & 5 (Aggression & Hedging)',
-    character: 'Market Floor Merchants & Delta Absorption',
-    tooltip: 'Upload your Footprint or CVD Delta chart screenshot to verify passive buyer/seller absorption and aggressive market order surges.',
-    metrics: [
-      {
-        id: 'cvdState',
-        label: 'Cumulative Volume Delta (CVD) Order Flow Pressure',
-        type: 'select',
-        options: ['Passive Buyer Absorption (Price Rising / CVD Down)', 'Aggressive Market Buying (Price Up / CVD Up)', 'Passive Seller Absorption (Price Falling / CVD Up)', 'Aggressive Market Selling (Price Down / CVD Down)'],
-        tradingViewUrl: 'https://www.coinglass.com/CumulativeVolumeDelta',
-        sourceLabel: 'Coinglass: CVD Delta ↗'
-      },
-      {
-        id: 'primaryExecutionSetup',
-        label: 'Primary Execution Playbook Scenario',
-        type: 'select',
-        options: ['Responsive Trade (Fade VAL/VAH Back to VPOC)', 'Initiative Breakout (Ride Value Migration Across LVN)', 'Liquidation Sweep & Reversal (Fade Stop-Run Into Key Wall)'],
-        tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
-        sourceLabel: 'TradingView: Execution Playbook ↗'
-      }
-    ]
-  },
 
   /* ==========================================================================
      LAYER 3: TRADER-DRIVEN EXECUTION & POSITION SIZING ENGINE

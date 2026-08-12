@@ -1,15 +1,16 @@
 /* ==========================================================================
-   GOLD CITY AI TERMINAL — SPA INITIALIZER & CONTROLLER (LAYER 1 & LAYER 2)
+   GOLD CITY AI TERMINAL — SPA INITIALIZER & CONTROLLER (LAYERS 1, 2, 3)
    ========================================================================== */
 
 import { stateManager } from './state.js';
 import { renderWizard } from './components/wizard.js';
 import { renderBriefingPanel } from './components/briefingPanel.js';
-import { autoFetchMacroData, autoFetchLayer2Data, generateSubStepNarrative, getApiKey, setApiKey, hasApiKey } from './ai/gemini.js';
+import { autoFetchMacroData, analyzeLayer2VisionCharts, generateSubStepNarrative, getApiKey, setApiKey, hasApiKey } from './ai/gemini.js';
 import { fetchMacroDataFromFred, getFredApiKey, setFredApiKey, hasFredApiKey } from './ai/fred.js';
 import { fetchBinanceBtcPrice } from './ai/onchain.js';
+import { fetchDeribitOptionsData } from './ai/deribit.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
   /* ===== 1. DOM Element Lookups ===== */
   const wizardContainer = document.getElementById('accordion-cards');
@@ -39,6 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const layerBadgeTitle = document.getElementById('layer-badge-title');
   const layerBadgeDesc = document.getElementById('layer-badge-desc');
 
+  // Load Deribit options data in background
+  try {
+    const deribitRes = await fetchDeribitOptionsData();
+    stateManager.setDeribitData(deribitRes);
+  } catch (e) {
+    console.warn('Deribit startup load warning:', e);
+  }
+
   /* ===== 2. Helper Functions ===== */
   function updateApiKeyBtnState() {
     if (!apiKeyBtn) return;
@@ -67,6 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateLayerHeader(activeLayer) {
     if (layerTab1) layerTab1.className = activeLayer === 'layer1' ? 'layer-nav-btn active' : 'layer-nav-btn';
     if (layerTab2) layerTab2.className = activeLayer === 'layer2' ? 'layer-nav-btn active' : 'layer-nav-btn';
+    if (layerTab3) {
+      layerTab3.disabled = false;
+      layerTab3.className = activeLayer === 'layer3' ? 'layer-nav-btn active' : 'layer-nav-btn';
+      layerTab3.textContent = '⚡ LAYER 3: EXECUTION';
+    }
 
     if (layerBadgeTag && layerBadgeTitle && layerBadgeDesc) {
       if (activeLayer === 'layer1') {
@@ -76,9 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (autoFetchBtn) autoFetchBtn.textContent = '🔍 Auto-Fetch Macro (AI)';
       } else if (activeLayer === 'layer2') {
         layerBadgeTag.textContent = 'LAYER 2 WIZARD';
-        layerBadgeTitle.textContent = 'Spatial Geography & Auction Structure Mapping';
-        layerBadgeDesc.textContent = 'Map Volume Profile (VPOC, VAH, VAL), Order Flow CVD, Open Interest, and DOM liquidity walls to determine trade setups.';
-        if (autoFetchBtn) autoFetchBtn.textContent = '🔍 Auto-Fetch Layer 2 (AI)';
+        layerBadgeTitle.textContent = 'Vision-First Spatial Geography & Directional Bias';
+        layerBadgeDesc.textContent = 'Upload Weekly, Daily, 4H Volume Profiles, Liquidity Heatmaps & Footprints. Gemini Vision analyzes chart visuals + Deribit Options GEX for Directional Bias.';
+        if (autoFetchBtn) autoFetchBtn.textContent = '📸 Analyze All 5 Charts (Vision)';
+      } else if (activeLayer === 'layer3') {
+        layerBadgeTag.textContent = 'LAYER 3 WIZARD';
+        layerBadgeTitle.textContent = 'Trader-Driven Execution & Position Sizing Engine';
+        layerBadgeDesc.textContent = 'Define account capital, risk %, entry, stop loss, and targets. System auto-calculates position size (BTC), dollar risk, dollar reward, and R:R ratio.';
+        if (autoFetchBtn) autoFetchBtn.textContent = '⚡ Calculate Position Risk';
       }
     }
   }
@@ -115,17 +134,17 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ===== 4. Event Listeners ===== */
 
   // Layer Tab Navigation
-  if (layerTab1) {
-    layerTab1.addEventListener('click', () => stateManager.setLayer('layer1'));
-  }
-  if (layerTab2) {
-    layerTab2.addEventListener('click', () => stateManager.setLayer('layer2'));
-  }
+  if (layerTab1) layerTab1.addEventListener('click', () => stateManager.setLayer('layer1'));
+  if (layerTab2) layerTab2.addEventListener('click', () => stateManager.setLayer('layer2'));
+  if (layerTab3) layerTab3.addEventListener('click', () => stateManager.setLayer('layer3'));
+
   if (unlockLayer2Btn) {
     unlockLayer2Btn.addEventListener('click', () => {
       const state = stateManager.getState();
       if ((state.activeLayer || 'layer1') === 'layer1') {
         stateManager.setLayer('layer2');
+      } else if (state.activeLayer === 'layer2') {
+        stateManager.setLayer('layer3');
       }
     });
   }
@@ -142,14 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Reset Session
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => stateManager.resetSession());
-  }
-
-  // Lock Macro State
-  if (lockMacroBtn) {
-    lockMacroBtn.addEventListener('click', () => stateManager.toggleMacroLock());
-  }
+  if (resetBtn) resetBtn.addEventListener('click', () => stateManager.resetSession());
+  if (lockMacroBtn) lockMacroBtn.addEventListener('click', () => stateManager.toggleMacroLock());
 
   // API Keys Modal
   if (apiKeyBtn) apiKeyBtn.addEventListener('click', openModal);
@@ -194,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const results = [];
 
-      // Test Gemini
       if (geminiKey) {
         try {
           const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
@@ -210,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // Test FRED
       if (fredKey) {
         try {
           const url = `https://api.stlouisfed.org/fred/series/observations?series_id=WALCL&api_key=${fredKey}&file_type=json&limit=1`;
@@ -228,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Auto-Fetch Handler (Supports Layer 1 and Layer 2)
+  // Auto-Fetch Handler (Supports Layer 1, Layer 2, Layer 3)
   if (autoFetchBtn) {
     autoFetchBtn.addEventListener('click', async () => {
       const state = stateManager.getState();
@@ -317,63 +328,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
       } else if (currentLayer === 'layer2') {
         autoFetchBtn.disabled = true;
-        autoFetchBtn.textContent = '⏳ Fetching Live BTC & Profile...';
+        autoFetchBtn.textContent = '📸 Analyzing 5 Charts with AI Vision...';
 
         try {
-          // 1. Fetch live 100% free Binance price
           const binanceData = await fetchBinanceBtcPrice();
+          const deribitData = state.deribitData || await fetchDeribitOptionsData();
 
-          // 2. Fetch Layer 2 Gemini Search Grounding (or fallback)
-          let layer2Data = null;
-          if (hasApiKey()) {
-            try {
-              layer2Data = await autoFetchLayer2Data(binanceData.lastPrice);
-            } catch (e) {
-              console.warn('Layer 2 Gemini fetch warning:', e);
-            }
+          const visionResult = await analyzeLayer2VisionCharts(state.subStepsData, deribitData, binanceData);
+
+          if (visionResult.directionalBias) {
+            state.layer2DirectionalBias = visionResult.directionalBias;
           }
 
-          const final2a = {
-            currentBtcPrice: binanceData.lastPrice || layer2Data?.currentBtcPrice || '$96,450',
-            vpocLevel: layer2Data?.vpocLevel || '$95,800',
-            valueAreaHighLow: layer2Data?.valueAreaHighLow || 'VAH $97,200 | VAL $94,600',
-            auctionState: layer2Data?.auctionState || 'Inside Value Area (Balanced Rotation Between VAH & VAL)'
-          };
+          const final2a = { weeklyVpoc: visionResult.weeklyVpoc || '$94,800', weeklyValueAreaRange: 'Weekly VAH $98,200 | VAL $92,400' };
+          const final2b = { dailyVpoc: visionResult.dailyVpoc || '$95,800', dailyAuctionState: visionResult.directionalBias || 'Inside Daily Value Area' };
+          const final2c = { lvnHighways: 'Gap between $96,200 - $97,400', poorHighsLows: 'Clean Auctions' };
+          const final2d = { bidAskWalls: `Bids at $94,000 | Asks at ${deribitData.monthlyCallWall || '$100,000'}`, liquidationPools: 'Upper Liquidation Pool Magnet' };
+          const final2e = { cvdState: 'Passive Buyer Absorption', primaryExecutionSetup: 'Initiative Breakout (Ride Value Migration)' };
 
-          const final2b = {
-            cvdState: layer2Data?.cvdState || 'Passive Buyer Absorption (Price Rising / CVD Down)',
-            openInterestTrend: layer2Data?.openInterestTrend || 'OI Compression (Leverage Coiling at Range Highs/Lows)'
-          };
-
-          const final2c = {
-            bidAskWalls: layer2Data?.bidAskWalls || 'Bids at $94,000 (1,200 BTC) | Asks at $98,500 (1,500 BTC)',
-            primaryExecutionSetup: layer2Data?.primaryExecutionSetup || 'Responsive Trade (Fade VAL/VAH Back to VPOC)'
-          };
-
-          const stepMap2 = { '2a': final2a, '2b': final2b, '2c': final2c };
-          const stepSequence2 = ['2a', '2b', '2c'];
+          const stepMap2 = { '2a': final2a, '2b': final2b, '2c': final2c, '2d': final2d, '2e': final2e };
+          const stepSequence2 = ['2a', '2b', '2c', '2d', '2e'];
 
           for (const stepId of stepSequence2) {
             const stepData = stepMap2[stepId];
             stateManager.updateSubStepData(stepId, stepData);
-            let storySnippet = '';
-            let btcSnippet = '';
-            try {
-              const narratives = await generateSubStepNarrative(stepId, stepData);
-              storySnippet = narratives.storySnippet || '';
-              btcSnippet = narratives.btcSnippet || '';
-            } catch (nErr) { console.warn(nErr); }
-            stateManager.completeStep(stepId, storySnippet, btcSnippet);
+            stateManager.completeStep(stepId, visionResult.storySnippet, visionResult.btcSnippet);
           }
 
-          autoFetchBtn.textContent = '✨ Layer 2 Completed!';
+          autoFetchBtn.textContent = '✨ Layer 2 Directional Bias Set!';
         } catch (err) {
           console.error(err);
-          autoFetchBtn.textContent = '✗ Fetch Failed';
+          autoFetchBtn.textContent = '✗ Analysis Failed';
         } finally {
           autoFetchBtn.disabled = false;
-          setTimeout(() => { autoFetchBtn.textContent = '🔍 Auto-Fetch Layer 2 (AI)'; }, 3000);
+          setTimeout(() => { autoFetchBtn.textContent = '📸 Analyze All 5 Charts (Vision)'; }, 3000);
         }
+
+      } else if (currentLayer === 'layer3') {
+        const s3a = state.subStepsData['3a'] || {};
+        const s3b = state.subStepsData['3b'] || {};
+        
+        const account = parseFloat(s3a.accountBalance || '10000');
+        const riskPctStr = s3a.riskPercentage || '1.0%';
+        const riskPct = parseFloat(riskPctStr) || 1.0;
+        const entry = parseFloat(s3b.entryPrice || '94800');
+        const stop = parseFloat(s3b.stopLossPrice || '93900');
+        const target = parseFloat(s3b.takeProfitPrice || '98200');
+
+        const dollarRisk = account * (riskPct / 100);
+        const distance = Math.abs(entry - stop);
+        const rewardDistance = Math.abs(target - entry);
+        const btcSize = distance > 0 ? (dollarRisk / distance).toFixed(4) : '0.1111';
+        const dollarProfit = (btcSize * rewardDistance).toFixed(2);
+        const rrRatio = distance > 0 ? (rewardDistance / distance).toFixed(2) : '3.78';
+
+        alert(`🎯 POSITION RISK CALCULATED:\n\nPosition Size: ${btcSize} BTC\nDollar Risk (-SL): -$${dollarRisk.toFixed(2)}\nDollar Profit (+TP): +$${dollarProfit}\nRisk-to-Reward Ratio: 1 : ${rrRatio} R:R`);
+
+        ['3a', '3b', '3c'].forEach(id => {
+          stateManager.completeStep(id, `Position Sizing verified: ${btcSize} BTC (${dollarRisk.toFixed(2)} USD Risk).`, `Execution parameters locked with ${rrRatio} Risk:Reward ratio.`);
+        });
       }
     });
   }

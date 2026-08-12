@@ -6,8 +6,8 @@ const STORAGE_KEY = 'gold_city_layer1_state_v1';
 
 const initialState = {
   activeLayer: 'layer1', // 'layer1', 'layer2', 'layer3'
-  currentStepId: '1a',   // 1a..1f or 2a..2c
-  completedSteps: [],    // ['1a', '1b', ..., '2a', '2b', '2c']
+  currentStepId: '1a',   // 1a..1f, 2a..2e, 3a..3c
+  completedSteps: [],
   isMacroLocked: false,
   theme: 'dark',
   subStepsData: {
@@ -17,10 +17,23 @@ const initialState = {
     '1d': { minerReserveState: '', minerInflowVolume: '' },
     '1e': { lthRatio: '', cddActivity: '', hodlWaveTrend: '' },
     '1f': { netflow7d: '', exchangeReserveLevel: '', sthSoprValue: '' },
-    '2a': { currentBtcPrice: '', vpocLevel: '', valueAreaHighLow: '', auctionState: '' },
-    '2b': { cvdState: '', openInterestTrend: '' },
-    '2c': { bidAskWalls: '', primaryExecutionSetup: '' }
+    '2a': { weeklyVpoc: '', weeklyValueAreaRange: '' },
+    '2b': { dailyVpoc: '', dailyAuctionState: '' },
+    '2c': { lvnHighways: '', poorHighsLows: '' },
+    '2d': { bidAskWalls: '', liquidationPools: '' },
+    '2e': { cvdState: '', primaryExecutionSetup: '' },
+    '3a': { accountBalance: '10000', riskPercentage: '1.0% (Standard SVAF Risk)' },
+    '3b': { entryPrice: '94800', stopLossPrice: '93900', takeProfitPrice: '98200' },
+    '3c': { executionOrderType: 'Limit Order at Structural Retest (VAL/VPOC)' }
   },
+  deribitData: {
+    underlyingPrice: '$96,450',
+    monthlyCallWall: '$100,000',
+    monthlyPutWall: '$90,000',
+    zeroGammaFlip: '$94,500',
+    putCallRatio: '0.65'
+  },
+  layer2DirectionalBias: 'BULLISH VALUE MIGRATION INITIATIVE',
   narrativeOutputs: {
     story: {},
     btc: {}
@@ -40,8 +53,12 @@ class StateManager {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Ensure defaults for layer 2 if upgrading from old state
-        return { ...initialState, ...parsed, subStepsData: { ...initialState.subStepsData, ...parsed.subStepsData } };
+        return {
+          ...initialState,
+          ...parsed,
+          subStepsData: { ...initialState.subStepsData, ...parsed.subStepsData },
+          deribitData: { ...initialState.deribitData, ...parsed.deribitData }
+        };
       }
     } catch (e) {
       console.warn('Failed to load saved state from localStorage:', e);
@@ -67,6 +84,8 @@ class StateManager {
       this.state.currentStepId = '2a';
     } else if (layerId === 'layer1' && !this.state.currentStepId.startsWith('1')) {
       this.state.currentStepId = '1a';
+    } else if (layerId === 'layer3' && !this.state.currentStepId.startsWith('3')) {
+      this.state.currentStepId = '3a';
     }
     this.saveState();
     this.notify();
@@ -78,17 +97,24 @@ class StateManager {
     this.notify();
   }
 
+  setDeribitData(data) {
+    this.state.deribitData = { ...this.state.deribitData, ...data };
+    this.saveState();
+    this.notify();
+  }
+
   completeStep(stepId, storySnippet, btcSnippet) {
     if (!this.state.completedSteps.includes(stepId)) {
       this.state.completedSteps.push(stepId);
     }
     
-    this.state.narrativeOutputs.story[stepId] = storySnippet;
-    this.state.narrativeOutputs.btc[stepId] = btcSnippet;
+    if (storySnippet) this.state.narrativeOutputs.story[stepId] = storySnippet;
+    if (btcSnippet) this.state.narrativeOutputs.btc[stepId] = btcSnippet;
 
     // Determine next step within layer
     const layer1Sequence = ['1a', '1b', '1c', '1d', '1e', '1f'];
-    const layer2Sequence = ['2a', '2b', '2c'];
+    const layer2Sequence = ['2a', '2b', '2c', '2d', '2e'];
+    const layer3Sequence = ['3a', '3b', '3c'];
 
     if (layer1Sequence.includes(stepId)) {
       const idx = layer1Sequence.indexOf(stepId);
@@ -99,6 +125,11 @@ class StateManager {
       const idx = layer2Sequence.indexOf(stepId);
       if (idx !== -1 && idx < layer2Sequence.length - 1) {
         this.state.currentStepId = layer2Sequence[idx + 1];
+      }
+    } else if (layer3Sequence.includes(stepId)) {
+      const idx = layer3Sequence.indexOf(stepId);
+      if (idx !== -1 && idx < layer3Sequence.length - 1) {
+        this.state.currentStepId = layer3Sequence[idx + 1];
       }
     }
 

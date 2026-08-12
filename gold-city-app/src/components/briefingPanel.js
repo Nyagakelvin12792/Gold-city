@@ -55,10 +55,11 @@ export function renderBriefingPanel(state) {
       } else {
         badgeElement.className = 'badge badge-neutral';
       }
+    } else if (activeLayer === 'layer2') {
+      badgeElement.textContent = state.layer2DirectionalBias || 'BULLISH VALUE MIGRATION INITIATIVE';
+      badgeElement.className = 'badge badge-emerald';
     } else {
-      const data2a = state.subStepsData['2a'] || {};
-      const statusText = data2a.auctionState || 'AUCTION ROTATION IN VALUE AREA';
-      badgeElement.textContent = statusText.toUpperCase();
+      badgeElement.textContent = 'TRADER EXECUTION & RISK READY';
       badgeElement.className = 'badge badge-gold';
     }
   }
@@ -70,7 +71,7 @@ export function renderBriefingPanel(state) {
       const l1Done = ['1a', '1b', '1c', '1d', '1e', '1f'].every(k => state.completedSteps.includes(k));
       if (l1Done) {
         unlockBtn.disabled = false;
-        unlockBtn.innerHTML = '✨ Layer 1 Complete! Click to Proceed to Layer 2 (Auction Mapping) ➔';
+        unlockBtn.innerHTML = '✨ Layer 1 Complete! Click to Proceed to Layer 2 (Auction & DOM) ➔';
         unlockBtn.className = 'btn btn-gold btn-full';
       } else {
         unlockBtn.disabled = true;
@@ -78,18 +79,22 @@ export function renderBriefingPanel(state) {
         unlockBtn.innerHTML = `🔒 Complete All 6 Steps (${count}/6) to Unlock Layer 2`;
         unlockBtn.className = 'btn btn-secondary btn-full';
       }
-    } else {
-      const l2Done = ['2a', '2b', '2c'].every(k => state.completedSteps.includes(k));
+    } else if (activeLayer === 'layer2') {
+      const l2Done = ['2a', '2b', '2c', '2d', '2e'].every(k => state.completedSteps.includes(k));
       if (l2Done) {
         unlockBtn.disabled = false;
-        unlockBtn.innerHTML = '⚡ Layer 2 Complete! Click to View Layer 3 (Execution Plan Matrix) ➔';
+        unlockBtn.innerHTML = '⚡ Layer 2 Complete! Click to Open Layer 3 Execution Calculator ➔';
         unlockBtn.className = 'btn btn-gold btn-full';
       } else {
         unlockBtn.disabled = true;
-        const count = ['2a', '2b', '2c'].filter(k => state.completedSteps.includes(k)).length;
-        unlockBtn.innerHTML = `🔒 Complete All 3 Steps (${count}/3) to Unlock Execution Plan`;
+        const count = ['2a', '2b', '2c', '2d', '2e'].filter(k => state.completedSteps.includes(k)).length;
+        unlockBtn.innerHTML = `🔒 Complete All 5 Dropzones (${count}/5) to Unlock Execution Plan`;
         unlockBtn.className = 'btn btn-secondary btn-full';
       }
+    } else {
+      unlockBtn.disabled = false;
+      unlockBtn.innerHTML = '✨ Position Sizing & Execution Matrix Ready';
+      unlockBtn.className = 'btn btn-gold btn-full';
     }
   }
 }

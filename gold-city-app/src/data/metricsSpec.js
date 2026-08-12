@@ -1,14 +1,17 @@
 /* ==========================================================================
-   100% COMPLETE SVAF LAYER 1 METRICS SPECIFICATION & DIRECT TRADINGVIEW LINKS
+   100% COMPLETE SVAF LAYER 1, LAYER 2 & LAYER 3 METRICS SPECIFICATION
    ========================================================================== */
 
 export const METRICS_SPEC = {
+  /* ==========================================================================
+     LAYER 1: PRE-SESSION CLIMATE & SUPPLY INGESTION (CAMERAS 6 & 1)
+     ========================================================================== */
   '1a': {
     id: '1a',
     title: 'STEP 1A: CAMERA 6A — GRACE (MONETARY POLICY & M2)',
     camera: 'Camera 6 (Weather)',
     character: 'Grace (Monetary Authority)',
-    tooltip: 'Grace controls monetary water valves. Click the blue link buttons above each metric to open TradingView charts. Sloping UPWARD = Expanding Liquidity (+GEX Tailwind). Sloping DOWNWARD = Contracting Liquidity.',
+    tooltip: 'Grace controls monetary water valves. Sloping UPWARD = Expanding Liquidity (+GEX Tailwind). Sloping DOWNWARD = Contracting Liquidity.',
     metrics: [
       {
         id: 'm2Trend',
@@ -41,13 +44,13 @@ export const METRICS_SPEC = {
     title: 'STEP 1B: CAMERA 6B — IVY (FISCAL POLICY & NET LIQUIDITY)',
     camera: 'Camera 6 (Weather)',
     character: 'Ivy (Exchequer & Fiscal Treasury)',
-    tooltip: 'Ivy manages city bonds & treasury reserves. HOW TO INTERPRET STEP 1B: 1) Click Net Liquidity link: line sloping UP = Bullish. 2) Click TGA link: line sloping DOWN = Government spending cash into reserves (Bullish). 3) Click RRP link: line sloping DOWN = Money moving into T-Bills (Bullish).',
+    tooltip: 'Net Liquidity = FRED:WALCL - WTREGEN - RRPONTSYD. TGA Draining = Spending cash into reserves (Bullish). RRP Draining = Liquidity bridge to T-Bills.',
     metrics: [
       {
         id: 'netLiquidityValue',
         label: 'Net Fed Liquidity Formula (FRED:WALCL-WTREGEN-RRPONTSYD)',
         type: 'text',
-        placeholder: 'e.g. $6.12 Trillion',
+        placeholder: 'e.g. $6.15 Trillion',
         tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=FRED%3AWALCL-FRED%3AWTREGEN-FRED%3ARRPONTSYD',
         sourceLabel: 'TradingView: FRED:WALCL-WTREGEN-RRPONTSYD ↗'
       },
@@ -82,7 +85,7 @@ export const METRICS_SPEC = {
     title: 'STEP 1C: CAMERA 6C — BOND YIELDS, DXY & CATALYSTS',
     camera: 'Camera 6 (Weather)',
     character: 'Grace & Ivy (Atmospheric Conditions)',
-    tooltip: 'DXY measures global dollar shortage. A declining DXY below 4H key support confirms dollar abundance (Bullish BTC). Rapid 10Y Yield spikes above 4.5% tighten credit conditions.',
+    tooltip: 'DXY measures global dollar shortage. Declining DXY = Dollar abundance. Spiking 10Y Yields above 4.5% = Tightening credit headwind.',
     metrics: [
       {
         id: 'dxyLevel',
@@ -115,7 +118,7 @@ export const METRICS_SPEC = {
     title: 'STEP 1D: CAMERA 1A — ALICE (MINER ISSUANCE & RESERVES)',
     camera: 'Camera 1 (Supply)',
     character: 'Alice (Gold Mines)',
-    tooltip: 'Alice operates active gold mines. Upward sloping miner balances = Retention State (Miners HODLing = Supply Scarcity). Downward drops = Distribution State (Miners selling to pay operational costs). Baseline issuance = ~450 BTC/day.',
+    tooltip: 'Alice operates active gold mines. Upward miner balances = Retention State (Miners HODLing). Downward drops = Distribution State.',
     metrics: [
       {
         id: 'minerReserveState',
@@ -140,7 +143,7 @@ export const METRICS_SPEC = {
     title: 'STEP 1E: CAMERA 1B — JONAS (DORMANT VAULTS & CDD)',
     camera: 'Camera 1 (Supply)',
     character: 'Jonas (Ancient Vaults)',
-    tooltip: 'Jonas holds ancient wealth. Quiet low CDD baseline = Jonas Vaults Sealed (Illiquid). Large vertical CDD spikes = Old dormant coins activated and moving on-chain toward exchanges.',
+    tooltip: 'Jonas holds ancient wealth. Quiet CDD baseline = Jonas Vaults Sealed (Illiquid). Large vertical CDD spikes = Old coins activated on-chain.',
     metrics: [
       {
         id: 'lthRatio',
@@ -173,7 +176,7 @@ export const METRICS_SPEC = {
     title: 'STEP 1F: CAMERA 1C — LIQUID FLOAT & STH-SOPR',
     camera: 'Camera 1 (Supply)',
     character: 'Exchange Floor & Liquid Float',
-    tooltip: 'Liquid float is active exchange inventory. Negative netflows (e.g. -14k BTC) = Coins moving into cold storage. STH-SOPR < 1.0 = Short-term buyers selling at a loss (Capitulation flush completed).',
+    tooltip: 'Liquid float is active exchange inventory. Negative netflows = Coins moving to cold storage. STH-SOPR < 1.0 = Capitulation flush.',
     metrics: [
       {
         id: 'netflow7d',
@@ -203,96 +206,209 @@ export const METRICS_SPEC = {
   },
 
   /* ==========================================================================
-     LAYER 2: SPATIAL GEOGRAPHY & AUCTION MAPPING (CAMERAS 3, 2, 4, 5)
+     LAYER 2: VISION-FIRST SPATIAL GEOGRAPHY & AUCTION MAPPING (SVAF HIERARCHY)
      ========================================================================== */
   '2a': {
     id: '2a',
-    title: 'STEP 2A: CAMERA 3 — FRANK (VOLUME PROFILE & AUCTION ZONES)',
-    camera: 'Camera 3 (Business & Profile)',
+    title: 'STEP 2A: STRATEGIC AUCTION — WEEKLY CANDLE CHART VOLUME PROFILE',
+    camera: 'Camera 3 (Strategic Geography)',
     character: 'Frank (District Surveyor & Volume Mapper)',
-    tooltip: 'Frank maps the city floor plan. 1) VPOC = Town Center (highest volume level). 2) VAH/VAL = District boundaries (68% Value Area). 3) Inside VAH-VAL = Balanced rotation. 4) Crossing LVN = Value migration across empty highways.',
+    tooltip: 'SVAF Tier 1 Zoom Level: Upload your Weekly Candle Chart Volume Profile screenshot to map macro fair value districts (Weekly VPOC, VAH, VAL).',
     metrics: [
       {
-        id: 'currentBtcPrice',
-        label: 'Current Bitcoin Spot Price ($)',
+        id: 'weeklyVpoc',
+        label: 'Weekly Strategic VPOC ($)',
         type: 'text',
-        placeholder: 'e.g. $96,450',
+        placeholder: 'e.g. $94,800 (Auto-read by Gemini Vision)',
         tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
-        sourceLabel: 'TradingView: BINANCE:BTCUSDT ↗'
+        sourceLabel: 'TradingView: Weekly Volume Profile ↗'
       },
       {
-        id: 'vpocLevel',
-        label: 'Volume Point of Control (VPOC / Town Center)',
+        id: 'weeklyValueAreaRange',
+        label: 'Weekly Value Area Range (Weekly VAH - VAL)',
         type: 'text',
-        placeholder: 'e.g. $95,800',
-        tradingViewUrl: 'https://exocharts.com/',
-        sourceLabel: 'Exocharts: Session VPOC ↗'
-      },
-      {
-        id: 'valueAreaHighLow',
-        label: 'Value Area Boundaries (VAH - VAL Range)',
-        type: 'text',
-        placeholder: 'e.g. VAH $97,200 | VAL $94,600',
+        placeholder: 'e.g. Weekly VAH $98,200 | Weekly VAL $92,400',
         tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
-        sourceLabel: 'TradingView: Session Profile ↗'
-      },
-      {
-        id: 'auctionState',
-        label: 'Auction Balance vs Value Migration State',
-        type: 'select',
-        options: ['Inside Value Area (Balanced Rotation Between VAH & VAL)', 'Above VAH (Bullish Value Migration Initiative)', 'Below VAL (Bearish Value Migration Initiative)', 'Failing Breakout (Reentry / Snapping Back Into District)'],
-        tradingViewUrl: 'https://exocharts.com/',
-        sourceLabel: 'Exocharts: Value Migration ↗'
+        sourceLabel: 'TradingView: Weekly Range ↗'
       }
     ]
   },
   '2b': {
     id: '2b',
-    title: 'STEP 2B: CAMERA 2 — AGGRESSION & ORDER FLOW (CVD & OPEN INTEREST)',
-    camera: 'Camera 2 (Aggression)',
-    character: 'Market Floor Merchants & Order Flow',
-    tooltip: 'Camera 2 tracks shouting & momentum. Rising price + Falling CVD = Passive Buyer Absorption (Strong institutional accumulators taking market sells). Rising OI + Flat Price = Coiled Spring before a major breakout cascade.',
+    title: 'STEP 2B: OPERATIONAL CAMPAIGN — DAILY CANDLE CHART VOLUME PROFILE',
+    camera: 'Camera 3 (Operational Campaign)',
+    character: 'Frank (Daily District Inspector)',
+    tooltip: 'SVAF Tier 2 Zoom Level: Upload your Daily Candle Chart Volume Profile screenshot to track day-to-day Value Area Migration vs Balanced Rotation.',
     metrics: [
       {
-        id: 'cvdState',
-        label: 'Cumulative Volume Delta (CVD) Market Pressure',
-        type: 'select',
-        options: ['Passive Buyer Absorption (Price Rising / CVD Down)', 'Aggressive Market Buying (Price Up / CVD Up)', 'Passive Seller Absorption (Price Falling / CVD Up)', 'Aggressive Market Selling (Price Down / CVD Down)'],
-        tradingViewUrl: 'https://www.coinglass.com/CumulativeVolumeDelta',
-        sourceLabel: 'Coinglass: Aggregated BTC CVD ↗'
+        id: 'dailyVpoc',
+        label: 'Daily Operational VPOC ($)',
+        type: 'text',
+        placeholder: 'e.g. $95,800 (Auto-read by Gemini Vision)',
+        tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
+        sourceLabel: 'TradingView: Daily Volume Profile ↗'
       },
       {
-        id: 'openInterestTrend',
-        label: 'Open Interest (OI) & Leverage Positioning',
+        id: 'dailyAuctionState',
+        label: 'Daily Value Area Migration State',
         type: 'select',
-        options: ['OI Compression (Leverage Coiling at Range Highs/Lows)', 'OI Expansion (Aggressive Trend Continuation)', 'OI Liquidation Flush (Long/Short Squeeze Completed)'],
-        tradingViewUrl: 'https://www.coinglass.com/BitcoinOpenInterest',
-        sourceLabel: 'Coinglass: Open Interest Chart ↗'
+        options: ['Inside Daily Value Area (Balanced Rotation)', 'Above Daily VAH (Bullish Value Migration Initiative)', 'Below Daily VAL (Bearish Value Migration Initiative)', 'Failing Breakout (Reentry / Snapping Back)'],
+        tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
+        sourceLabel: 'TradingView: Daily Auction State ↗'
       }
     ]
   },
   '2c': {
     id: '2c',
-    title: 'STEP 2C: CAMERA 4 & 5 — DOM WAITING MERCHANTS & EXECUTION SCENARIO',
-    camera: 'Camera 4 & 5 (DOM & Execution Context)',
-    character: 'Merchant Order Books & Trade Setup',
-    tooltip: 'Camera 4 maps resting limit orders on the DOM. Camera 5 identifies the trade scenario: Responsive Fade (buying VAL / selling VAH), Initiative Breakout (riding LVN across highway), or Liquidation Sweep.',
+    title: 'STEP 2C: INTRADAY MICROSTRUCTURE — 4-HOUR CANDLE CHART PROFILE',
+    camera: 'Camera 3 (Intraday Acceleration)',
+    character: 'Frank (Highway Surveyor)',
+    tooltip: 'SVAF Tier 3 Zoom Level: Upload your 4-Hour Candle Chart Volume Profile screenshot to locate Low Volume Node (LVN) highways and Poor Highs/Lows.',
+    metrics: [
+      {
+        id: 'lvnHighways',
+        label: '4H Low Volume Node (LVN) Highway Gaps',
+        type: 'text',
+        placeholder: 'e.g. Gap between $96,200 - $97,400',
+        tradingViewUrl: 'https://exocharts.com/',
+        sourceLabel: 'Exocharts: 4H Profile LVN Gaps ↗'
+      },
+      {
+        id: 'poorHighsLows',
+        label: 'Poor Highs / Poor Lows (Incomplete Auctions)',
+        type: 'select',
+        options: ['Clean Auctions (Proper Tailed Rejections)', 'Poor High Present (Unrepaired Buying Auction Top)', 'Poor Low Present (Unrepaired Selling Auction Bottom)'],
+        tradingViewUrl: 'https://exocharts.com/',
+        sourceLabel: 'Exocharts: Market Profile TPO ↗'
+      }
+    ]
+  },
+  '2d': {
+    id: '2d',
+    title: 'STEP 2D: ORDER BOOK DEPTH & LIQUIDITY HEATMAP (7D TO 30D)',
+    camera: 'Camera 4 (DOM Waiting Merchants)',
+    character: 'Resting Order Book & Liquidation Pools',
+    tooltip: 'Upload your 7-Day to 30-Day Liquidity Heatmap screenshot to map major DOM bid/ask walls and high-density leverage liquidation magnets.',
     metrics: [
       {
         id: 'bidAskWalls',
         label: 'Dominant DOM Order Book Walls (Bids & Asks)',
         type: 'text',
-        placeholder: 'e.g. Bids at $94,000 (1,200 BTC) | Asks at $98,500 (1,500 BTC)',
+        placeholder: 'e.g. Heavy Bids at $94,000 | Heavy Asks at $98,500',
         tradingViewUrl: 'https://www.coinglass.com/pro/orderbook/BTC',
-        sourceLabel: 'Coinglass: Orderbook Liquidity Depth ↗'
+        sourceLabel: 'Coinglass: Order Book Depth ↗'
+      },
+      {
+        id: 'liquidationPools',
+        label: 'Primary Leverage Liquidation Pool Magnets',
+        type: 'select',
+        options: ['Upper Liquidation Pool Magnet (Short Squeeze Target Above)', 'Lower Liquidation Pool Magnet (Long Liquidation Target Below)', 'Balanced Liquidity Pools (Equal Both Sides)'],
+        tradingViewUrl: 'https://www.coinglass.com/LiquidationData',
+        sourceLabel: 'Coinglass: Liquidation Heatmap ↗'
+      }
+    ]
+  },
+  '2e': {
+    id: '2e',
+    title: 'STEP 2E: FOOTPRINT & CVD ORDER FLOW DELTA CHART',
+    camera: 'Camera 2 & 5 (Aggression & Hedging)',
+    character: 'Market Floor Merchants & Delta Absorption',
+    tooltip: 'Upload your Footprint or CVD Delta chart screenshot to verify passive buyer/seller absorption and aggressive market order surges.',
+    metrics: [
+      {
+        id: 'cvdState',
+        label: 'Cumulative Volume Delta (CVD) Order Flow Pressure',
+        type: 'select',
+        options: ['Passive Buyer Absorption (Price Rising / CVD Down)', 'Aggressive Market Buying (Price Up / CVD Up)', 'Passive Seller Absorption (Price Falling / CVD Up)', 'Aggressive Market Selling (Price Down / CVD Down)'],
+        tradingViewUrl: 'https://www.coinglass.com/CumulativeVolumeDelta',
+        sourceLabel: 'Coinglass: CVD Delta ↗'
       },
       {
         id: 'primaryExecutionSetup',
-        label: 'Primary Execution Scenario Setup',
+        label: 'Primary Execution Playbook Scenario',
         type: 'select',
         options: ['Responsive Trade (Fade VAL/VAH Back to VPOC)', 'Initiative Breakout (Ride Value Migration Across LVN)', 'Liquidation Sweep & Reversal (Fade Stop-Run Into Key Wall)'],
         tradingViewUrl: 'https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT',
-        sourceLabel: 'TradingView: Execution Setup ↗'
+        sourceLabel: 'TradingView: Execution Playbook ↗'
+      }
+    ]
+  },
+
+  /* ==========================================================================
+     LAYER 3: TRADER-DRIVEN EXECUTION & POSITION SIZING ENGINE
+     ========================================================================== */
+  '3a': {
+    id: '3a',
+    title: 'STEP 3A: POSITION SIZING & CAPITAL RISK BUDGET',
+    camera: 'Execution Engine',
+    character: 'Henry (Trading Desk Commander)',
+    tooltip: 'Define your account capital and risk budget per trade. The terminal calculates exact position sizing and maximum loss allowance.',
+    metrics: [
+      {
+        id: 'accountBalance',
+        label: 'Total Account Capital ($)',
+        type: 'text',
+        placeholder: 'e.g. $10,000',
+        tradingViewUrl: '#',
+        sourceLabel: 'Trading Account Balance'
+      },
+      {
+        id: 'riskPercentage',
+        label: 'Risk Budget Per Trade (%)',
+        type: 'select',
+        options: ['0.5% (Conservative Risk)', '1.0% (Standard SVAF Risk)', '1.5% (High Conviction Risk)', '2.0% (Maximum Cap Risk)'],
+        tradingViewUrl: '#',
+        sourceLabel: 'Risk Governance Rule'
+      }
+    ]
+  },
+  '3b': {
+    id: '3b',
+    title: 'STEP 3B: TRADE PARAMETERS & RISK:REWARD CALCULATOR',
+    camera: 'Execution Engine',
+    character: 'Henry (Order Calculation)',
+    tooltip: 'Set your Entry Price, Structural Stop Loss, and Primary Take Profit target. The system auto-calculates position size (BTC) and R:R ratio.',
+    metrics: [
+      {
+        id: 'entryPrice',
+        label: 'Planned Entry Price ($)',
+        type: 'text',
+        placeholder: 'e.g. $94,800',
+        tradingViewUrl: '#',
+        sourceLabel: 'Entry Level'
+      },
+      {
+        id: 'stopLossPrice',
+        label: 'Structural Invalidation Stop Loss ($)',
+        type: 'text',
+        placeholder: 'e.g. $93,900 (Below LVN/VAL)',
+        tradingViewUrl: '#',
+        sourceLabel: 'Stop Loss'
+      },
+      {
+        id: 'takeProfitPrice',
+        label: 'Primary Target Take Profit ($)',
+        type: 'text',
+        placeholder: 'e.g. $98,200 (At VAH/Call Wall)',
+        tradingViewUrl: '#',
+        sourceLabel: 'Target Level'
+      }
+    ]
+  },
+  '3c': {
+    id: '3c',
+    title: 'STEP 3C: PRE-FLIGHT CHECKLIST & SIGNAL WEBHOOK PAYLOAD',
+    camera: 'Execution Engine',
+    character: 'Henry (Final Execution Flight Check)',
+    tooltip: 'Verify all alignment rules before order submission. Optionally copy the automated JSON payload for exchange / OctoBot execution.',
+    metrics: [
+      {
+        id: 'executionOrderType',
+        label: 'Order Type Selection',
+        type: 'select',
+        options: ['Limit Order at Structural Retest (VAL/VPOC)', 'Market Order on Confirmed Breakout Acceptance', 'Stop-Limit Order above LVN Highway'],
+        tradingViewUrl: '#',
+        sourceLabel: 'Order Type'
       }
     ]
   }

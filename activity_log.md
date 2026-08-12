@@ -145,6 +145,17 @@ This document serves as the authoritative chronological log tracking all progres
 
 ---
 
+### [2026-08-12 11:41 UTC] — Restricted Terminal Architecture Strictly to Layer 1 & Layer 2 (Layer 3 Manual)
+- **Target Files:** `gold-city-app/index.html`, `gold-city-app/src/data/metricsSpec.js`, `gold-city-app/src/state.js`, `gold-city-app/src/components/wizard.js`, `gold-city-app/src/components/briefingPanel.js`, `gold-city-app/src/app.js`
+- **Actions Taken:**
+  1. Completely removed **Layer 3** from top navigation bar, metric specifications, state management, and wizard rendering. Execution and position sizing are now left 100% to the trader manually.
+  2. Maintained strict focus on **Layer 1 (Macro Climate & On-Chain Supply)** and **Layer 2 (Spatial Geography & Auction Mapping)**.
+  3. Streamlined Layer 2 to the SVAF 3-Tier Volume Profile dropzones: Weekly Profile (Strategic), Daily Profile (Operational), and 4H Profile (Intraday Microstructure).
+- **Git Commit:** `5f38386` (Pushed to `main`).
+
+
+---
+
 ### [2026-08-12 10:34 UTC] — Vision-First Layer 2 (5 SVAF Chart Dropzones + Programmatic Deribit Options Engine) & Layer 3 Position Risk Calculator
 - **Target Files:** `gold-city-app/src/ai/deribit.js`, `gold-city-app/src/data/metricsSpec.js`, `gold-city-app/src/state.js`, `gold-city-app/src/ai/gemini.js`, `gold-city-app/src/components/wizard.js`, `gold-city-app/src/components/briefingPanel.js`, `gold-city-app/src/app.js`, `gold-city-app/index.html`
 - **Actions Taken:**

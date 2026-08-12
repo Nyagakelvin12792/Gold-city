@@ -22,6 +22,9 @@
         </div>
       </div>
       <div class="header-controls">
+        <button id="api-key-btn" class="btn btn-secondary" title="Set or update your Gemini API Key">
+          🔑 API Key
+        </button>
         <button id="lock-macro-btn" class="btn btn-secondary" title="Lock Camera 6 Macro Climate State across trading sessions">
           🔒 Lock Macro State
         </button>
@@ -99,6 +102,29 @@
         </div>
       </aside>
     </main>
+
+    <!-- Gemini API Key Settings Modal -->
+    <div class="modal-overlay" id="api-key-modal" style="display:none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>🔑 Gemini API Key Settings</h3>
+          <button class="btn btn-icon modal-close-btn" id="api-key-modal-close">✕</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-desc">Enter your Google Gemini API key to enable live AI features: Auto-Fetch Macro Data (with web search), AI Chart Vision (reads your uploaded screenshots), and AI Narrative Generation.</p>
+          <p class="modal-desc" style="font-size:12px; opacity:0.7;">Your key is stored locally in your browser's localStorage only. It is never sent anywhere except directly to Google's Gemini API.</p>
+          <div class="form-field">
+            <label for="api-key-input">Gemini API Key</label>
+            <input type="password" class="form-input" id="api-key-input" placeholder="AIzaSy...">
+          </div>
+          <div id="api-key-status" class="api-key-status"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="api-key-test-btn">🧪 Test Connection</button>
+          <button class="btn btn-gold" id="api-key-save-btn">💾 Save Key</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="src/app.js"></script>
